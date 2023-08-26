@@ -1,9 +1,14 @@
 import UIKit
 
+@objc protocol CircularProgressViewDelegate {
+    @objc optional func innerView(_ view: UIView)
+}
+
 final class CircularProgressView: UIView {
-    private(set) var radius: CGFloat = 0
-    private(set) var color: UIColor = .clear
-    private(set) var lineWidth: CGFloat = 0.1
+    var color: UIColor = .clear
+    var lineWidth: CGFloat = 0.2
+    
+    weak var delegate: CircularProgressViewDelegate?
 
     private let circularLayer = CAShapeLayer()
     private let progressLayer = CAShapeLayer()
@@ -16,25 +21,10 @@ final class CircularProgressView: UIView {
         super.init(coder: coder)
     }
 
-    func radius(_ radius: CGFloat) -> Self {
-        self.radius = radius
-        return self
-    }
-
-    func color(_ color: UIColor) -> Self {
-        self.color = color
-        return self
-    }
-
-    func lineWidth(_ lineWidth: CGFloat) -> Self {
-        self.lineWidth = lineWidth
-        return self
-    }
-
     func draw() {
-        frame.size = .init(width: radius * 2, height: radius * 2)
-
-        let lineWidth = radius * 0.2
+        let size = frame.width
+        let radius = size / 2
+        let lineWidth = radius * lineWidth
         let circularPath = UIBezierPath(
             arcCenter: .init(x: radius, y: radius),
             radius: radius - (lineWidth / 2),
@@ -42,7 +32,6 @@ final class CircularProgressView: UIView {
             endAngle: CGFloat(3 * Double.pi / 2),
             clockwise: true
         )
-
         circularLayer.path = circularPath.cgPath
         circularLayer.fillColor = UIColor.clear.cgColor
         circularLayer.lineCap = .round
@@ -58,6 +47,20 @@ final class CircularProgressView: UIView {
         progressLayer.strokeEnd = 0.0
         progressLayer.strokeColor = color.cgColor
         layer.addSublayer(progressLayer)
+        
+        if delegate?.innerView != nil {
+            let innerView = {
+                let innerOrigin = lineWidth
+                let innerSize = frame.width - innerOrigin * 2
+                let innerView = UIView(frame: .init(x: innerOrigin, y: innerOrigin, width: innerSize, height: innerSize))
+                innerView.layer.cornerRadius = innerSize / 2
+                innerView.layer.masksToBounds = true
+                return innerView
+            }()
+            delegate?.innerView?(innerView)
+            addSubview(innerView)
+        }
+
     }
 
     func animate(
@@ -72,5 +75,10 @@ final class CircularProgressView: UIView {
         animation.timingFunction = timingFunction
         animation.isRemovedOnCompletion = false
         progressLayer.add(animation, forKey: "progressAnimation")
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        draw()
     }
 }

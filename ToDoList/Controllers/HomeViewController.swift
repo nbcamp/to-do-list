@@ -64,7 +64,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         let totalSpacing = spacing * Double(columns - 1)
         let collectionViewSize = collectionView.frame.width - (totalSpacing + padding * 2)
         let columnWidth = collectionViewSize / Double(columns)
-        return .init(width: columnWidth, height: columnWidth)
+        return .init(width: columnWidth, height: columnWidth * 1.4)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

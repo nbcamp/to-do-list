@@ -11,7 +11,7 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
     private lazy var title = {
         let label = UILabel()
         label.text = "To Do List"
-        label.font = .boldSystemFont(ofSize: 40)
+        label.font = .systemFont(ofSize: 40, weight: .black)
         label.sizeToFit()
         return label
     }()

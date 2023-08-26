@@ -1,26 +1,24 @@
 import UIKit
 
 final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifier {
-    private lazy var hStackView = {
-        let stackView = UIStackView(arrangedSubviews: [title, settingButton])
-        stackView.axis = .horizontal
-        stackView.frame = self.bounds
-        return stackView
-    }()
-    
+    var onMenuTapped: ((UIButton) -> Void)?
+
     private lazy var title = {
         let label = UILabel()
         label.text = "To Do List"
         label.font = .systemFont(ofSize: 40, weight: .black)
         label.sizeToFit()
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var settingButton = {
+    private lazy var button = {
         let button = UIButton()
         let imageConfiguration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium, scale: .large)
         button.setImage(.init(systemName: "gearshape")!.withConfiguration(imageConfiguration), for: .normal)
         button.tintColor = .label
+        button.addTarget(self, action: #selector(settingButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -34,6 +32,19 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
     }
     
     private func initializeUI() {
-        addSubview(hStackView)
+        addSubview(title)
+        addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            title.leadingAnchor.constraint(equalTo: leadingAnchor),
+            title.centerYAnchor.constraint(equalTo: centerYAnchor),
+            button.centerYAnchor.constraint(equalTo: centerYAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1.0),
+        ])
+    }
+    
+    @objc private func settingButtonTapped(_ sender: UIButton) {
+        onMenuTapped?(sender)
     }
 }

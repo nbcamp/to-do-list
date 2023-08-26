@@ -1,6 +1,6 @@
 import UIKit
 
-final class TodoItemCollectionViewCell: UICollectionViewCell, Identifier {
+final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
     var title: String = "Task"
     var numberOfTasks: Int = 0
     var color: UIColor = .label
@@ -78,7 +78,7 @@ final class TodoItemCollectionViewCell: UICollectionViewCell, Identifier {
     }
 }
 
-extension TodoItemCollectionViewCell: CircularProgressViewDelegate {
+extension ToDoItemCollectionViewCell: CircularProgressViewDelegate {
     func innerView(_ view: UIView) {
         view.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false

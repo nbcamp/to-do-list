@@ -4,7 +4,8 @@ final class HomeViewController: UIViewController {
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
     private let columns = 2
-    
+    private var dropdownMenuView: DropdownMenuView?
+
     private lazy var collectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = spacing
@@ -19,7 +20,7 @@ final class HomeViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: ToDoListCollectionReusableHeader.identifier
         )
-        collectionView.register(TodoItemCollectionViewCell.self, forCellWithReuseIdentifier: TodoItemCollectionViewCell.identifier)
+        collectionView.register(ToDoItemCollectionViewCell.self, forCellWithReuseIdentifier: ToDoItemCollectionViewCell.identifier)
         return collectionView
     }()
 
@@ -40,20 +41,40 @@ extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         1
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodoItemCollectionViewCell.identifier, for: indexPath) as! TodoItemCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ToDoItemCollectionViewCell.identifier, for: indexPath) as! ToDoItemCollectionViewCell
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ToDoListCollectionReusableHeader.identifier, for: indexPath)
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ToDoListCollectionReusableHeader.identifier, for: indexPath) as! ToDoListCollectionReusableHeader
+            header.onMenuTapped = { [weak self] target in
+                guard let weakSelf = self else { return }
+
+                if weakSelf.dropdownMenuView == nil {
+                    weakSelf.setupMenu(target: target)
+                }
+
+                guard let dropdownMenuView = weakSelf.dropdownMenuView else { return }
+                dropdownMenuView.opened.toggle()
+            }
             return header
         default:
             fatalError("Unknown Element Kind")
         }
+    }
+
+    private func setupMenu(target: UIView) {
+        let menus: [DropdownMenu] = [
+            .init(icon: "plus.circle", title: "New Task", handler: {  }),
+            .init(icon: "pencil.circle", title: "Edit Tasks", handler: {  }),
+        ]
+        dropdownMenuView = DropdownMenuView(menus, target: target)
+        dropdownMenuView!.onSelected = { _ in self.dropdownMenuView?.opened = false }
+        view.addSubview(dropdownMenuView!)
     }
 }
 
@@ -66,7 +87,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         let columnWidth = collectionViewSize / Double(columns)
         return .init(width: columnWidth, height: columnWidth * 1.4)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         .init(width: collectionView.bounds.width, height: 100)
     }

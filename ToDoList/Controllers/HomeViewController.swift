@@ -1,7 +1,7 @@
 import UIKit
 
 final class HomeViewController: UIViewController {
-    private let spacing: CGFloat = 10
+    private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
     private let columns = 2
     
@@ -10,15 +10,16 @@ final class HomeViewController: UIViewController {
         layout.minimumLineSpacing = spacing
         layout.minimumInteritemSpacing = spacing
         let collectionView = UICollectionView(frame: view.frame, collectionViewLayout: layout)
-        collectionView.contentInset = .init(top: padding, left: padding, bottom: padding, right: padding)
+        collectionView.contentInset = .init(top: 10, left: padding, bottom: 10, right: padding)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = .clear
         collectionView.register(
             ToDoListCollectionReusableHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: ToDoListCollectionReusableHeader.identifier
         )
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(TodoItemCollectionViewCell.self, forCellWithReuseIdentifier: TodoItemCollectionViewCell.identifier)
         return collectionView
     }()
 
@@ -30,19 +31,18 @@ final class HomeViewController: UIViewController {
     private func initializeUI() {
         title = "Main"
         navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGray5
         view.addSubview(collectionView)
     }
 }
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        20
+        1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .systemGreen
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodoItemCollectionViewCell.identifier, for: indexPath) as! TodoItemCollectionViewCell
         return cell
     }
     

@@ -18,6 +18,10 @@
 		332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811CC2A9A02DF005EEAB7 /* CircularProgressView.swift */; };
 		332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811CE2A9A47A8005EEAB7 /* DropdownMenuView.swift */; };
 		332811D12A9A6546005EEAB7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811D02A9A6546005EEAB7 /* Extensions.swift */; };
+		332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811D22A9A6B69005EEAB7 /* NewTaskViewController.swift */; };
+		332811D52A9A76AA005EEAB7 /* TextFieldGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811D42A9A76AA005EEAB7 /* TextFieldGroup.swift */; };
+		332811D92A9B02AE005EEAB7 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811D82A9B02AE005EEAB7 /* TaskTableViewCell.swift */; };
+		332811DB2A9B16C5005EEAB7 /* UIExtendedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811DA2A9B16C5005EEAB7 /* UIExtendedLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +38,10 @@
 		332811CC2A9A02DF005EEAB7 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		332811CE2A9A47A8005EEAB7 /* DropdownMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenuView.swift; sourceTree = "<group>"; };
 		332811D02A9A6546005EEAB7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		332811D22A9A6B69005EEAB7 /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
+		332811D42A9A76AA005EEAB7 /* TextFieldGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldGroup.swift; sourceTree = "<group>"; };
+		332811D82A9B02AE005EEAB7 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
+		332811DA2A9B16C5005EEAB7 /* UIExtendedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtendedLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				332811AB2A99E2A8005EEAB7 /* HomeViewController.swift */,
+				332811D22A9A6B69005EEAB7 /* NewTaskViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -102,6 +111,9 @@
 				332811CA2A9A00DD005EEAB7 /* ToDoItemCollectionViewCell.swift */,
 				332811CC2A9A02DF005EEAB7 /* CircularProgressView.swift */,
 				332811CE2A9A47A8005EEAB7 /* DropdownMenuView.swift */,
+				332811D82A9B02AE005EEAB7 /* TaskTableViewCell.swift */,
+				332811D42A9A76AA005EEAB7 /* TextFieldGroup.swift */,
+				332811DA2A9B16C5005EEAB7 /* UIExtendedLabel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -186,13 +198,17 @@
 			files = (
 				332811C92A99ECD7005EEAB7 /* ToDoListCollectionReusableHeader.swift in Sources */,
 				332811D12A9A6546005EEAB7 /* Extensions.swift in Sources */,
+				332811DB2A9B16C5005EEAB7 /* UIExtendedLabel.swift in Sources */,
 				332811AC2A99E2A8005EEAB7 /* HomeViewController.swift in Sources */,
 				332811C62A99EC4E005EEAB7 /* Identifier.swift in Sources */,
 				332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */,
 				332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */,
+				332811D92A9B02AE005EEAB7 /* TaskTableViewCell.swift in Sources */,
+				332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */,
 				332811A82A99E2A8005EEAB7 /* AppDelegate.swift in Sources */,
 				332811CB2A9A00DD005EEAB7 /* ToDoItemCollectionViewCell.swift in Sources */,
 				332811AA2A99E2A8005EEAB7 /* SceneDelegate.swift in Sources */,
+				332811D52A9A76AA005EEAB7 /* TextFieldGroup.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

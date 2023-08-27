@@ -8,10 +8,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = .init(windowScene: windowScene)
         window?.makeKeyAndVisible()
 
-        let navigationController = UINavigationController()
-
-        navigationController.setViewControllers([HomeViewController()], animated: true)
-        window?.rootViewController = navigationController
+//        let navigationController = UINavigationController()
+//
+//        navigationController.setViewControllers([HomeViewController()], animated: true)
+//        window?.rootViewController = navigationController
+        window?.rootViewController = NewTaskViewController()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

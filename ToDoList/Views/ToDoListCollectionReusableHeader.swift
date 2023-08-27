@@ -11,7 +11,7 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private lazy var button = {
         let button = UIButton()
         let imageConfiguration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium, scale: .large)
@@ -21,20 +21,20 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         initializeUI()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     private func initializeUI() {
         addSubview(title)
         addSubview(button)
-        
+
         NSLayoutConstraint.activate([
             title.leadingAnchor.constraint(equalTo: leadingAnchor),
             title.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -43,7 +43,7 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
             button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1.0),
         ])
     }
-    
+
     @objc private func settingButtonTapped(_ sender: UIButton) {
         onMenuTapped?(sender)
     }

@@ -90,5 +90,6 @@ extension DropdownMenuView: UITableViewDelegate {
         let menu = menus[indexPath.row]
         onSelected?(menu)
         menu.handler()
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

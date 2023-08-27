@@ -5,6 +5,9 @@ import UIKit
 }
 
 final class CircularProgressView: UIView {
+    var size: CGFloat = 0 {
+        didSet { frame.size = .init(width: size, height: size) }
+    }
     var color: UIColor = .clear
     var lineWidth: CGFloat = 0.2
     
@@ -22,7 +25,6 @@ final class CircularProgressView: UIView {
     }
 
     func draw() {
-        let size = frame.width
         let radius = size / 2
         let lineWidth = radius * lineWidth
         let circularPath = UIBezierPath(

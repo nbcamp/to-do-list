@@ -28,7 +28,7 @@ final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
         progressView.delegate = self
 
         let width = bounds.width - (margin * 2)
-        progressView.frame.size = .init(width: width, height: width)
+        progressView.size = width
         progressView.color = color
         progressView.draw()
         return progressView

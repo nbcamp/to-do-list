@@ -28,10 +28,18 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         initializeUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
 
     private func initializeUI() {
-        title = "Main"
-        navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .systemGray5
         view.addSubview(collectionView)
     }
@@ -39,7 +47,7 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1
+        3
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -69,8 +77,13 @@ extension HomeViewController: UICollectionViewDataSource {
 
     private func setupMenu(target: UIView) {
         let menus: [DropdownMenu] = [
-            .init(icon: "plus.circle", title: "New Task", handler: {  }),
-            .init(icon: "pencil.circle", title: "Edit Tasks", handler: {  }),
+            .init(icon: "plus.circle", title: "New Task", handler: { [weak self] in
+                guard let weakSelf = self else { return }
+                let vc = NewTaskViewController()
+                weakSelf.navigationController?.pushViewController(vc, animated: true)
+                
+            }),
+            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { }),
         ]
         dropdownMenuView = DropdownMenuView(menus, target: target)
         dropdownMenuView!.onSelected = { _ in self.dropdownMenuView?.opened = false }

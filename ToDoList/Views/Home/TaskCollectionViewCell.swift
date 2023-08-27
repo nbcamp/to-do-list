@@ -66,7 +66,6 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
     }
 
     private func initializeUI() {
-        backgroundColor = .systemBackground
         layer.cornerRadius = 20
         layer.masksToBounds = true
 

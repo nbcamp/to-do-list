@@ -4,10 +4,16 @@ import UIKit
     @objc optional func initialize(_ view: DropdownMenuView)
 }
 
-struct DropdownMenu {
+final class DropdownMenu {
     let icon: String
     let title: String
-    let handler: () -> Void
+    let handler: ((DropdownMenu) -> Void)?
+
+    init(icon: String, title: String, handler: ((DropdownMenu) -> Void)? = nil) {
+        self.icon = icon
+        self.title = title
+        self.handler = handler
+    }
 }
 
 final class DropdownMenuView: UIView {
@@ -91,7 +97,7 @@ extension DropdownMenuView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let menu = menus[indexPath.row]
         onSelected?(menu)
-        menu.handler()
+        menu.handler?(menu)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

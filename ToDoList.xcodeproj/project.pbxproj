@@ -26,6 +26,7 @@
 		332811E52A9B552C005EEAB7 /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811E42A9B552C005EEAB7 /* Subtask.swift */; };
 		332811E82A9B5646005EEAB7 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811E72A9B5646005EEAB7 /* TaskService.swift */; };
 		332811EA2A9B6D12005EEAB7 /* TaskEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811E92A9B6D12005EEAB7 /* TaskEmptyView.swift */; };
+		332811EC2A9BF826005EEAB7 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811EB2A9BF826005EEAB7 /* TaskListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		332811E42A9B552C005EEAB7 /* Subtask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtask.swift; sourceTree = "<group>"; };
 		332811E72A9B5646005EEAB7 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		332811E92A9B6D12005EEAB7 /* TaskEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEmptyView.swift; sourceTree = "<group>"; };
+		332811EB2A9BF826005EEAB7 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 		332811DC2A9B1A23005EEAB7 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				332811EB2A9BF826005EEAB7 /* TaskListView.swift */,
 				332811C82A99ECD7005EEAB7 /* TaskListCollectionReusableHeader.swift */,
 				332811CA2A9A00DD005EEAB7 /* TaskCollectionViewCell.swift */,
 				332811E92A9B6D12005EEAB7 /* TaskEmptyView.swift */,
@@ -257,6 +260,7 @@
 				332811C62A99EC4E005EEAB7 /* Identifier.swift in Sources */,
 				332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */,
 				332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */,
+				332811EC2A9BF826005EEAB7 /* TaskListView.swift in Sources */,
 				332811E02A9B1BD4005EEAB7 /* TaskHeaderView.swift in Sources */,
 				332811D92A9B02AE005EEAB7 /* TaskTableViewCell.swift in Sources */,
 				332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */,

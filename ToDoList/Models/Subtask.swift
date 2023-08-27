@@ -10,7 +10,7 @@ final class Subtask: Identifiable {
     init(name: String) {
         self.id = Self._id
         self.name = name
-        self.completed = false
+        self.completed = Bool.random()
         Self._id += 1
     }
 }

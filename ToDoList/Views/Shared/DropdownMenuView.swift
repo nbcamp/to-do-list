@@ -40,6 +40,8 @@ final class DropdownMenuView: UIView {
     private func initializeUI() {
         layer.cornerRadius = 10.0
         layer.masksToBounds = true
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.systemGray5.cgColor
 
         addSubview(tableView)
 

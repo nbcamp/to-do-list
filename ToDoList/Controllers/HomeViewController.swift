@@ -16,13 +16,15 @@ final class HomeViewController: UIViewController {
         collectionView.contentInset = .init(top: 10, left: padding, bottom: 10, right: padding)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .clear
         collectionView.register(
             TaskListCollectionReusableHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: TaskListCollectionReusableHeader.identifier
         )
-        collectionView.register(TaskCollectionViewCell.self, forCellWithReuseIdentifier: TaskCollectionViewCell.identifier)
+        collectionView.register(
+            TaskCollectionViewCell.self,
+            forCellWithReuseIdentifier: TaskCollectionViewCell.identifier
+        )
         return collectionView
     }()
 
@@ -82,6 +84,9 @@ extension HomeViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskCollectionViewCell.identifier, for: indexPath) as! TaskCollectionViewCell
         let task = tasks[indexPath.item]
         cell.title = task.name
+        cell.color = task.color
+        cell.numberOfTasks = task.children.count
+        cell.progress = task.progress
         return cell
     }
 
@@ -116,7 +121,7 @@ extension HomeViewController: UICollectionViewDataSource {
         dropdownMenuView!.onSelected = { _ in self.dropdownMenuView?.opened = false }
         view.addSubview(dropdownMenuView!)
     }
-    
+
     private func pushNewTaskViewController() {
         let vc = NewTaskViewController()
         navigationController?.pushViewController(vc, animated: true)

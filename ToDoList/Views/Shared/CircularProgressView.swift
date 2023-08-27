@@ -32,7 +32,7 @@ final class CircularProgressView: UIView {
         circularLayer.lineCap = .round
         circularLayer.lineWidth = lineWidth
         circularLayer.strokeEnd = 1.0
-        circularLayer.strokeColor = color.withAlphaComponent(0.3).cgColor
+        circularLayer.strokeColor = color.withAlphaComponent(0.2).cgColor
         layer.addSublayer(circularLayer)
 
         progressLayer.path = circularPath.cgPath

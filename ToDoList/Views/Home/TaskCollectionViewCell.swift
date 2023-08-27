@@ -3,6 +3,7 @@ import UIKit
 final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
     var title: String = "Task"
     var numberOfTasks: Int = 0
+    var progress: Double = 0
     var color: UIColor = .label
     var image: UIImage = .init(systemName: "play")!
 
@@ -70,7 +71,7 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
         layer.masksToBounds = true
 
         addSubview(vStackView)
-        progressView.animate(progress: 0.6)
+        progressView.animate(progress: progress)
     }
 }
 

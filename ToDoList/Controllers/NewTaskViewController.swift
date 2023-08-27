@@ -24,7 +24,6 @@ final class NewTaskViewController: UIViewController {
 
     private func initializeUI() {
         view.backgroundColor = .systemBackground
-
         view.addSubview(tableView)
 
         let safeArea = view.safeAreaLayoutGuide

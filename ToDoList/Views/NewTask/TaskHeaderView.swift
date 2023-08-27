@@ -45,7 +45,6 @@ final class TaskHeaderView: UIView {
         let size: CGFloat = 180
         progressView.size = size
         progressView.color = color
-        progressView.lineWidth = 0.15
         progressView.draw()
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.heightAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true

@@ -10,7 +10,7 @@ final class CircularProgressView: UIView {
     }
 
     var color: UIColor = .clear
-    var lineWidth: CGFloat = 0.2
+    var lineWidth: CGFloat = 0.15
 
     weak var delegate: CircularProgressViewDelegate?
 

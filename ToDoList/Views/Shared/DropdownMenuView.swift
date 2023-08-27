@@ -1,5 +1,9 @@
 import UIKit
 
+@objc protocol DropdownMenuDelegate {
+    @objc optional func initialize(_ view: DropdownMenuView)
+}
+
 struct DropdownMenu {
     let icon: String
     let title: String
@@ -12,9 +16,10 @@ final class DropdownMenuView: UIView {
     }
 
     var onSelected: ((DropdownMenu) -> Void)?
+    weak var delegate: DropdownMenuDelegate?
+    private(set) weak var relative: UIView?
 
-    private var menus: [DropdownMenu]
-    private var target: UIView
+    private(set) var menus: [DropdownMenu]
     private lazy var tableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -25,9 +30,10 @@ final class DropdownMenuView: UIView {
         return tableView
     }()
 
-    init(_ menus: [DropdownMenu], target: UIView) {
+    init(_ menus: [DropdownMenu], on target: UIView, delegate: DropdownMenuDelegate? = nil) {
         self.menus = menus
-        self.target = target
+        self.relative = target
+        self.delegate = delegate
         super.init(frame: .zero)
         initializeUI()
     }
@@ -43,21 +49,15 @@ final class DropdownMenuView: UIView {
         layer.borderWidth = 1
         layer.borderColor = UIColor.systemGray5.cgColor
 
-        addSubview(tableView)
+        delegate?.initialize?(self)
 
-        let targetFrame = target.convert(target.bounds, to: self)
-        frame = .init(
-            x: targetFrame.origin.x + targetFrame.width - 150,
-            y: targetFrame.origin.y + targetFrame.height + 5,
-            width: 150,
-            height: CGFloat(menus.count * 45)
-        )
+        addSubview(tableView)
         tableView.frame = bounds
     }
 
     private func appear() {
         layer.opacity = .zero
-        transform = .init(translationX: 0, y: -5.0)
+        transform = .init(scaleX: 0.5, y: 0.5)
         UIView.animate(withDuration: 0.2) {
             self.layer.opacity = .one
             self.transform = .identity
@@ -67,7 +67,7 @@ final class DropdownMenuView: UIView {
     private func disappear() {
         UIView.animate(withDuration: 0.2) {
             self.layer.opacity = .zero
-            self.transform = .init(translationX: 0, y: -5.0)
+            self.transform = .init(scaleX: 0.5, y: 0.5)
         }
     }
 }

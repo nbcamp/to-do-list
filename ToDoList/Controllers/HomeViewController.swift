@@ -117,8 +117,8 @@ extension HomeViewController: UICollectionViewDataSource {
             }),
             .init(icon: "pencil.circle", title: "Edit Tasks", handler: {}),
         ]
-        dropdownMenuView = DropdownMenuView(menus, target: target)
-        dropdownMenuView!.onSelected = { _ in self.dropdownMenuView?.opened = false }
+        dropdownMenuView = DropdownMenuView(menus, on: target, delegate: self)
+        dropdownMenuView?.onSelected = { _ in self.dropdownMenuView?.opened = false }
         view.addSubview(dropdownMenuView!)
     }
 
@@ -140,5 +140,19 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         .init(width: collectionView.bounds.width, height: 100)
+    }
+}
+
+extension HomeViewController: DropdownMenuDelegate {
+    func initialize(_ view: DropdownMenuView) {
+        guard let target = view.relative else { return }
+        view.layer.anchorPoint = .init(x: 1, y: 0)
+        let targetFrame = target.convert(target.bounds, to: view)
+        view.frame = .init(
+            x: targetFrame.origin.x + targetFrame.width - 150,
+            y: targetFrame.origin.y + targetFrame.height + 5,
+            width: 150,
+            height: CGFloat(view.menus.count * 45)
+        )
     }
 }

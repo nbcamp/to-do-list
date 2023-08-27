@@ -1,9 +1,22 @@
 import UIKit
 
 final class TaskHeaderView: UIView {
-    var title: String = "Task"
-    var numberOfTasks: Int = 0
-    var color: UIColor = .label
+    var title: String = "Task" {
+        didSet { titleLabel.text = title }
+    }
+
+    var numberOfTasks: Int = 0 {
+        didSet { subtitleLabel.text = "\(numberOfTasks) Tasks" }
+    }
+
+    var color: UIColor = .label {
+        didSet {
+            imageView.tintColor = color
+            progressView.color = color
+            progressView.draw()
+        }
+    }
+
     var image: UIImage = .init(systemName: "play")!
 
     private var margin: CGFloat { bounds.width * 0.1 }

@@ -1,11 +1,11 @@
 import UIKit
 
-final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
+final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
     var title: String = "Task"
     var numberOfTasks: Int = 0
     var color: UIColor = .label
     var image: UIImage = .init(systemName: "play")!
-    
+
     private var margin: CGFloat { bounds.width * 0.1 }
 
     private lazy var vStackView = {
@@ -59,13 +59,9 @@ final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
         return imageView
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
         initializeUI()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
     }
 
     private func initializeUI() {
@@ -78,7 +74,7 @@ final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
     }
 }
 
-extension ToDoItemCollectionViewCell: CircularProgressViewDelegate {
+extension TaskCollectionViewCell: CircularProgressViewDelegate {
     func innerView(_ view: UIView) {
         view.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false

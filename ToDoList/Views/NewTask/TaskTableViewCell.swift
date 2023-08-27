@@ -62,13 +62,9 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         return label
     }()
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
         initializeUI()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
     }
 
     private func initializeUI() {

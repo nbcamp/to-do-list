@@ -1,6 +1,6 @@
 import UIKit
 
-final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifier {
+final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifier {
     var onMenuTapped: ((UIButton) -> Void)?
 
     private lazy var title = {
@@ -22,13 +22,9 @@ final class ToDoListCollectionReusableHeader: UICollectionReusableView, Identifi
         return button
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
         initializeUI()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
     }
 
     private func initializeUI() {

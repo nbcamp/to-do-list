@@ -1,25 +1,27 @@
 import UIKit
 
-final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
+final class TaskHeaderView: UIView {
     var title: String = "Task"
     var numberOfTasks: Int = 0
     var color: UIColor = .label
     var image: UIImage = .init(systemName: "play")!
-    
+
     private var margin: CGFloat { bounds.width * 0.1 }
 
     private lazy var vStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             self.progressView,
-            self.titleLabel,
-            self.subTitleLabel,
+            self.labelStackView,
         ])
         stackView.axis = .vertical
-        stackView.frame = bounds
-        stackView.spacing = 5
+        stackView.alignment = .center
+        stackView.spacing = 30
 
-        stackView.layoutMargins = .init(top: margin, left: margin, bottom: margin, right: margin)
-        stackView.isLayoutMarginsRelativeArrangement = true
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            progressView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
+            progressView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.5),
+        ])
         return stackView
     }()
 
@@ -27,25 +29,35 @@ final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
         let progressView = CircularProgressView()
         progressView.delegate = self
 
-        let width = bounds.width - (margin * 2)
-        progressView.size = width
+        let size: CGFloat = 180
+        progressView.size = size
         progressView.color = color
+        progressView.lineWidth = 0.15
         progressView.draw()
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.heightAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
         return progressView
+    }()
+
+    private lazy var labelStackView = {
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        return stackView
     }()
 
     private lazy var titleLabel = {
         let label = UILabel()
         label.text = self.title
-        label.font = .systemFont(ofSize: bounds.width / 7, weight: .heavy)
+        label.font = .systemFont(ofSize: 30, weight: .heavy)
         label.textAlignment = .center
         return label
     }()
 
-    private lazy var subTitleLabel = {
+    private lazy var subtitleLabel = {
         let label = UILabel()
         label.text = "\(numberOfTasks) Tasks"
-        label.font = .systemFont(ofSize: bounds.width / 12, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textAlignment = .center
         label.textColor = .systemGray
         return label
@@ -59,26 +71,22 @@ final class ToDoItemCollectionViewCell: UICollectionViewCell, Identifier {
         return imageView
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        initializeUI()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    private func initializeUI() {
-        backgroundColor = .systemBackground
-        layer.cornerRadius = 20
-        layer.masksToBounds = true
-
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        frame.size.height = 350
         addSubview(vStackView)
-        progressView.animate(progress: 0.6)
+
+        vStackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            vStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            vStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
+        ])
     }
 }
 
-extension ToDoItemCollectionViewCell: CircularProgressViewDelegate {
+extension TaskHeaderView: CircularProgressViewDelegate {
     func innerView(_ view: UIView) {
         view.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false

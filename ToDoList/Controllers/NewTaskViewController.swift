@@ -8,6 +8,8 @@ final class NewTaskViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.tableHeaderView = TaskHeaderView()
         tableView.register(
             TaskTableViewCell.self,
             forCellReuseIdentifier: TaskTableViewCell.identifier

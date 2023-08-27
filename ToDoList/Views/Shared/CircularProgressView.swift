@@ -8,21 +8,14 @@ final class CircularProgressView: UIView {
     var size: CGFloat = 0 {
         didSet { frame.size = .init(width: size, height: size) }
     }
+
     var color: UIColor = .clear
     var lineWidth: CGFloat = 0.2
-    
+
     weak var delegate: CircularProgressViewDelegate?
 
     private let circularLayer = CAShapeLayer()
     private let progressLayer = CAShapeLayer()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
 
     func draw() {
         let radius = size / 2
@@ -49,7 +42,7 @@ final class CircularProgressView: UIView {
         progressLayer.strokeEnd = 0.0
         progressLayer.strokeColor = color.cgColor
         layer.addSublayer(progressLayer)
-        
+
         if delegate?.innerView != nil {
             let innerView = {
                 let innerOrigin = lineWidth
@@ -62,7 +55,6 @@ final class CircularProgressView: UIView {
             delegate?.innerView?(innerView)
             addSubview(innerView)
         }
-
     }
 
     func animate(
@@ -78,7 +70,7 @@ final class CircularProgressView: UIView {
         animation.isRemovedOnCompletion = false
         progressLayer.add(animation, forKey: "progressAnimation")
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         draw()

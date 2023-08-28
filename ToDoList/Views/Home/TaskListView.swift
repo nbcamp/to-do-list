@@ -16,11 +16,12 @@ final class TaskListView: UIView {
     private let columns = 2
     private var dropdownMenuView: DropdownMenuView?
 
-    private lazy var collectionView = {
+    lazy var collectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = spacing
         layout.minimumInteritemSpacing = spacing
         let collectionView = UICollectionView(frame: superview?.bounds ?? .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
         collectionView.contentInset = .init(top: 10, left: padding, bottom: 10, right: padding)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -41,15 +42,6 @@ final class TaskListView: UIView {
         emptyView.isHidden = true
         return emptyView
     }()
-
-    init(delegate: TaskListViewDelegate) {
-        super.init(frame: .zero)
-        self.delegate = delegate
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()

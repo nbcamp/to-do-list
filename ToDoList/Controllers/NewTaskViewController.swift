@@ -1,69 +1,49 @@
 import UIKit
 
-final class NewTaskViewController: UIViewController {
-    private var padding: CGFloat = 20
-
-    private lazy var tableView = {
-        let tableView = UITableView()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.separatorStyle = .none
-        tableView.showsVerticalScrollIndicator = false
-        tableView.tableHeaderView = TaskHeaderView()
-        tableView.register(
-            TaskTableViewCell.self,
-            forCellReuseIdentifier: TaskTableViewCell.identifier
-        )
-        return tableView
-    }()
+final class NewTaskViewController: TypedViewController<NewTaskView> {
+    private var task: Task = .init(name: "New Task", color: .random)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        initializeUI()
-    }
-
-    private func initializeUI() {
-        view.backgroundColor = .systemBackground
-        view.addSubview(tableView)
-
-        let safeArea = view.safeAreaLayoutGuide
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: padding),
-            tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -padding),
+        typedView.delegate = self
+        typedView.addGestureRecognizer(.init(target: self, action: #selector(tapped)))
+        task.children.append(contentsOf: [
+            .init(name: "New Task 1"),
+            .init(name: "New Task 2"),
+            .init(name: "New Task 3"),
         ])
+    }
+    
+    @objc private func tapped() {
+        print("Tapped")
     }
 
     private func presentColorPicker() {
         let picker = UIColorPickerViewController()
         picker.title = "Accent Color"
         picker.supportsAlpha = false
-        picker.delegate = self
+//        picker.delegate = self
         picker.modalPresentationStyle = .popover
         present(picker, animated: true)
     }
 }
 
-extension NewTaskViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+extension NewTaskViewController: NewTaskViewDelegate {
+    func numberOfSubtasks() -> Int {
+        task.children.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
-        return cell
+    func prepare(_ header: TaskHeaderView) {
+        header.title = task.name
+        header.color = task.color
     }
-}
 
-extension NewTaskViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
-            cell.completed.toggle()
-        }
+    func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
+        //
+    }
 
-        tableView.deselectRow(at: indexPath, animated: true)
+    func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
+        //
     }
 }
 

@@ -1,15 +1,11 @@
 import UIKit
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: TypedViewController<TaskListView> {
     private var tasks: [Task] { TaskService.shared.tasks }
 
-    var rootView: TaskListView {
-        view as! TaskListView
-    }
-
-    override func loadView() {
-        super.loadView()
-        view = TaskListView(delegate: self)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        typedView.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {

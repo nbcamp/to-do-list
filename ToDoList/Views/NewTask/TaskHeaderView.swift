@@ -17,7 +17,9 @@ final class TaskHeaderView: UIView {
         }
     }
 
-    var image: UIImage = .init(systemName: "play")!
+    var image: UIImage = .init(systemName: "play")! {
+        didSet { imageView.image = image }
+    }
 
     private var margin: CGFloat { bounds.width * 0.1 }
 

@@ -32,7 +32,7 @@ extension HomeViewController: TaskListViewDelegate {
         cell.progress = task.progress
     }
 
-    func placeholderViewTapped() {
+    func placeholderViewTapped(_ view: UIView) {
         pushNewTaskViewController()
     }
 

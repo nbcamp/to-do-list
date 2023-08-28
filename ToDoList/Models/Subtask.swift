@@ -1,10 +1,10 @@
 import Foundation
 
-final class Subtask: Identifiable {
+final class Subtask: DataModel {
     private static var _id = 1
 
     let id: Int
-    let name: String
+    var name: String
     var completed: Bool
 
     init(name: String) {

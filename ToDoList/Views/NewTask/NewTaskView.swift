@@ -42,8 +42,8 @@ final class NewTaskView: UIView {
     private func initializeUI() {
         isUserInteractionEnabled = true
         backgroundColor = .systemBackground
-        addSubview(tableView)
 
+        addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: topAnchor),
@@ -68,7 +68,7 @@ extension NewTaskView: UITableViewDataSource {
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
-        cell.deleteButtonTapped = { [weak self] in self?.delegate?.willDelete(cell, at: indexPath) }
+        cell.deleteButtonTapped = { [unowned self] _ in self.delegate?.willDelete(cell, at: indexPath) }
         delegate?.prepare(cell, at: indexPath)
         return cell
     }

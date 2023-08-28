@@ -1,10 +1,10 @@
 import UIKit
 
-final class Task: Identifiable {
+final class Task: DataModel {
     private static var _id = 1
 
     let id: Int
-    let name: String
+    var name: String
 
     @ObservableProperty
     var color: UIColor = .clear

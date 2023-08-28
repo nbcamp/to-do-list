@@ -21,8 +21,8 @@ final class TaskHeaderView: UIView {
     var image: UIImage = .init(systemName: "play")! {
         didSet { imageView.image = image }
     }
-    
-    var colorButtonTapped: (() -> Void)?
+
+    var colorButtonTapped: ((UIView) -> Void)?
 
     private var margin: CGFloat { bounds.width * 0.1 }
 
@@ -62,7 +62,6 @@ final class TaskHeaderView: UIView {
         button.layer.cornerRadius = 10.0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
-        button.addTarget(self, action: #selector(_colorButtonTapped), for: .touchUpInside)
         return button
     }()
 
@@ -108,16 +107,7 @@ final class TaskHeaderView: UIView {
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        frame.size.height = 400
-        addSubview(vStackView)
-
-        vStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            vStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
-            vStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
-        ])
+        initializeUI()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -128,11 +118,20 @@ final class TaskHeaderView: UIView {
     private func dismissKeyboard() {
         endEditing(true)
     }
-}
 
-extension TaskHeaderView {
-    @objc private func _colorButtonTapped() {
-        colorButtonTapped?()
+    private func initializeUI() {
+        frame.size.height = 400
+        addSubview(vStackView)
+
+        colorButton.addAction(colorButtonTapped)
+
+        vStackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            vStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            vStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
+        ])
     }
 }
 

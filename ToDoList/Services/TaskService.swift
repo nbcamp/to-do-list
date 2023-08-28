@@ -19,4 +19,8 @@ final class TaskService {
     func add(subtask: Subtask, to task: Task) {
         task.children.append(subtask)
     }
+
+    func remove(subtask: Subtask, of task: Task) {
+        task.children.remove(element: subtask)
+    }
 }

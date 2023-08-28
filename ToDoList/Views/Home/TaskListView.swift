@@ -3,7 +3,7 @@ import UIKit
 protocol TaskListViewDelegate: AnyObject {
     func numberOfTasks(_ view: TaskListView) -> Int
     func prepare(_ cell: TaskCollectionViewCell, at indexPath: IndexPath)
-    func placeholderViewTapped()
+    func placeholderViewTapped(_ view: UIView)
     func newTaskMenuTapped()
     func editTasksMenuTapped()
 }
@@ -69,14 +69,9 @@ extension TaskListView: UICollectionViewDataSource {
         if placeholderView.isHidden {
             placeholderView.gestureRecognizers?.forEach(placeholderView.removeGestureRecognizer)
         } else {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(placeholderViewTapped))
-            placeholderView.addGestureRecognizer(tapGesture)
+            placeholderView.addAction(delegate?.placeholderViewTapped)
         }
         return numberOfTasks
-    }
-
-    @objc private func placeholderViewTapped() {
-        delegate?.placeholderViewTapped()
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -89,12 +84,11 @@ extension TaskListView: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TaskListCollectionReusableHeader.identifier, for: indexPath) as! TaskListCollectionReusableHeader
-            header.onMenuTapped = { [weak self] target in
-                guard let weakSelf = self else { return }
-                if weakSelf.dropdownMenuView == nil {
-                    weakSelf.setupMenu(target: target)
+            header.onMenuTapped = { [unowned self] target in
+                if self.dropdownMenuView == nil {
+                    self.setupMenu(target: target)
                 }
-                guard let dropdownMenuView = weakSelf.dropdownMenuView else { return }
+                guard let dropdownMenuView = self.dropdownMenuView else { return }
                 dropdownMenuView.opened.toggle()
             }
             return header

@@ -33,11 +33,8 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         )
     }
 
-    @objc var deleteButtonTapped: (() -> Void)?
-
-    @objc var test = {
-        print("Tapped")
-    }
+    var deleteButtonTapped: ((UIView) -> Void)?
+    var taskNameTapped: ((UIView) -> Void)?
 
     private lazy var containerView = {
         let view = UIView()
@@ -59,7 +56,6 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         let stackView = UIStackView(arrangedSubviews: [iconView, titleLabel])
         stackView.axis = .horizontal
         stackView.spacing = 10.0
-
         return stackView
     }()
 
@@ -70,7 +66,6 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
         iconView.isUserInteractionEnabled = true
-        iconView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getter: test)))
         return iconView
     }()
 
@@ -90,6 +85,9 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
     private func initializeUI() {
         selectionStyle = .none
         contentView.addSubview(containerView)
+
+        iconView.addAction(deleteButtonTapped)
+        titleLabel.addAction(taskNameTapped)
 
         let spacing: CGFloat = 10
         containerView.translatesAutoresizingMaskIntoConstraints = false

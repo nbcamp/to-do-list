@@ -31,8 +31,6 @@ final class ObservableProperty<T> {
     }
 
     func unsubscribe(_ id: UUID) {
-        if let index = observers.firstIndex(where: { $0.id == id }) {
-            observers.remove(at: index)
-        }
+        observers.remove { $0.id == id }
     }
 }

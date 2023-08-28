@@ -1,11 +1,60 @@
 import UIKit
 
+extension Array where Element: Equatable {
+    @discardableResult
+    mutating func remove(element: Element) -> Int {
+        var count = 0
+        while let index = firstIndex(of: element) {
+            self.remove(at: index)
+            count += 1
+        }
+        return count
+    }
+}
+
+extension Array {
+    mutating func remove(where predicate: (Element) throws -> Bool) rethrows {
+        var indexesToRemove = [Int]()
+
+        for (index, element) in self.enumerated() {
+            if try predicate(element) {
+                indexesToRemove.append(index)
+            }
+        }
+
+        for index in indexesToRemove.reversed() {
+            self.remove(at: index)
+        }
+    }
+}
+
 extension Float {
     static var one: Self { 1.0 }
 }
 
 extension CGFloat {
     static var one: Self { 1.0 }
+}
+
+extension UIView {
+    private enum AssociatedKeys {
+        static var gestureRecognizerKey = "GESTURE_RECOGNIZER_KEY"
+    }
+
+    func addAction(_ action: ((UIView) -> Void)?, with Recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self) {
+        guard let action else { return }
+        isUserInteractionEnabled = true
+        objc_setAssociatedObject(self, &AssociatedKeys.gestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+        let gestureRecognizer = Recognizer.init(target: self, action: #selector(self._executeAction))
+        addGestureRecognizer(gestureRecognizer)
+    }
+
+    @objc private func _executeAction() {
+        if let action = objc_getAssociatedObject(self, &AssociatedKeys.gestureRecognizerKey) as? (UIView) -> Void {
+            action(self)
+        }
+    }
 }
 
 extension UIImageView {

@@ -17,6 +17,16 @@ extension UIImageView {
 }
 
 extension UIColor {
+    convenience init(light: UIColor, dark: UIColor) {
+        guard #available(iOS 13.0, *) else { self.init(cgColor: light.cgColor); return }
+        self.init(dynamicProvider: { $0.userInterfaceStyle == .dark ? dark : light })
+    }
+
+    convenience init(light: UIColor, dark: UIColor, for relative: UIColor) {
+        let (_light, _dark) = relative.isLight ? (light, dark) : (dark, light)
+        self.init(light: _light, dark: _dark)
+    }
+
     static var random: UIColor {
         UIColor(
             red: .random(in: 0...1),
@@ -24,5 +34,18 @@ extension UIColor {
             blue: .random(in: 0...1),
             alpha: 1.0
         )
+    }
+
+    var isLight: Bool {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        let brightness = (red * 299 + green * 587 + blue * 114) / 1000
+
+        return brightness > 0.5
     }
 }

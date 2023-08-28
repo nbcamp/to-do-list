@@ -29,6 +29,7 @@
 		332811EC2A9BF826005EEAB7 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811EB2A9BF826005EEAB7 /* TaskListView.swift */; };
 		332811EE2A9C0AAC005EEAB7 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */; };
 		332811F12A9C1FE0005EEAB7 /* TypedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */; };
+		332811F32A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F22A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		332811EB2A9BF826005EEAB7 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 		332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
 		332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedViewController.swift; sourceTree = "<group>"; };
+		332811F22A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 				332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */,
 				332811DF2A9B1BD4005EEAB7 /* TaskHeaderView.swift */,
 				332811D82A9B02AE005EEAB7 /* TaskTableViewCell.swift */,
+				332811F22A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift */,
 			);
 			path = NewTask;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 				332811E02A9B1BD4005EEAB7 /* TaskHeaderView.swift in Sources */,
 				332811D92A9B02AE005EEAB7 /* TaskTableViewCell.swift in Sources */,
 				332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */,
+				332811F32A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift in Sources */,
 				332811E52A9B552C005EEAB7 /* Subtask.swift in Sources */,
 				332811A82A99E2A8005EEAB7 /* AppDelegate.swift in Sources */,
 				332811CB2A9A00DD005EEAB7 /* TaskCollectionViewCell.swift in Sources */,

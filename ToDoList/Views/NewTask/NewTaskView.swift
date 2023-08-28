@@ -4,6 +4,7 @@ protocol NewTaskViewDelegate: AnyObject {
     func numberOfSubtasks() -> Int
     func prepare(_ header: TaskHeaderView)
     func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath)
+    func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath)
     func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath)
 }
 
@@ -24,6 +25,10 @@ final class NewTaskView: UIView {
         tableView.register(
             TaskTableViewCell.self,
             forCellReuseIdentifier: TaskTableViewCell.identifier
+        )
+        tableView.register(
+            NewTaskTableViewCell.self,
+            forCellReuseIdentifier: NewTaskTableViewCell.identifier
         )
         return tableView
     }()
@@ -50,10 +55,15 @@ final class NewTaskView: UIView {
 
 extension NewTaskView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return delegate?.numberOfSubtasks() ?? 0
+        return (delegate?.numberOfSubtasks() ?? 0) + 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewCell.identifier, for: indexPath) as! NewTaskTableViewCell
+            delegate?.prepare(cell, at: indexPath)
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
         delegate?.prepare(cell, at: indexPath)
         return cell
@@ -69,4 +79,3 @@ extension NewTaskView: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
-

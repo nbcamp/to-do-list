@@ -1,36 +1,25 @@
 import UIKit
 
-final class TaskTableViewCell: UITableViewCell, Identifier {
-    var completed = false {
-        didSet {
-            UIView.animate(withDuration: 0.1) { [weak self] in
-                guard let weakSelf = self else { return }
-                let completed = weakSelf.completed
-                weakSelf.hStackView.layer.opacity = completed ? 0.5 : 1.0
-                weakSelf.iconView.image = .init(systemName: completed ? "checkmark.circle" : "circle")
-                weakSelf.titleLabel.strikethrough = completed
-            }
-        }
-    }
-
-    var name: String = "Task Name" {
-        didSet { titleLabel.text = name }
-    }
-
+final class NewTaskTableViewCell: UITableViewCell, Identifier {
     var color: UIColor = .label {
         didSet {
-            iconView.tintColor = color
-            titleLabel.textColor = color
+            containerView.backgroundColor = color
+            iconView.tintColor = textColor
+            titleLabel.textColor = textColor
         }
+    }
+
+    private var textColor: UIColor {
+        .init(
+            light: .black.withAlphaComponent(0.8),
+            dark: .white.withAlphaComponent(0.8),
+            for: color
+        )
     }
 
     private lazy var containerView = {
         let view = UIView()
-        view.backgroundColor = .init(
-            light: .black.withAlphaComponent(0.8),
-            dark: .black.withAlphaComponent(0.1),
-            for: color
-        )
+        view.backgroundColor = color
         view.layer.cornerRadius = 10.0
         view.layer.masksToBounds = true
         view.addSubview(hStackView)
@@ -54,8 +43,8 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private lazy var iconView = {
         let iconView = UIImageView(frame: .zero)
-        iconView.tintColor = color
-        iconView.image = .init(systemName: "circle")
+        iconView.tintColor = textColor
+        iconView.image = .init(systemName: "plus.circle")
 
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
@@ -64,8 +53,8 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private lazy var titleLabel = {
         let label = UIExtendedLabel()
-        label.text = name
-        label.textColor = color
+        label.text = "Add New Subtask"
+        label.textColor = textColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
@@ -77,6 +66,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private func initializeUI() {
         selectionStyle = .none
+
         contentView.addSubview(containerView)
 
         let spacing: CGFloat = 10

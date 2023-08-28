@@ -15,4 +15,8 @@ final class TaskService {
     func add(task: Task) {
         tasks.append(task)
     }
+
+    func add(subtask: Subtask, to task: Task) {
+        task.children.append(subtask)
+    }
 }

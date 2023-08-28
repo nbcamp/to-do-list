@@ -6,8 +6,4 @@ class TypedViewController<View: UIView>: UIViewController {
     override func loadView() {
         view = View()
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
 }

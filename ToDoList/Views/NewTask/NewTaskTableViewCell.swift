@@ -4,12 +4,12 @@ final class NewTaskTableViewCell: UITableViewCell, Identifier {
     var color: UIColor = .label {
         didSet {
             containerView.backgroundColor = color
-            iconView.tintColor = textColor
-            titleLabel.textColor = textColor
+            iconView.tintColor = _textColor
+            titleLabel.textColor = _textColor
         }
     }
 
-    private var textColor: UIColor {
+    private var _textColor: UIColor {
         .init(
             light: .black.withAlphaComponent(0.8),
             dark: .white.withAlphaComponent(0.8),
@@ -43,9 +43,8 @@ final class NewTaskTableViewCell: UITableViewCell, Identifier {
 
     private lazy var iconView = {
         let iconView = UIImageView(frame: .zero)
-        iconView.tintColor = textColor
+        iconView.tintColor = _textColor
         iconView.image = .init(systemName: "plus.circle")
-
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
         return iconView
@@ -54,7 +53,7 @@ final class NewTaskTableViewCell: UITableViewCell, Identifier {
     private lazy var titleLabel = {
         let label = UIExtendedLabel()
         label.text = "Add New Subtask"
-        label.textColor = textColor
+        label.textColor = _textColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()

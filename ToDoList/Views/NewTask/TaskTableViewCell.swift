@@ -21,16 +21,27 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         didSet {
             iconView.tintColor = color
             titleLabel.textColor = color
+            containerView.backgroundColor = _backgroundColor
         }
     }
 
-    private lazy var containerView = {
-        let view = UIView()
-        view.backgroundColor = .init(
+    private var _backgroundColor: UIColor {
+        .init(
             light: .black.withAlphaComponent(0.8),
             dark: .black.withAlphaComponent(0.1),
             for: color
         )
+    }
+
+    @objc var deleteButtonTapped: (() -> Void)?
+
+    @objc var test = {
+        print("Tapped")
+    }
+
+    private lazy var containerView = {
+        let view = UIView()
+        view.backgroundColor = _backgroundColor
         view.layer.cornerRadius = 10.0
         view.layer.masksToBounds = true
         view.addSubview(hStackView)
@@ -55,10 +66,11 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
     private lazy var iconView = {
         let iconView = UIImageView(frame: .zero)
         iconView.tintColor = color
-        iconView.image = .init(systemName: "circle")
-
+        iconView.image = .init(systemName: "multiply.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
+        iconView.isUserInteractionEnabled = true
+        iconView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getter: test)))
         return iconView
     }()
 

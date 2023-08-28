@@ -30,6 +30,7 @@
 		332811EE2A9C0AAC005EEAB7 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */; };
 		332811F12A9C1FE0005EEAB7 /* TypedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */; };
 		332811F32A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F22A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift */; };
+		332811F82A9CA2AF005EEAB7 /* ObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F72A9CA2AF005EEAB7 /* ObservableProperty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
 		332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedViewController.swift; sourceTree = "<group>"; };
 		332811F22A9C4FF6005EEAB7 /* NewTaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskTableViewCell.swift; sourceTree = "<group>"; };
+		332811F72A9CA2AF005EEAB7 /* ObservableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableProperty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				332811E62A9B5622005EEAB7 /* Services */,
 				332811BD2A99E565005EEAB7 /* Views */,
 				332811BC2A99E559005EEAB7 /* Controllers */,
+				332811F62A9CA291005EEAB7 /* Utilities */,
 				332811C42A99EC1A005EEAB7 /* Protocols */,
 				332811B52A99E2A9005EEAB7 /* Info.plist */,
 			);
@@ -190,6 +193,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		332811F62A9CA291005EEAB7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				332811F72A9CA2AF005EEAB7 /* ObservableProperty.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -271,6 +282,7 @@
 				332811C62A99EC4E005EEAB7 /* Identifier.swift in Sources */,
 				332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */,
 				332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */,
+				332811F82A9CA2AF005EEAB7 /* ObservableProperty.swift in Sources */,
 				332811EC2A9BF826005EEAB7 /* TaskListView.swift in Sources */,
 				332811E02A9B1BD4005EEAB7 /* TaskHeaderView.swift in Sources */,
 				332811D92A9B02AE005EEAB7 /* TaskTableViewCell.swift in Sources */,

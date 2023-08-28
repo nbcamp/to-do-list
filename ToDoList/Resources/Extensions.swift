@@ -49,3 +49,10 @@ extension UIColor {
         return brightness > 0.5
     }
 }
+
+extension UIScrollView {
+    func scrollToView(_ view: UIView, animated: Bool) {
+        let target = self.convert(frame.origin, to: view)
+        self.scrollRectToVisible(.init(x: 0, y: target.y, width: 1, height: frame.height), animated: animated)
+    }
+}

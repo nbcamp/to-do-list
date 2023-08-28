@@ -5,7 +5,10 @@ final class Task: Identifiable {
 
     let id: Int
     let name: String
-    let color: UIColor
+
+    @ObservableProperty
+    var color: UIColor = .clear
+
     var children: [Subtask]
     var progress: Double { Double(children.filter { $0.completed }.count) / Double(children.count) }
 

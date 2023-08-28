@@ -1,8 +1,8 @@
 import UIKit
 
 final class TaskHeaderView: UIView {
-    var title: String = "Task" {
-        didSet { titleLabel.text = title }
+    var title: String = "" {
+        didSet { titleTextField.text = title }
     }
 
     var numberOfTasks: Int = 0 {
@@ -13,6 +13,7 @@ final class TaskHeaderView: UIView {
         didSet {
             imageView.tintColor = color
             progressView.color = color
+            colorButton.backgroundColor = color
             progressView.draw()
         }
     }
@@ -20,6 +21,8 @@ final class TaskHeaderView: UIView {
     var image: UIImage = .init(systemName: "play")! {
         didSet { imageView.image = image }
     }
+    
+    var colorButtonTapped: (() -> Void)?
 
     private var margin: CGFloat { bounds.width * 0.1 }
 
@@ -53,19 +56,37 @@ final class TaskHeaderView: UIView {
         return progressView
     }()
 
+    private lazy var colorButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = color
+        button.layer.cornerRadius = 10.0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+        button.addTarget(self, action: #selector(_colorButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
     private lazy var labelStackView = {
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        let stackView = UIStackView(arrangedSubviews: [
+            colorButton,
+            titleTextField,
+            subtitleLabel,
+        ])
         stackView.axis = .vertical
         stackView.alignment = .center
+        stackView.spacing = 5.0
         return stackView
     }()
 
-    private lazy var titleLabel = {
-        let label = UILabel()
-        label.text = self.title
-        label.font = .systemFont(ofSize: 30, weight: .heavy)
-        label.textAlignment = .center
-        return label
+    private lazy var titleTextField = {
+        let textField = UITextField()
+        textField.text = title
+        textField.placeholder = "Enter Task Name"
+        textField.returnKeyType = .done
+        textField.delegate = self
+        textField.font = .systemFont(ofSize: 30, weight: .heavy)
+        textField.textAlignment = .center
+        return textField
     }()
 
     private lazy var subtitleLabel = {
@@ -87,7 +108,7 @@ final class TaskHeaderView: UIView {
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        frame.size.height = 350
+        frame.size.height = 400
         addSubview(vStackView)
 
         vStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -97,6 +118,21 @@ final class TaskHeaderView: UIView {
             vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
         ])
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        dismissKeyboard()
+    }
+
+    private func dismissKeyboard() {
+        endEditing(true)
+    }
+}
+
+extension TaskHeaderView {
+    @objc private func _colorButtonTapped() {
+        colorButtonTapped?()
     }
 }
 
@@ -110,5 +146,12 @@ extension TaskHeaderView: CircularProgressViewDelegate {
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
             imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
         ])
+    }
+}
+
+extension TaskHeaderView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        dismissKeyboard()
+        return false
     }
 }

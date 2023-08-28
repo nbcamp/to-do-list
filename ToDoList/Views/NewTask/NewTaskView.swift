@@ -6,6 +6,7 @@ protocol NewTaskViewDelegate: AnyObject {
     func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath)
     func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath)
     func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath)
+    func willDelete(_ cell: TaskTableViewCell, at indexPath: IndexPath)
 }
 
 final class NewTaskView: UIView {
@@ -55,7 +56,9 @@ final class NewTaskView: UIView {
 
 extension NewTaskView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (delegate?.numberOfSubtasks() ?? 0) + 1
+        let numberOfSubtasks = delegate?.numberOfSubtasks() ?? 0
+        (tableView.tableHeaderView as! TaskHeaderView).numberOfTasks = numberOfSubtasks
+        return numberOfSubtasks + 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,6 +68,7 @@ extension NewTaskView: UITableViewDataSource {
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
+        cell.deleteButtonTapped = { [weak self] in self?.delegate?.willDelete(cell, at: indexPath) }
         delegate?.prepare(cell, at: indexPath)
         return cell
     }

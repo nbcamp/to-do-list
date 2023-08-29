@@ -1,22 +1,26 @@
 import UIKit
 
 final class TaskGroup: DataModel {
-    private static var _id = 1
+    private(set) lazy var observer = Observer(target: self)
 
-    let id: Int
-    var name: String
+    let id: String
+    @Observable var name: String
+    @Observable var image: UIImage
+    @Observable var color: UIColor
+    @Observable var tasks: [Subtask]
 
-    @ObservableProperty
-    var color: UIColor = .clear
+    var progress: Double { Double(tasks.filter { $0.completed }.count) / Double(tasks.count) }
 
-    var children: [Subtask]
-    var progress: Double { Double(children.filter { $0.completed }.count) / Double(children.count) }
-
-    init(name: String, color: UIColor, subtasks: [Subtask] = []) {
-        self.id = Self._id
+    init(
+        name: String = "",
+        image: UIImage = .init(systemName: "hand.tap")!,
+        color: UIColor = .random(in: .dark),
+        tasks: [Subtask] = []
+    ) {
+        self.id = UUID().uuidString
         self.name = name
+        self.image = image
         self.color = color
-        self.children = subtasks
-        Self._id += 1
+        self.tasks = tasks
     }
 }

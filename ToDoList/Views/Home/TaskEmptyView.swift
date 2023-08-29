@@ -1,6 +1,10 @@
 import UIKit
 
 final class TaskEmptyView: UIView, Identifier {
+    var newTaskButtonTapped: ((UIView) -> Void)? {
+        didSet { vStackView.addGestureAction(newTaskButtonTapped) }
+    }
+
     private lazy var vStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             taskImageView,

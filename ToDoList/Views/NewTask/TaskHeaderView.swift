@@ -1,28 +1,17 @@
 import UIKit
 
 final class TaskHeaderView: UIView {
-    var title: String = "" {
-        didSet { titleTextField.text = title }
+    var group: TaskGroup? {
+        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 
-    var numberOfTasks: Int = 0 {
-        didSet { subtitleLabel.text = "\(numberOfTasks) Tasks" }
+    var colorButtonTapped: ((UIView) -> Void)? {
+        didSet { colorButton.addGestureAction(colorButtonTapped) }
     }
-
-    var color: UIColor = .label {
-        didSet {
-            imageView.tintColor = color
-            progressView.color = color
-            colorButton.backgroundColor = color
-        }
+    var imageTapped: ((UIView) -> Void)? {
+        didSet { progressView.imageTapped = imageTapped }
     }
-
-    var image: UIImage = .init(systemName: "hand.tap")! {
-        didSet { imageView.image = image }
-    }
-
-    var colorButtonTapped: ((UIView) -> Void)?
-    var imageTapped: ((UIView) -> Void)?
+    var titleDidEndEditing: ((UITextField) -> Void)?
 
     private var margin: CGFloat { bounds.width * 0.1 }
 
@@ -46,7 +35,6 @@ final class TaskHeaderView: UIView {
     private lazy var progressView = {
         let cell = CircularProgressViewCell()
         cell.size = 180
-        cell.color = color
         cell.translatesAutoresizingMaskIntoConstraints = false
         cell.heightAnchor.constraint(equalTo: cell.widthAnchor).isActive = true
         return cell
@@ -54,10 +42,13 @@ final class TaskHeaderView: UIView {
 
     private lazy var colorButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = color
         button.layer.cornerRadius = 10.0
+        button.setTitle("Choose Color", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        button.titleEdgeInsets = .zero
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 120).isActive = true
         button.addGestureAction { [unowned self] view in self.colorButtonTapped?(view) }
         return button
     }()
@@ -76,7 +67,6 @@ final class TaskHeaderView: UIView {
 
     private lazy var titleTextField = {
         let textField = UITextField()
-        textField.text = title
         textField.placeholder = "Enter Task Name"
         textField.returnKeyType = .done
         textField.delegate = self
@@ -87,19 +77,10 @@ final class TaskHeaderView: UIView {
 
     private lazy var subtitleLabel = {
         let label = UILabel()
-        label.text = "\(numberOfTasks) Tasks"
         label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textAlignment = .center
         label.textColor = .systemGray
         return label
-    }()
-
-    private lazy var imageView = {
-        let imageView = UIImageView()
-        imageView.image = image
-        imageView.tintColor = color
-        imageView.contentMode = .scaleAspectFit
-        return imageView
     }()
 
     override func didMoveToSuperview() {
@@ -120,7 +101,6 @@ final class TaskHeaderView: UIView {
         frame.size.height = 400
         addSubview(vStackView)
 
-        progressView.imageTapped = imageTapped
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             vStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
@@ -129,11 +109,33 @@ final class TaskHeaderView: UIView {
             vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
         ])
     }
+
+    private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
+        guard oldGroup !== newGroup, let newGroup else { return }
+        newGroup.observer.on(\.$name, by: self) { (self, name) in
+            self.titleTextField.text = name
+        }
+        newGroup.observer.on(\.$tasks, by: self) { (self, tasks) in
+            self.subtitleLabel.text = "\(tasks.count) Tasks"
+        }
+        newGroup.observer.on(\.$color, by: self) { (self, color) in
+            self.progressView.color = color
+            self.colorButton.backgroundColor = color
+            self.colorButton.tintColor = .init(light: .black, dark: .white, for: color)
+        }
+        newGroup.observer.on(\.$image, by: self, immediate: false) { (self, image) in
+            self.progressView.image = image
+        }
+    }
 }
 
 extension TaskHeaderView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         dismissKeyboard()
         return false
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        titleDidEndEditing?(textField)
     }
 }

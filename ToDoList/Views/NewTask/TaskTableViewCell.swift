@@ -1,40 +1,25 @@
 import UIKit
 
 final class TaskTableViewCell: UITableViewCell, Identifier {
-    var completed = false {
-        didSet {
-            UIView.animate(withDuration: 0.1) { [weak self] in
-                guard let weakSelf = self else { return }
-                let completed = weakSelf.completed
-                weakSelf.hStackView.layer.opacity = completed ? 0.5 : 1.0
-                weakSelf.iconView.image = .init(systemName: completed ? "checkmark.circle" : "circle")
-                weakSelf.titleLabel.strikethrough = completed
-            }
-        }
-    }
-
-    var name: String = "Task Name" {
-        didSet { titleLabel.text = name }
-    }
-
-    var color: UIColor = .label {
-        didSet {
-            iconView.tintColor = color
-            titleLabel.textColor = color
-            containerView.backgroundColor = _backgroundColor
-        }
+    var task: Subtask? {
+        didSet { listenTaskChanged(old: oldValue, new: task) }
     }
 
     private var _backgroundColor: UIColor {
         .init(
             light: .black.withAlphaComponent(0.8),
             dark: .black.withAlphaComponent(0.1),
-            for: color
+            for: task?.group.color ?? .systemBackground
         )
     }
 
-    var deleteButtonTapped: ((UIView) -> Void)?
-    var taskNameTapped: ((UIView) -> Void)?
+    var deleteButtonTapped: ((UIView) -> Void)? {
+        didSet { iconView.addGestureAction(deleteButtonTapped) }
+    }
+
+    var taskNameTapped: ((UIView) -> Void)? {
+        didSet { titleLabel.addGestureAction(taskNameTapped) }
+    }
 
     private lazy var containerView = {
         let view = UIView()
@@ -61,20 +46,15 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private lazy var iconView = {
         let iconView = UIImageView(frame: .zero)
-        iconView.tintColor = color
         iconView.image = .init(systemName: "multiply.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
-        iconView.addGestureAction { [unowned self] view in self.deleteButtonTapped?(view) }
         return iconView
     }()
 
     private lazy var titleLabel = {
         let label = UIExtendedLabel()
-        label.text = name
-        label.textColor = color
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.addGestureAction { [unowned self] view in self.taskNameTapped?(view) }
         return label
     }()
 
@@ -95,5 +75,25 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+    }
+
+    private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
+        guard oldTask !== newTask, let newTask else { return }
+        newTask.observer.on(\.$name, by: self) { (self, name) in
+            self.titleLabel.text = name
+        }
+//        newTask.observer.on(\.$completed, by: self) { (self, completed) in
+//            UIView.animate(withDuration: 0.1) { [weak self] in
+//                guard let weakSelf = self else { return }
+//                weakSelf.hStackView.layer.opacity = completed ? 0.5 : 1.0
+//                weakSelf.iconView.image = .init(systemName: completed ? "checkmark.circle" : "circle")
+//                weakSelf.titleLabel.strikethrough = completed
+//            }
+//        }
+        newTask.group.observer.on(\.$color, by: self) { (self, color) in
+            self.iconView.tintColor = color
+            self.titleLabel.textColor = color
+            self.containerView.backgroundColor = self._backgroundColor
+        }
     }
 }

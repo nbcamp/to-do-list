@@ -10,6 +10,7 @@ final class CircularProgressViewCell: UIView {
     
     var color: UIColor = .label {
         didSet {
+            imageView.tintColor = color
             progressView.color = color
             progressView.draw()
         }
@@ -17,6 +18,7 @@ final class CircularProgressViewCell: UIView {
 
     var image: UIImage = .init(systemName: "hand.tap")! {
         didSet {
+            imageView.transform = .init(scaleX: 1.05, y: 1.05)
             imageView.image = image
         }
     }

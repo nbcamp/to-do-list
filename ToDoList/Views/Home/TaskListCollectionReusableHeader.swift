@@ -1,7 +1,9 @@
 import UIKit
 
 final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifier {
-    var onMenuTapped: ((UIView) -> Void)?
+    var onMenuTapped: ((UIView) -> Void)? {
+        didSet { button.addGestureAction(onMenuTapped) }
+    }
 
     private lazy var titleLabel = {
         let label = UILabel()
@@ -17,7 +19,6 @@ final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifi
         button.image = .init(systemName: "gearshape")?.withConfiguration(imageConfiguration)
         button.contentMode = .scaleAspectFit
         button.tintColor = .label
-        button.addGestureAction { [unowned self] view in self.onMenuTapped?(view) }
         return button
     }()
 

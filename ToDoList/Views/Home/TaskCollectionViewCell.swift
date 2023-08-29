@@ -1,11 +1,9 @@
 import UIKit
 
 final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
-    var title: String = "Task"
-    var numberOfTasks: Int = 0
-    var progress: Double = 0
-    var color: UIColor = .label
-    var image: UIImage = .init(systemName: "play")!
+    var group: TaskGroup? {
+        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
+    }
 
     private var margin: CGFloat { bounds.width * 0.1 }
 
@@ -27,14 +25,11 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
     private lazy var progressView = {
         let cell = CircularProgressViewCell()
         cell.size = bounds.width - (margin * 2)
-        cell.color = color
-        cell.image = image
         return cell
     }()
 
     private lazy var titleLabel = {
         let label = UILabel()
-        label.text = self.title
         label.font = .systemFont(ofSize: bounds.width / 7, weight: .heavy)
         label.textAlignment = .center
         return label
@@ -42,7 +37,7 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
 
     private lazy var subtitleLabel = {
         let label = UILabel()
-        label.text = "\(numberOfTasks) Tasks"
+        label.text = "\(group?.tasks.count ?? 0) Tasks"
         label.font = .systemFont(ofSize: bounds.width / 12, weight: .bold)
         label.textAlignment = .center
         label.textColor = .systemGray
@@ -51,8 +46,6 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
 
     private lazy var imageView = {
         let imageView = UIImageView()
-        imageView.image = image
-        imageView.tintColor = color
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -67,6 +60,23 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
         layer.masksToBounds = true
 
         addSubview(vStackView)
-        progressView.progressView.progress = progress
+    }
+
+    private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
+        guard oldGroup !== newGroup, let newGroup else { return }
+        newGroup.observer.on(\.$color, by: self) { (self, color) in
+            self.progressView.color = color
+        }
+        newGroup.observer.on(\.$name, by: self) { (self, name) in
+            self.titleLabel.text = name
+        }
+        newGroup.observer.on(\.$image, by: self) { (self, image) in
+            self.progressView.image = image
+            self.imageView.image = image
+        }
+        newGroup.observer.on(\.$tasks, by: self) { (self, tasks) in
+            self.subtitleLabel.text = "\(tasks.count) Tasks"
+            self.progressView.progressView.progress = self.group?.progress ?? 0.0
+        }
     }
 }

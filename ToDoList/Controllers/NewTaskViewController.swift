@@ -1,17 +1,15 @@
 import UIKit
 
 final class NewTaskViewController: TypedViewController<NewTaskView> {
-    private var task: TaskGroup = .init(name: "", color: .random())
+    private let originImage: UIImage = .init(systemName: "hand.tap")!
+    private var group: TaskGroup = .init()
+    private var isToastOpened = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         typedView.delegate = self
+        typedView.group = group
         setupNavigation()
-        task.children.append(contentsOf: [
-            .init(name: "New Task 1"),
-            .init(name: "New Task 2"),
-            .init(name: "New Task 3"),
-        ])
     }
 
     private func setupNavigation() {
@@ -24,32 +22,51 @@ final class NewTaskViewController: TypedViewController<NewTaskView> {
     }
 
     @objc private func doneButtonTapped() {
+        guard group.image != originImage else { showToast(message: "Choose an image that represents your tasks."); return }
+        guard !group.name.isEmpty else { showToast(message: "Fill out the name of the tasks"); return }
+        guard !group.tasks.isEmpty else { showToast(message: "Please create at least one task."); return }
+
+        TaskService.shared.add(task: group)
         navigationController?.popViewController(animated: true)
+    }
+
+    private func showToast(message: String) {
+        if isToastOpened { return }
+        isToastOpened = true
+        let toast = ToastView()
+        toast.show(view: view, message: message, position: .init(x: view.center.x, y: view.safeAreaInsets.top), color: group.color) { [weak self] in
+            self?.isToastOpened = false
+        }
     }
 }
 
 extension NewTaskViewController: NewTaskViewDelegate {
     func numberOfSubtasks() -> Int {
-        task.children.count
+        group.tasks.count
     }
 
     func prepare(_ header: TaskHeaderView) {
-        header.title = task.name
-        header.color = task.color
+        header.group = group
         header.colorButtonTapped = { [unowned self] _ in
             self.presentColorPicker()
         }
         header.imageTapped = { [unowned self] view in
-            self.updateRandomImage(view as! UIImageView)
+            self.withRandomAnimal { animal in
+                guard let animal, let view = view as? UIImageView else { return }
+                view.load(url: URL(string: animal.url)!) { image in
+                    guard let image else { return }
+                    self.group.image = image
+                }
+            }
         }
-        task.$color.subscribe { color in
-            header.color = color
+        header.titleDidEndEditing = { [unowned self] textField in
+            self.group.name = textField.text ?? ""
         }
     }
 
     private func presentColorPicker() {
         let picker = UIColorPickerViewController()
-        picker.selectedColor = task.color
+        picker.selectedColor = group.color
         picker.title = "Accent Color"
         picker.supportsAlpha = false
         picker.delegate = self
@@ -57,7 +74,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
         present(picker, animated: true)
     }
 
-    private func updateRandomImage(_ view: UIImageView) {
+    private func withRandomAnimal(completion: @escaping (Animal?) -> Void) {
         APIService.config.baseUrl = [
             "https://api.thecatapi.com/v1",
             "https://api.thedogapi.com/v1",
@@ -66,20 +83,18 @@ extension NewTaskViewController: NewTaskViewDelegate {
             switch result {
             case .success(let animals):
                 if let animal = animals.first {
-                    view.load(url: URL(string: animal.url)!) { _ in
-                        view.transform = .init(scaleX: 1.05, y: 1.05)
-                    }
+                    completion(animal)
                 }
             case .failure(let error):
                 print(error)
+                completion(nil)
             }
         }
     }
 
     func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath) {
-        cell.color = task.color
         cell.addGestureAction(promptNewSubtask)
-        task.$color.subscribe { color in
+        group.$color.observe(by: self, immediate: true) { color in
             cell.color = color
         }
     }
@@ -89,8 +104,8 @@ extension NewTaskViewController: NewTaskViewDelegate {
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
         let confirmAction = UIAlertAction(title: "Add", style: .default) { [unowned self] _ in
             guard let text = alertController.textFields?.first?.text, !text.isEmpty else { return }
-            TaskService.shared.add(subtask: .init(name: text), to: self.task)
-            let indexPath = IndexPath(row: self.task.children.count - 1, section: 0)
+            TaskService.shared.add(subtask: .init(name: text, of: group))
+            let indexPath = IndexPath(row: group.tasks.count - 1, section: 0)
             self.typedView.tableView.insertRows(at: [indexPath], with: .automatic)
             self.typedView.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
         }
@@ -110,18 +125,13 @@ extension NewTaskViewController: NewTaskViewDelegate {
     }
 
     func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
-        let subtask = task.children[indexPath.row]
-        cell.name = subtask.name
-        cell.color = task.color
+        let subtask = group.tasks[indexPath.row]
+        cell.task = subtask
         cell.taskNameTapped = { [unowned self] view in
             guard let view = view as? UILabel, let text = view.text else { return }
             self.promptEditTaskName(text) { result in
                 subtask.name = result
-                cell.name = result
             }
-        }
-        task.$color.subscribe { color in
-            cell.color = color
         }
     }
 
@@ -155,7 +165,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
         let alertController = UIAlertController(title: "Delete Subtask", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
         let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-            TaskService.shared.remove(subtask: self.task.children[indexPath.item], of: self.task)
+            TaskService.shared.remove(subtask: self.group.tasks[indexPath.row], of: self.group)
             self.typedView.tableView.deleteRows(at: [indexPath], with: .automatic)
             self.typedView.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
         }
@@ -168,6 +178,6 @@ extension NewTaskViewController: NewTaskViewDelegate {
 extension NewTaskViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         let color = viewController.selectedColor
-        task.color = color
+        group.color = color
     }
 }

@@ -66,10 +66,8 @@ extension TaskCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let numberOfTasks = delegate?.numberOfTasks(self) ?? 0
         placeholderView.isHidden = numberOfTasks > 0
-        if placeholderView.isHidden {
-            placeholderView.gestureRecognizers?.forEach(placeholderView.removeGestureRecognizer)
-        } else {
-            placeholderView.addGestureAction { [unowned self] view in self.delegate?.placeholderViewTapped(view) }
+        placeholderView.newTaskButtonTapped = { [unowned self] view in
+            delegate?.placeholderViewTapped(view)
         }
         return numberOfTasks
     }

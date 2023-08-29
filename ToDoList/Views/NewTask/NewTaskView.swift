@@ -10,6 +10,7 @@ protocol NewTaskViewDelegate: AnyObject {
 }
 
 final class NewTaskView: UIView {
+    var group: TaskGroup?
     weak var delegate: NewTaskViewDelegate?
 
     private var padding: CGFloat = 20
@@ -21,7 +22,7 @@ final class NewTaskView: UIView {
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         let header = TaskHeaderView()
-        delegate?.prepare(header)
+        header.group = group
         tableView.tableHeaderView = header
         tableView.register(
             TaskTableViewCell.self,
@@ -57,7 +58,7 @@ final class NewTaskView: UIView {
 extension NewTaskView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfSubtasks = delegate?.numberOfSubtasks() ?? 0
-        (tableView.tableHeaderView as! TaskHeaderView).numberOfTasks = numberOfSubtasks
+        delegate?.prepare(tableView.tableHeaderView as! TaskHeaderView)
         return numberOfSubtasks + 1
     }
 

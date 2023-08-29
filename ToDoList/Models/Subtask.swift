@@ -1,16 +1,18 @@
 import Foundation
 
 final class Subtask: DataModel {
-    private static var _id = 1
+    private(set) lazy var observer = Observer(target: self)
 
-    let id: Int
-    var name: String
-    var completed: Bool
+    let id: String
+    @Observable var name: String
+    @Observable var completed: Bool
 
-    init(name: String) {
-        self.id = Self._id
+    unowned let group: TaskGroup
+
+    init(name: String = "", of group: TaskGroup) {
+        self.id = UUID().uuidString
         self.name = name
-        self.completed = Bool.random()
-        Self._id += 1
+        self.completed = false
+        self.group = group
     }
 }

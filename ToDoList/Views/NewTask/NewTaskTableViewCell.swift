@@ -65,7 +65,6 @@ final class NewTaskTableViewCell: UITableViewCell, Identifier {
 
     private func initializeUI() {
         selectionStyle = .none
-
         contentView.addSubview(containerView)
 
         let spacing: CGFloat = 10

@@ -1,7 +1,7 @@
 import UIKit
 
 final class TaskCollectionViewController: TypedViewController<TaskCollectionView> {
-    private var tasks: [TaskGroup] { TaskService.shared.tasks }
+    private var groups: [TaskGroup] { TaskService.shared.tasks }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -10,6 +10,7 @@ final class TaskCollectionViewController: TypedViewController<TaskCollectionView
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        typedView.collectionView.reloadData()
         navigationController?.navigationBar.isHidden = true
     }
 
@@ -21,15 +22,11 @@ final class TaskCollectionViewController: TypedViewController<TaskCollectionView
 
 extension TaskCollectionViewController: TaskCollectionViewDelegate {
     func numberOfTasks(_ view: TaskCollectionView) -> Int {
-        tasks.count
+        groups.count
     }
 
     func prepare(_ cell: TaskCollectionViewCell, at indexPath: IndexPath) {
-        let task = tasks[indexPath.item]
-        cell.title = task.name
-        cell.color = task.color
-        cell.numberOfTasks = task.children.count
-        cell.progress = task.progress
+        cell.group = groups[indexPath.item]
     }
 
     func placeholderViewTapped(_ view: UIView) {

@@ -42,7 +42,7 @@ final class DropdownMenuView: UIView {
         let overlay = UIView()
         overlay.isHidden = true
         overlay.backgroundColor = .black.withAlphaComponent(0.1)
-        overlay.addAction { [unowned self] _ in self.opened = false }
+        overlay.addGestureAction { [unowned self] _ in self.opened = false }
         return overlay
     }()
 

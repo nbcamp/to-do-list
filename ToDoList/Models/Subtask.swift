@@ -1,6 +1,6 @@
 import Foundation
 
-final class Task: DataModel {
+final class Subtask: DataModel {
     private static var _id = 1
 
     let id: Int

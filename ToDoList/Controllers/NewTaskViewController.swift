@@ -39,6 +39,9 @@ extension NewTaskViewController: NewTaskViewDelegate {
         header.colorButtonTapped = { [unowned self] _ in
             self.presentColorPicker()
         }
+        header.imageTapped = { [unowned self] view in
+            self.updateRandomImage(view as! UIImageView)
+        }
         task.$color.subscribe { color in
             header.color = color
         }
@@ -54,9 +57,28 @@ extension NewTaskViewController: NewTaskViewDelegate {
         present(picker, animated: true)
     }
 
+    private func updateRandomImage(_ view: UIImageView) {
+        APIService.config.baseUrl = [
+            "https://api.thecatapi.com/v1",
+            "https://api.thedogapi.com/v1",
+        ][Int.random(in: 0 ... 1)]
+        APIService.shared.fetch(url: "/images/search", model: [Animal].self) { result in
+            switch result {
+            case .success(let animals):
+                if let animal = animals.first {
+                    view.load(url: URL(string: animal.url)!) { _ in
+                        view.transform = .init(scaleX: 1.05, y: 1.05)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
     func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath) {
         cell.color = task.color
-        cell.addAction(promptNewSubtask)
+        cell.addGestureAction(promptNewSubtask)
         task.$color.subscribe { color in
             cell.color = color
         }

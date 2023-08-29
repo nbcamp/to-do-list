@@ -12,6 +12,12 @@ final class CircularProgressView: UIView {
     var color: UIColor = .clear
     var lineWidth: CGFloat = 0.15
 
+    private var _progress: CGFloat = .zero
+    var progress: CGFloat {
+        get { _progress }
+        set { animate(progress: newValue) }
+    }
+
     weak var delegate: CircularProgressViewDelegate?
 
     private let circularLayer = CAShapeLayer()
@@ -39,15 +45,16 @@ final class CircularProgressView: UIView {
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = lineWidth
-        progressLayer.strokeEnd = 0.0
+        progressLayer.strokeEnd = progress
         progressLayer.strokeColor = color.cgColor
         layer.addSublayer(progressLayer)
 
         if delegate?.innerView != nil {
             let innerView = {
                 let innerOrigin = lineWidth
-                let innerSize = frame.width - innerOrigin * 2
-                let innerView = UIView(frame: .init(x: innerOrigin, y: innerOrigin, width: innerSize, height: innerSize))
+                let gap: CGFloat = 20
+                let innerSize = (frame.width - innerOrigin * 2) - gap
+                let innerView = UIView(frame: .init(x: innerOrigin + gap / 2, y: innerOrigin + gap / 2, width: innerSize, height: innerSize))
                 innerView.layer.cornerRadius = innerSize / 2
                 innerView.layer.masksToBounds = true
                 return innerView
@@ -62,6 +69,7 @@ final class CircularProgressView: UIView {
         duration: TimeInterval = 1.0,
         timingFunction: CAMediaTimingFunction = .init(name: .easeInEaseOut)
     ) {
+        _progress = progress
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.duration = duration
         animation.toValue = progress

@@ -65,7 +65,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         iconView.image = .init(systemName: "multiply.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
-        iconView.addAction { [unowned self] view in self.deleteButtonTapped?(view) }
+        iconView.addGestureAction { [unowned self] view in self.deleteButtonTapped?(view) }
         return iconView
     }()
 
@@ -74,7 +74,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         label.text = name
         label.textColor = color
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.addAction { [unowned self] view in self.taskNameTapped?(view) }
+        label.addGestureAction { [unowned self] view in self.taskNameTapped?(view) }
         return label
     }()
 

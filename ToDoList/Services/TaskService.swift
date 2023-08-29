@@ -16,11 +16,11 @@ final class TaskService {
         tasks.append(task)
     }
 
-    func add(subtask: Task, to task: TaskGroup) {
+    func add(subtask: Subtask, to task: TaskGroup) {
         task.children.append(subtask)
     }
 
-    func remove(subtask: Task, of task: TaskGroup) {
+    func remove(subtask: Subtask, of task: TaskGroup) {
         task.children.remove(element: subtask)
     }
 }

@@ -41,12 +41,12 @@ extension UIView {
         static var gestureRecognizerKey = "GESTURE_RECOGNIZER_KEY"
     }
 
-    func addAction(_ action: ((UIView) -> Void)?, with Recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self) {
+    func addGestureAction(_ action: ((UIView) -> Void)?, with recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self) {
         guard let action else { return }
         isUserInteractionEnabled = true
         objc_setAssociatedObject(self, &AssociatedKeys.gestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-        let gestureRecognizer = Recognizer.init(target: self, action: #selector(self._executeAction))
+        let gestureRecognizer = recognizer.init(target: self, action: #selector(self._executeAction))
         addGestureRecognizer(gestureRecognizer)
     }
 
@@ -62,6 +62,17 @@ extension UIImageView {
         UIView.transition(with: self, duration: duration, options: .transitionCrossDissolve, animations: {
             self.image = image
         }, completion: nil)
+    }
+
+    func load(url: URL, completion: ((UIImage?) -> Void)? = nil) {
+        DispatchQueue.global().async { [weak self] in
+            guard let data = try? Data(contentsOf: url) else { completion?(nil); return }
+            guard let image = UIImage(data: data) else { completion?(nil); return }
+            DispatchQueue.main.async {
+                self?.image = image
+                completion?(image)
+            }
+        }
     }
 }
 

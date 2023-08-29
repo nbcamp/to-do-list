@@ -25,14 +25,11 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
     }()
 
     private lazy var progressView = {
-        let progressView = CircularProgressView()
-        progressView.delegate = self
-
-        let width = bounds.width - (margin * 2)
-        progressView.size = width
-        progressView.color = color
-        progressView.draw()
-        return progressView
+        let cell = CircularProgressViewCell()
+        cell.size = bounds.width - (margin * 2)
+        cell.color = color
+        cell.image = image
+        return cell
     }()
 
     private lazy var titleLabel = {
@@ -70,19 +67,6 @@ final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
         layer.masksToBounds = true
 
         addSubview(vStackView)
-        progressView.animate(progress: progress)
-    }
-}
-
-extension TaskCollectionViewCell: CircularProgressViewDelegate {
-    func innerView(_ view: UIView) {
-        view.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
-        ])
+        progressView.progressView.progress = progress
     }
 }

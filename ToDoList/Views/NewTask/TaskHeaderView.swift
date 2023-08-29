@@ -14,15 +14,15 @@ final class TaskHeaderView: UIView {
             imageView.tintColor = color
             progressView.color = color
             colorButton.backgroundColor = color
-            progressView.draw()
         }
     }
 
-    var image: UIImage = .init(systemName: "play")! {
+    var image: UIImage = .init(systemName: "hand.tap")! {
         didSet { imageView.image = image }
     }
 
     var colorButtonTapped: ((UIView) -> Void)?
+    var imageTapped: ((UIView) -> Void)?
 
     private var margin: CGFloat { bounds.width * 0.1 }
 
@@ -44,16 +44,12 @@ final class TaskHeaderView: UIView {
     }()
 
     private lazy var progressView = {
-        let progressView = CircularProgressView()
-        progressView.delegate = self
-
-        let size: CGFloat = 180
-        progressView.size = size
-        progressView.color = color
-        progressView.draw()
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        progressView.heightAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
-        return progressView
+        let cell = CircularProgressViewCell()
+        cell.size = 180
+        cell.color = color
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        cell.heightAnchor.constraint(equalTo: cell.widthAnchor).isActive = true
+        return cell
     }()
 
     private lazy var colorButton = {
@@ -62,7 +58,7 @@ final class TaskHeaderView: UIView {
         button.layer.cornerRadius = 10.0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
-        button.addAction { [unowned self] view in self.colorButtonTapped?(view) }
+        button.addGestureAction { [unowned self] view in self.colorButtonTapped?(view) }
         return button
     }()
 
@@ -124,25 +120,13 @@ final class TaskHeaderView: UIView {
         frame.size.height = 400
         addSubview(vStackView)
 
+        progressView.imageTapped = imageTapped
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             vStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
             vStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
-        ])
-    }
-}
-
-extension TaskHeaderView: CircularProgressViewDelegate {
-    func innerView(_ view: UIView) {
-        view.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
         ])
     }
 }

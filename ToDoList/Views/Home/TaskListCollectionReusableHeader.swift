@@ -17,7 +17,7 @@ final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifi
         button.image = .init(systemName: "gearshape")?.withConfiguration(imageConfiguration)
         button.contentMode = .scaleAspectFit
         button.tintColor = .label
-        button.addAction { [unowned self] view in self.onMenuTapped?(view) }
+        button.addGestureAction { [unowned self] view in self.onMenuTapped?(view) }
         return button
     }()
 

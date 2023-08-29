@@ -66,6 +66,8 @@ extension UIImageView {
 }
 
 extension UIColor {
+    typealias RGBA = (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat)
+
     convenience init(light: UIColor, dark: UIColor) {
         guard #available(iOS 13.0, *) else { self.init(cgColor: light.cgColor); return }
         self.init(dynamicProvider: { $0.userInterfaceStyle == .dark ? dark : light })
@@ -76,27 +78,45 @@ extension UIColor {
         self.init(light: _light, dark: _dark)
     }
 
-    static var random: UIColor {
+    static func random(alpha: CGFloat = 1.0) -> UIColor {
         UIColor(
             red: .random(in: 0...1),
             green: .random(in: 0...1),
             blue: .random(in: 0...1),
-            alpha: 1.0
+            alpha: alpha
         )
     }
 
+    enum ColorStyle {
+        case light
+        case dark
+
+        func validate(_ color: UIColor) -> Bool {
+            switch self {
+            case .light:
+                return color.isLight
+            case .dark:
+                return color.isDark
+            }
+        }
+    }
+
+    static func random(in style: ColorStyle, alpha: CGFloat = 1.0) -> UIColor {
+        var color: UIColor
+        repeat {
+            color = UIColor.random(alpha: alpha)
+        } while !style.validate(color)
+        return color
+    }
+
     var isLight: Bool {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-
-        let brightness = (red * 299 + green * 587 + blue * 114) / 1000
-
+        var color: RGBA = (0, 0, 0, 0)
+        getRed(&color.r, green: &color.g, blue: &color.b, alpha: &color.a)
+        let brightness = (color.r * 299 + color.g * 587 + color.b * 114) / 1000
         return brightness > 0.5
     }
+
+    var isDark: Bool { !self.isLight }
 }
 
 extension UIScrollView {

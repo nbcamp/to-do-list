@@ -1,7 +1,7 @@
 import UIKit
 
 final class HomeViewController: TypedViewController<TaskListView> {
-    private var tasks: [Task] { TaskService.shared.tasks }
+    private var tasks: [TaskGroup] { TaskService.shared.tasks }
 
     override func viewDidLoad() {
         super.viewDidLoad()

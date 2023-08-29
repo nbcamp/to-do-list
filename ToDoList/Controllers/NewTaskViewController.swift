@@ -1,7 +1,7 @@
 import UIKit
 
 final class NewTaskViewController: TypedViewController<NewTaskView> {
-    private var task: Task = .init(name: "", color: .random)
+    private var task: TaskGroup = .init(name: "", color: .random())
 
     override func viewDidLoad() {
         super.viewDidLoad()

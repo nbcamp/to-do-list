@@ -99,11 +99,11 @@ extension TaskCollectionView: UICollectionViewDataSource {
 
     private func setupMenu(target: UIView) {
         let menus: [DropdownMenu] = [
-            .init(icon: "plus.circle", title: "New Task", handler: { _ in self.delegate?.newTaskMenuTapped() }),
-            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { _ in self.delegate?.editTasksMenuTapped() }),
+            .init(icon: "plus.circle", title: "New Task", handler: { [unowned self] _ in self.delegate?.newTaskMenuTapped() }),
+            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { [unowned self] _ in self.delegate?.editTasksMenuTapped() }),
         ]
-        dropdownMenuView = DropdownMenuView(menus, on: target, delegate: self)
-        dropdownMenuView?.onSelected = { _ in
+        dropdownMenuView = DropdownMenuView(menus, on: target, root: self, delegate: self)
+        dropdownMenuView?.onSelected = { [unowned self] _ in
             self.dropdownMenuView?.opened = false
             self.dropdownMenuView = nil
         }
@@ -128,7 +128,7 @@ extension TaskCollectionView: UICollectionViewDelegateFlowLayout {
 
 extension TaskCollectionView: DropdownMenuDelegate {
     func initialize(_ view: DropdownMenuView) {
-        guard let target = view.relative else { return }
+        guard let target = view.relativeView else { return }
         view.layer.anchorPoint = .init(x: 1, y: 0)
         let targetFrame = target.convert(target.bounds, to: view)
         view.frame = .init(

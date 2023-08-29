@@ -62,6 +62,7 @@ final class TaskHeaderView: UIView {
         button.layer.cornerRadius = 10.0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+        button.addAction { [unowned self] view in self.colorButtonTapped?(view) }
         return button
     }()
 
@@ -122,8 +123,6 @@ final class TaskHeaderView: UIView {
     private func initializeUI() {
         frame.size.height = 400
         addSubview(vStackView)
-
-        colorButton.addAction(colorButtonTapped)
 
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

@@ -69,7 +69,7 @@ extension TaskCollectionView: UICollectionViewDataSource {
         if placeholderView.isHidden {
             placeholderView.gestureRecognizers?.forEach(placeholderView.removeGestureRecognizer)
         } else {
-            placeholderView.addAction(delegate?.placeholderViewTapped)
+            placeholderView.addAction { [unowned self] view in self.delegate?.placeholderViewTapped(view) }
         }
         return numberOfTasks
     }

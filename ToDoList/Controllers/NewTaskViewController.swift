@@ -102,7 +102,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
             cell.color = color
         }
     }
-    
+
     private func promptEditTaskName(_ originText: String, completion: @escaping (String) -> Void) {
         let alertController = UIAlertController(title: "Edit Task Name", message: "Fill in the name of the task you want to edit.", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
@@ -126,7 +126,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
     }
 
     func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
-        //
+        // do nothing
     }
 
     func willDelete(_ cell: TaskTableViewCell, at indexPath: IndexPath) {

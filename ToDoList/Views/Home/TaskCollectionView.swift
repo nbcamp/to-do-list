@@ -1,15 +1,15 @@
 import UIKit
 
-protocol TaskListViewDelegate: AnyObject {
-    func numberOfTasks(_ view: TaskListView) -> Int
+protocol TaskCollectionViewDelegate: AnyObject {
+    func numberOfTasks(_ view: TaskCollectionView) -> Int
     func prepare(_ cell: TaskCollectionViewCell, at indexPath: IndexPath)
     func placeholderViewTapped(_ view: UIView)
     func newTaskMenuTapped()
     func editTasksMenuTapped()
 }
 
-final class TaskListView: UIView {
-    weak var delegate: TaskListViewDelegate?
+final class TaskCollectionView: UIView {
+    weak var delegate: TaskCollectionViewDelegate?
 
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
@@ -62,7 +62,7 @@ final class TaskListView: UIView {
     }
 }
 
-extension TaskListView: UICollectionViewDataSource {
+extension TaskCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let numberOfTasks = delegate?.numberOfTasks(self) ?? 0
         placeholderView.isHidden = numberOfTasks > 0
@@ -111,9 +111,9 @@ extension TaskListView: UICollectionViewDataSource {
     }
 }
 
-extension TaskListView: UICollectionViewDelegate {}
+extension TaskCollectionView: UICollectionViewDelegate {}
 
-extension TaskListView: UICollectionViewDelegateFlowLayout {
+extension TaskCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let totalSpacing = spacing * Double(columns - 1)
         let collectionViewSize = collectionView.frame.width - (totalSpacing + padding * 2)
@@ -126,7 +126,7 @@ extension TaskListView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TaskListView: DropdownMenuDelegate {
+extension TaskCollectionView: DropdownMenuDelegate {
     func initialize(_ view: DropdownMenuView) {
         guard let target = view.relative else { return }
         view.layer.anchorPoint = .init(x: 1, y: 0)

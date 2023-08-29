@@ -1,6 +1,6 @@
 import UIKit
 
-final class HomeViewController: TypedViewController<TaskListView> {
+final class TaskCollectionViewController: TypedViewController<TaskCollectionView> {
     private var tasks: [TaskGroup] { TaskService.shared.tasks }
 
     override func viewDidLoad() {
@@ -19,8 +19,8 @@ final class HomeViewController: TypedViewController<TaskListView> {
     }
 }
 
-extension HomeViewController: TaskListViewDelegate {
-    func numberOfTasks(_ view: TaskListView) -> Int {
+extension TaskCollectionViewController: TaskCollectionViewDelegate {
+    func numberOfTasks(_ view: TaskCollectionView) -> Int {
         tasks.count
     }
 

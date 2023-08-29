@@ -36,7 +36,7 @@ final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifi
             title.centerYAnchor.constraint(equalTo: centerYAnchor),
             button.centerYAnchor.constraint(equalTo: centerYAnchor),
             button.trailingAnchor.constraint(equalTo: trailingAnchor),
-            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1.0),
+            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: .one),
         ])
     }
 

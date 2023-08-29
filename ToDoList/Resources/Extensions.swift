@@ -78,7 +78,7 @@ extension UIColor {
         self.init(light: _light, dark: _dark)
     }
 
-    static func random(alpha: CGFloat = 1.0) -> UIColor {
+    static func random(alpha: CGFloat = .one) -> UIColor {
         UIColor(
             red: .random(in: 0...1),
             green: .random(in: 0...1),
@@ -101,7 +101,7 @@ extension UIColor {
         }
     }
 
-    static func random(in style: ColorStyle, alpha: CGFloat = 1.0) -> UIColor {
+    static func random(in style: ColorStyle, alpha: CGFloat = .one) -> UIColor {
         var color: UIColor
         repeat {
             color = UIColor.random(alpha: alpha)

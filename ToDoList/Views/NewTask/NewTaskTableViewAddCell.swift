@@ -1,6 +1,6 @@
 import UIKit
 
-final class NewTaskTableViewCell: UITableViewCell, Identifier {
+final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
     var color: UIColor = .label {
         didSet {
             containerView.backgroundColor = color

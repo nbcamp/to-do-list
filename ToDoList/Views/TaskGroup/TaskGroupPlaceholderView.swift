@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskEmptyView: UIView, Identifier {
+final class TaskGroupPlaceholderView: UIView, Identifier {
     var newTaskButtonTapped: ((UIView) -> Void)? {
         didSet { vStackView.addGestureAction(newTaskButtonTapped) }
     }

@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskTableViewCell: UITableViewCell, Identifier {
+final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
     var task: Subtask? {
         didSet { listenTaskChanged(old: oldValue, new: task) }
     }

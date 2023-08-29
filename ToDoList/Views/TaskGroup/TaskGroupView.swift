@@ -1,15 +1,15 @@
 import UIKit
 
-protocol TaskCollectionViewDelegate: AnyObject {
-    func numberOfTasks(_ view: TaskCollectionView) -> Int
-    func prepare(_ cell: TaskCollectionViewCell, at indexPath: IndexPath)
+protocol TaskGroupViewDelegate: AnyObject {
+    func numberOfTasks(_ view: TaskGroupView) -> Int
+    func prepare(_ cell: TaskGroupCollectionViewCell, at indexPath: IndexPath)
     func placeholderViewTapped(_ view: UIView)
     func newTaskMenuTapped()
     func editTasksMenuTapped()
 }
 
-final class TaskCollectionView: UIView {
-    weak var delegate: TaskCollectionViewDelegate?
+final class TaskGroupView: UIView {
+    weak var delegate: TaskGroupViewDelegate?
 
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
@@ -26,19 +26,19 @@ final class TaskCollectionView: UIView {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(
-            TaskListCollectionReusableHeader.self,
+            TaskGroupCollectionViewHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: TaskListCollectionReusableHeader.identifier
+            withReuseIdentifier: TaskGroupCollectionViewHeader.identifier
         )
         collectionView.register(
-            TaskCollectionViewCell.self,
-            forCellWithReuseIdentifier: TaskCollectionViewCell.identifier
+            TaskGroupCollectionViewCell.self,
+            forCellWithReuseIdentifier: TaskGroupCollectionViewCell.identifier
         )
         return collectionView
     }()
 
     private lazy var placeholderView = {
-        let emptyView = TaskEmptyView()
+        let emptyView = TaskGroupPlaceholderView()
         emptyView.isHidden = true
         return emptyView
     }()
@@ -62,7 +62,7 @@ final class TaskCollectionView: UIView {
     }
 }
 
-extension TaskCollectionView: UICollectionViewDataSource {
+extension TaskGroupView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let numberOfTasks = delegate?.numberOfTasks(self) ?? 0
         placeholderView.isHidden = numberOfTasks > 0
@@ -73,7 +73,7 @@ extension TaskCollectionView: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskCollectionViewCell.identifier, for: indexPath) as! TaskCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskGroupCollectionViewCell.identifier, for: indexPath) as! TaskGroupCollectionViewCell
         delegate?.prepare(cell, at: indexPath)
         return cell
     }
@@ -81,7 +81,7 @@ extension TaskCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TaskListCollectionReusableHeader.identifier, for: indexPath) as! TaskListCollectionReusableHeader
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TaskGroupCollectionViewHeader.identifier, for: indexPath) as! TaskGroupCollectionViewHeader
             header.onMenuTapped = { [unowned self] target in
                 if self.dropdownMenuView == nil {
                     self.setupMenu(target: target)
@@ -109,9 +109,9 @@ extension TaskCollectionView: UICollectionViewDataSource {
     }
 }
 
-extension TaskCollectionView: UICollectionViewDelegate {}
+extension TaskGroupView: UICollectionViewDelegate {}
 
-extension TaskCollectionView: UICollectionViewDelegateFlowLayout {
+extension TaskGroupView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let totalSpacing = spacing * Double(columns - 1)
         let collectionViewSize = collectionView.frame.width - (totalSpacing + padding * 2)
@@ -124,7 +124,7 @@ extension TaskCollectionView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TaskCollectionView: DropdownMenuDelegate {
+extension TaskGroupView: DropdownMenuDelegate {
     func initialize(_ view: DropdownMenuView) {
         guard let target = view.relativeView else { return }
         view.layer.anchorPoint = .init(x: 1, y: 0)

@@ -9,7 +9,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
 
         let navigationController = UINavigationController()
-        navigationController.setViewControllers([TaskCollectionViewController()], animated: true)
+        navigationController.setViewControllers([TaskGroupViewController()], animated: true)
         window?.rootViewController = navigationController
     }
 

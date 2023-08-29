@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskListCollectionReusableHeader: UICollectionReusableView, Identifier {
+final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier {
     var onMenuTapped: ((UIView) -> Void)? {
         didSet { button.addGestureAction(onMenuTapped) }
     }

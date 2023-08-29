@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskHeaderView: UIView {
+final class NewTaskTableViewHeader: UIView {
     var group: TaskGroup? {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
@@ -129,7 +129,7 @@ final class TaskHeaderView: UIView {
     }
 }
 
-extension TaskHeaderView: UITextFieldDelegate {
+extension NewTaskTableViewHeader: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         dismissKeyboard()
         return false

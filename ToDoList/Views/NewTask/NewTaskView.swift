@@ -2,11 +2,11 @@ import UIKit
 
 protocol NewTaskViewDelegate: AnyObject {
     func numberOfSubtasks() -> Int
-    func prepare(_ header: TaskHeaderView)
-    func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath)
-    func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath)
-    func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath)
-    func willDelete(_ cell: TaskTableViewCell, at indexPath: IndexPath)
+    func prepare(_ header: NewTaskTableViewHeader)
+    func prepare(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
+    func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath)
+    func didSelect(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
+    func willDelete(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
 }
 
 final class NewTaskView: UIView {
@@ -21,16 +21,16 @@ final class NewTaskView: UIView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        let header = TaskHeaderView()
+        let header = NewTaskTableViewHeader()
         header.group = group
         tableView.tableHeaderView = header
         tableView.register(
-            TaskTableViewCell.self,
-            forCellReuseIdentifier: TaskTableViewCell.identifier
+            NewTaskTableViewEditCell.self,
+            forCellReuseIdentifier: NewTaskTableViewEditCell.identifier
         )
         tableView.register(
-            NewTaskTableViewCell.self,
-            forCellReuseIdentifier: NewTaskTableViewCell.identifier
+            NewTaskTableViewAddCell.self,
+            forCellReuseIdentifier: NewTaskTableViewAddCell.identifier
         )
         return tableView
     }()
@@ -58,17 +58,17 @@ final class NewTaskView: UIView {
 extension NewTaskView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfSubtasks = delegate?.numberOfSubtasks() ?? 0
-        delegate?.prepare(tableView.tableHeaderView as! TaskHeaderView)
+        delegate?.prepare(tableView.tableHeaderView as! NewTaskTableViewHeader)
         return numberOfSubtasks + 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewCell.identifier, for: indexPath) as! NewTaskTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewAddCell.identifier, for: indexPath) as! NewTaskTableViewAddCell
             delegate?.prepare(cell, at: indexPath)
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewEditCell.identifier, for: indexPath) as! NewTaskTableViewEditCell
         cell.deleteButtonTapped = { [unowned self] _ in self.delegate?.willDelete(cell, at: indexPath) }
         delegate?.prepare(cell, at: indexPath)
         return cell
@@ -77,7 +77,7 @@ extension NewTaskView: UITableViewDataSource {
 
 extension NewTaskView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? TaskTableViewCell {
+        if let cell = tableView.cellForRow(at: indexPath) as? NewTaskTableViewEditCell {
             delegate?.didSelect(cell, at: indexPath)
         }
 

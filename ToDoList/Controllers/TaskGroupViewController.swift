@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskCollectionViewController: TypedViewController<TaskCollectionView> {
+final class TaskGroupViewController: TypedViewController<TaskGroupView> {
     private var groups: [TaskGroup] { TaskService.shared.tasks }
 
     override func viewDidLoad() {
@@ -20,12 +20,12 @@ final class TaskCollectionViewController: TypedViewController<TaskCollectionView
     }
 }
 
-extension TaskCollectionViewController: TaskCollectionViewDelegate {
-    func numberOfTasks(_ view: TaskCollectionView) -> Int {
+extension TaskGroupViewController: TaskGroupViewDelegate {
+    func numberOfTasks(_ view: TaskGroupView) -> Int {
         groups.count
     }
 
-    func prepare(_ cell: TaskCollectionViewCell, at indexPath: IndexPath) {
+    func prepare(_ cell: TaskGroupCollectionViewCell, at indexPath: IndexPath) {
         cell.group = groups[indexPath.item]
     }
 

@@ -1,6 +1,6 @@
 import UIKit
 
-final class TaskCollectionViewCell: UICollectionViewCell, Identifier {
+final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     var group: TaskGroup? {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }

@@ -45,7 +45,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
         group.tasks.count
     }
 
-    func prepare(_ header: TaskHeaderView) {
+    func prepare(_ header: NewTaskTableViewHeader) {
         header.group = group
         header.colorButtonTapped = { [unowned self] _ in
             self.presentColorPicker()
@@ -92,7 +92,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
         }
     }
 
-    func prepare(_ cell: NewTaskTableViewCell, at indexPath: IndexPath) {
+    func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath) {
         cell.addGestureAction(promptNewSubtask)
         group.$color.observe(by: self, immediate: true) { color in
             cell.color = color
@@ -124,7 +124,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
         present(alertController, animated: true)
     }
 
-    func prepare(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
+    func prepare(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath) {
         let subtask = group.tasks[indexPath.row]
         cell.task = subtask
         cell.taskNameTapped = { [unowned self] view in
@@ -157,11 +157,11 @@ extension NewTaskViewController: NewTaskViewDelegate {
         present(alertController, animated: true)
     }
 
-    func didSelect(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
+    func didSelect(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath) {
         // do nothing
     }
 
-    func willDelete(_ cell: TaskTableViewCell, at indexPath: IndexPath) {
+    func willDelete(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath) {
         let alertController = UIAlertController(title: "Delete Subtask", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
         let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in

@@ -23,11 +23,6 @@ final class APIService {
 
     private let decoder = JSONDecoder()
 
-    enum API_URL: String {
-        case baseCatUrl = "https://api.thecatapi.com/v1"
-        case baseDogUrl = "https://api.thedogapi.com/v1"
-    }
-
     @discardableResult
     func fetch<T: Codable>(
         url: String,

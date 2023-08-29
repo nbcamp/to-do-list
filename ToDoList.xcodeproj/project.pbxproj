@@ -70,6 +70,8 @@
 		332811FD2A9D978E005EEAB7 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		332811FF2A9D98A7005EEAB7 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
 		332812012A9DDC48005EEAB7 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		332812032A9E64D9005EEAB7 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
+		332812042A9E65D9005EEAB7 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,8 @@
 				332811A72A99E2A8005EEAB7 /* AppDelegate.swift */,
 				332811A92A99E2A8005EEAB7 /* SceneDelegate.swift */,
 				332811D02A9A6546005EEAB7 /* Extensions.swift */,
+				332812032A9E64D9005EEAB7 /* Secrets.example.xcconfig */,
+				332812042A9E65D9005EEAB7 /* Secrets.xcconfig */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -438,6 +442,7 @@
 		};
 		332811B92A99E2A9005EEAB7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 332812042A9E65D9005EEAB7 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -79,7 +79,8 @@ extension NewTaskViewController: NewTaskViewDelegate {
             "https://api.thecatapi.com/v1",
             "https://api.thedogapi.com/v1",
         ][Int.random(in: 0 ... 1)]
-        APIService.shared.fetch(url: "/images/search", model: [Animal].self) { result in
+        let apiKey = (Bundle.main.object(forInfoDictionaryKey: "Secrets") as? [String: String])?["THE_DOG_API_KEY"] ?? ""
+        APIService.shared.fetch(url: "/images/search", model: [Animal].self, queryItems: [.init(name: "api_key", value: apiKey)]) { result in
             switch result {
             case .success(let animals):
                 if let animal = animals.first {

@@ -13,7 +13,6 @@ final class NewTaskViewController: TypedViewController<NewTaskView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        typedView.delegate = self
         typedView.group = group
         setupNavigation()
         initializeEvents()
@@ -173,27 +172,6 @@ extension NewTaskViewController {
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)
         present(alertController, animated: true)
-    }
-}
-
-extension NewTaskViewController: NewTaskViewDelegate {
-    func numberOfSubtasks() -> Int {
-        group.tasks.count
-    }
-
-    func prepare(_ header: NewTaskTableViewHeader) {
-        header.group = group
-    }
-
-    func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath) {
-        group.$color.subscribe(by: cell, immediate: true) { [weak group] cell, _ in
-            guard let color = group?.uiColor else { return }
-            cell.color = color
-        }
-    }
-
-    func prepare(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath) {
-        cell.task = group.tasks[indexPath.row]
     }
 }
 

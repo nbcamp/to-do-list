@@ -6,12 +6,12 @@ final class TaskGroupViewController: TypedViewController<TaskGroupView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        typedView.delegate = self
         initializeEvents()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        typedView.groups = groups
         typedView.collectionView.reloadData()
         navigationController?.navigationBar.isHidden = true
     }
@@ -37,15 +37,5 @@ extension TaskGroupViewController {
     @objc private func pushNewTaskViewController() {
         let vc = NewTaskViewController()
         navigationController?.pushViewController(vc, animated: true)
-    }
-}
-
-extension TaskGroupViewController: TaskGroupViewDelegate {
-    func numberOfTasks(_ view: TaskGroupView) -> Int {
-        groups.count
-    }
-
-    func prepare(_ cell: TaskGroupCollectionViewCell, at indexPath: IndexPath) {
-        cell.group = groups[indexPath.item]
     }
 }

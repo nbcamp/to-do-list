@@ -1,15 +1,7 @@
 import UIKit
 
-protocol NewTaskViewDelegate: AnyObject {
-    func numberOfSubtasks() -> Int
-    func prepare(_ header: NewTaskTableViewHeader)
-    func prepare(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
-    func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath)
-}
-
 final class NewTaskView: UIView, RootView {
-    var group: TaskGroup?
-    weak var delegate: NewTaskViewDelegate?
+    weak var group: TaskGroup?
 
     private var padding: CGFloat = 20
 
@@ -20,7 +12,6 @@ final class NewTaskView: UIView, RootView {
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         let header = NewTaskTableViewHeader()
-        header.group = group
         tableView.tableHeaderView = header
         tableView.register(
             NewTaskTableViewEditCell.self,
@@ -54,19 +45,23 @@ final class NewTaskView: UIView, RootView {
 
 extension NewTaskView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfSubtasks = delegate?.numberOfSubtasks() ?? 0
-        delegate?.prepare(tableView.tableHeaderView as! NewTaskTableViewHeader)
-        return numberOfSubtasks + 1
+        if let header = tableView.tableHeaderView as? NewTaskTableViewHeader {
+            header.group = group
+        }
+        return (group?.tasks.count ?? 0) + 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewAddCell.identifier, for: indexPath) as! NewTaskTableViewAddCell
-            delegate?.prepare(cell, at: indexPath)
+            group?.$color.subscribe(by: cell, immediate: true) { [weak group] cell, _ in
+                guard let color = group?.uiColor else { return }
+                cell.color = color
+            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewEditCell.identifier, for: indexPath) as! NewTaskTableViewEditCell
-        delegate?.prepare(cell, at: indexPath)
+        cell.task = group?.tasks[indexPath.row]
         return cell
     }
 }

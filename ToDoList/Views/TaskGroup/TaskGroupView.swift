@@ -1,12 +1,7 @@
 import UIKit
 
-protocol TaskGroupViewDelegate: AnyObject {
-    func numberOfTasks(_ view: TaskGroupView) -> Int
-    func prepare(_ cell: TaskGroupCollectionViewCell, at indexPath: IndexPath)
-}
-
 final class TaskGroupView: UIView, RootView {
-    weak var delegate: TaskGroupViewDelegate?
+    var groups: [TaskGroup]?
 
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
@@ -66,14 +61,14 @@ final class TaskGroupView: UIView, RootView {
 
 extension TaskGroupView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let numberOfTasks = delegate?.numberOfTasks(self) ?? 0
-        placeholderView.isHidden = numberOfTasks > 0
-        return numberOfTasks
+        let count = groups?.count ?? 0
+        placeholderView.isHidden = count > 0
+        return count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskGroupCollectionViewCell.identifier, for: indexPath) as! TaskGroupCollectionViewCell
-        delegate?.prepare(cell, at: indexPath)
+        cell.group = groups?[indexPath.item]
         return cell
     }
 

@@ -87,21 +87,21 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
 
     private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
         guard oldTask !== newTask, let newTask else { return }
-        newTask.observer.on(\.$name, by: self) { (self, name) in
-            self.titleLabel.text = name
+        newTask.subscriber.on(\.$name, by: self) { host, name in
+            host.titleLabel.text = name
         }
-//        newTask.observer.on(\.$completed, by: self) { (self, completed) in
-//            UIView.animate(withDuration: 0.1) { [weak self] in
-//                guard let weakSelf = self else { return }
+//        newTask.subscriber.on(\.$completed, by: self) { (host, completed) in
+//            UIView.animate(withDuration: 0.1) { [weak host] in
+//                guard let weakSelf = host else { return }
 //                weakSelf.hStackView.layer.opacity = completed ? 0.5 : 1.0
 //                weakSelf.iconView.image = .init(systemName: completed ? "checkmark.circle" : "circle")
 //                weakSelf.titleLabel.strikethrough = completed
 //            }
 //        }
-        newTask.group.observer.on(\.$color, by: self) { (self, color) in
-            self.deleteButton.tintColor = color
-            self.titleLabel.textColor = color
-            self.containerView.backgroundColor = self._backgroundColor
+        newTask.group.subscriber.on(\.$color, by: self) { host, color in
+            host.deleteButton.tintColor = color
+            host.titleLabel.textColor = color
+            host.containerView.backgroundColor = self._backgroundColor
         }
     }
 

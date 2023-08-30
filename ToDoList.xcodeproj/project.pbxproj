@@ -30,14 +30,14 @@
 		332811EE2A9C0AAC005EEAB7 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */; };
 		332811F12A9C1FE0005EEAB7 /* TypedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */; };
 		332811F32A9C4FF6005EEAB7 /* NewTaskTableViewAddCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F22A9C4FF6005EEAB7 /* NewTaskTableViewAddCell.swift */; };
-		332811F82A9CA2AF005EEAB7 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F72A9CA2AF005EEAB7 /* Observable.swift */; };
+		332811F82A9CA2AF005EEAB7 /* Publishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F72A9CA2AF005EEAB7 /* Publishable.swift */; };
 		332811FA2A9CEC5C005EEAB7 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811F92A9CEC5C005EEAB7 /* DataModel.swift */; };
 		332811FC2A9D92B2005EEAB7 /* CircularProgressViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811FB2A9D92B2005EEAB7 /* CircularProgressViewCell.swift */; };
 		332811FE2A9D978E005EEAB7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811FD2A9D978E005EEAB7 /* APIService.swift */; };
 		332812002A9D98A7005EEAB7 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811FF2A9D98A7005EEAB7 /* Animal.swift */; };
 		332812022A9DDC48005EEAB7 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812012A9DDC48005EEAB7 /* ToastView.swift */; };
 		332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812052A9ED814005EEAB7 /* WeakRef.swift */; };
-		332812082A9ED96E005EEAB7 /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812072A9ED96E005EEAB7 /* Observer.swift */; };
+		332812082A9ED96E005EEAB7 /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812072A9ED96E005EEAB7 /* Subscriber.swift */; };
 		3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120B2A9EE7DE005EEAB7 /* RootView.swift */; };
 		3328120E2A9EF513005EEAB7 /* DebugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120D2A9EF513005EEAB7 /* DebugViewController.swift */; };
 		332812102A9F1997005EEAB7 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120F2A9F1997005EEAB7 /* EventBus.swift */; };
@@ -70,7 +70,7 @@
 		332811ED2A9C0AAC005EEAB7 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
 		332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedViewController.swift; sourceTree = "<group>"; };
 		332811F22A9C4FF6005EEAB7 /* NewTaskTableViewAddCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskTableViewAddCell.swift; sourceTree = "<group>"; };
-		332811F72A9CA2AF005EEAB7 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		332811F72A9CA2AF005EEAB7 /* Publishable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publishable.swift; sourceTree = "<group>"; };
 		332811F92A9CEC5C005EEAB7 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		332811FB2A9D92B2005EEAB7 /* CircularProgressViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressViewCell.swift; sourceTree = "<group>"; };
 		332811FD2A9D978E005EEAB7 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 		332812032A9E64D9005EEAB7 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
 		332812042A9E65D9005EEAB7 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		332812052A9ED814005EEAB7 /* WeakRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRef.swift; sourceTree = "<group>"; };
-		332812072A9ED96E005EEAB7 /* Observer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
+		332812072A9ED96E005EEAB7 /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
 		3328120B2A9EE7DE005EEAB7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3328120D2A9EF513005EEAB7 /* DebugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugViewController.swift; sourceTree = "<group>"; };
 		3328120F2A9F1997005EEAB7 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
@@ -223,8 +223,8 @@
 			isa = PBXGroup;
 			children = (
 				332812052A9ED814005EEAB7 /* WeakRef.swift */,
-				332812072A9ED96E005EEAB7 /* Observer.swift */,
-				332811F72A9CA2AF005EEAB7 /* Observable.swift */,
+				332812072A9ED96E005EEAB7 /* Subscriber.swift */,
+				332811F72A9CA2AF005EEAB7 /* Publishable.swift */,
 				3328120F2A9F1997005EEAB7 /* EventBus.swift */,
 			);
 			path = Utilities;
@@ -314,7 +314,7 @@
 				332811C62A99EC4E005EEAB7 /* Identifier.swift in Sources */,
 				332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */,
 				332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */,
-				332811F82A9CA2AF005EEAB7 /* Observable.swift in Sources */,
+				332811F82A9CA2AF005EEAB7 /* Publishable.swift in Sources */,
 				332811EC2A9BF826005EEAB7 /* TaskGroupView.swift in Sources */,
 				332811E02A9B1BD4005EEAB7 /* NewTaskTableViewHeader.swift in Sources */,
 				332812022A9DDC48005EEAB7 /* ToastView.swift in Sources */,
@@ -324,7 +324,7 @@
 				332811F32A9C4FF6005EEAB7 /* NewTaskTableViewAddCell.swift in Sources */,
 				332812102A9F1997005EEAB7 /* EventBus.swift in Sources */,
 				332811E52A9B552C005EEAB7 /* Subtask.swift in Sources */,
-				332812082A9ED96E005EEAB7 /* Observer.swift in Sources */,
+				332812082A9ED96E005EEAB7 /* Subscriber.swift in Sources */,
 				332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */,
 				3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */,
 				332811A82A99E2A8005EEAB7 /* AppDelegate.swift in Sources */,

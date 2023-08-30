@@ -56,7 +56,7 @@ final class DebugViewController: TypedViewController<DebugView> {
 
 extension DebugViewController: DebugViewDelegate {
     func initialize(group: TaskGroup) {
-        group.observer.on(\.$name, by: self, immediate: false) { host, value in
+        group.subscriber.on(\.$name, by: self, immediate: false) { host, value in
             host.typedView.updateTitleLabel(text: value)
         }
 

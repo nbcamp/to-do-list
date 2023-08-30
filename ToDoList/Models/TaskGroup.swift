@@ -1,13 +1,13 @@
 import UIKit
 
 final class TaskGroup: DataModel {
-    private(set) lazy var observer = Observer(target: self)
+    private(set) lazy var subscriber = Subscriber(target: self)
 
     let id: String
-    @Observable var name: String
-    @Observable var image: UIImage
-    @Observable var color: UIColor
-    @Observable var tasks: [Subtask]
+    @Publishable var name: String
+    @Publishable var image: UIImage
+    @Publishable var color: UIColor
+    @Publishable var tasks: [Subtask]
 
     var progress: Double { Double(tasks.filter { $0.completed }.count) / Double(tasks.count) }
 

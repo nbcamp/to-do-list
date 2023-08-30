@@ -175,7 +175,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
     }
 
     func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath) {
-        group.$color.observe(by: cell, immediate: true) { cell, color in
+        group.$color.subscribe(by: cell, immediate: true) { cell, color in
             cell.color = color
         }
     }

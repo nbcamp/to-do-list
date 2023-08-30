@@ -1,11 +1,11 @@
 import Foundation
 
 final class Subtask: DataModel {
-    private(set) lazy var observer = Observer(target: self)
+    private(set) lazy var subscriber = Subscriber(target: self)
 
     let id: String
-    @Observable var name: String
-    @Observable var completed: Bool
+    @Publishable var name: String
+    @Publishable var completed: Bool
 
     unowned let group: TaskGroup
 

@@ -50,12 +50,18 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
         return imageView
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         initializeUI()
     }
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     private func initializeUI() {
+        debugPrint(name, #function)
+
         layer.cornerRadius = 20
         layer.masksToBounds = true
 
@@ -79,4 +85,6 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
             self.progressView.progressView.progress = self.group?.progress ?? 0.0
         }
     }
+    
+    deinit { debugPrint(name, #function) }
 }

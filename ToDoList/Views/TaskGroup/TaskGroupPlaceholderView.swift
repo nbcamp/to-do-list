@@ -1,10 +1,6 @@
 import UIKit
 
 final class TaskGroupPlaceholderView: UIView, Identifier {
-    var newTaskButtonTapped: ((UIView) -> Void)? {
-        didSet { vStackView.addGestureAction(newTaskButtonTapped) }
-    }
-
     private lazy var vStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             taskImageView,
@@ -18,7 +14,6 @@ final class TaskGroupPlaceholderView: UIView, Identifier {
             taskImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.3),
             taskImageView.heightAnchor.constraint(equalTo: taskImageView.widthAnchor, multiplier: 0.9),
         ])
-
         return stackView
     }()
 
@@ -38,12 +33,18 @@ final class TaskGroupPlaceholderView: UIView, Identifier {
         return label
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         initializeUI()
     }
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     private func initializeUI() {
+        debugPrint(name, #function)
+
         addSubview(vStackView)
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -52,5 +53,15 @@ final class TaskGroupPlaceholderView: UIView, Identifier {
             vStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: nil)
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.numberOfTouchesRequired = 1
+
+        vStackView.addGestureAction { _ in
+            EventBus.shared.emit(PushToNewTaskScreen())
+        }
     }
+
+    deinit { debugPrint(name, #function) }
 }

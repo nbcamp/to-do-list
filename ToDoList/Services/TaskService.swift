@@ -4,17 +4,17 @@ final class TaskService {
     static let shared: TaskService = .init()
     private init() {}
 
-    private(set) var tasks: [TaskGroup] = []
+    private(set) var groups: [TaskGroup] = []
 
-    func add(task: TaskGroup) {
-        tasks.append(task)
+    func add(group: TaskGroup) {
+        groups.append(group)
     }
 
-    func add(subtask: Subtask) {
-        subtask.group.tasks.append(subtask)
+    func add(task: Subtask) {
+        task.group.tasks.append(task)
     }
 
-    func remove(subtask: Subtask, of task: TaskGroup) {
-        task.tasks.remove(element: subtask)
+    func remove(task: Subtask) -> Int? {
+        return task.group.tasks.remove(element: task)
     }
 }

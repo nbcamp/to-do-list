@@ -3,9 +3,6 @@ import UIKit
 protocol TaskGroupViewDelegate: AnyObject {
     func numberOfTasks(_ view: TaskGroupView) -> Int
     func prepare(_ cell: TaskGroupCollectionViewCell, at indexPath: IndexPath)
-    func placeholderViewTapped(_ view: UIView)
-    func newTaskMenuTapped()
-    func editTasksMenuTapped()
 }
 
 final class TaskGroupView: UIView, RootView {
@@ -44,26 +41,33 @@ final class TaskGroupView: UIView, RootView {
     }()
 
     func initializeUI() {
+        debugPrint(name, #function)
+
         backgroundColor = .systemBackground
         addSubview(collectionView)
         addSubview(placeholderView)
 
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         placeholderView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+
             placeholderView.centerYAnchor.constraint(equalTo: centerYAnchor),
             placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
             placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
+
+    deinit { debugPrint(name, #function) }
 }
 
 extension TaskGroupView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let numberOfTasks = delegate?.numberOfTasks(self) ?? 0
         placeholderView.isHidden = numberOfTasks > 0
-        placeholderView.newTaskButtonTapped = { [unowned self] view in
-            delegate?.placeholderViewTapped(view)
-        }
         return numberOfTasks
     }
 
@@ -78,10 +82,10 @@ extension TaskGroupView: UICollectionViewDataSource {
         case UICollectionView.elementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TaskGroupCollectionViewHeader.identifier, for: indexPath) as! TaskGroupCollectionViewHeader
             header.onMenuTapped = { [unowned self] target in
-                if self.dropdownMenuView == nil {
-                    self.setupMenu(target: target)
+                if dropdownMenuView == nil {
+                    setupMenu(target: target)
                 }
-                guard let dropdownMenuView = self.dropdownMenuView else { return }
+                guard let dropdownMenuView else { return }
                 dropdownMenuView.opened.toggle()
             }
             return header
@@ -92,13 +96,14 @@ extension TaskGroupView: UICollectionViewDataSource {
 
     private func setupMenu(target: UIView) {
         let menus: [DropdownMenu] = [
-            .init(icon: "plus.circle", title: "New Task", handler: { [unowned self] _ in self.delegate?.newTaskMenuTapped() }),
-            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { [unowned self] _ in self.delegate?.editTasksMenuTapped() }),
+            .init(icon: "plus.circle", title: "New Task", handler: { _ in
+                EventBus.shared.emit(PushToNewTaskScreen())
+            }),
+            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { _ in }),
         ]
         dropdownMenuView = DropdownMenuView(menus, on: target, root: self, delegate: self)
         dropdownMenuView?.onSelected = { [unowned self] _ in
-            self.dropdownMenuView?.opened = false
-            self.dropdownMenuView = nil
+            dropdownMenuView?.opened = false
         }
         addSubview(dropdownMenuView!)
     }
@@ -115,7 +120,7 @@ extension TaskGroupView: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        .init(width: collectionView.bounds.width, height: 100)
+        return .init(width: collectionView.bounds.width, height: 100)
     }
 }
 

@@ -5,14 +5,6 @@ final class NewTaskTableViewHeader: UIView {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 
-    var colorButtonTapped: ((UIView) -> Void)? {
-        didSet { colorButton.addGestureAction(colorButtonTapped) }
-    }
-    var imageTapped: ((UIView) -> Void)? {
-        didSet { progressView.imageTapped = imageTapped }
-    }
-    var titleDidEndEditing: ((UITextField) -> Void)?
-
     private var margin: CGFloat { bounds.width * 0.1 }
 
     private lazy var vStackView = {
@@ -82,9 +74,13 @@ final class NewTaskTableViewHeader: UIView {
         return label
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         initializeUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -97,6 +93,8 @@ final class NewTaskTableViewHeader: UIView {
     }
 
     private func initializeUI() {
+        debugPrint(name, #function)
+
         frame.size.height = 400
         addSubview(vStackView)
 
@@ -107,6 +105,13 @@ final class NewTaskTableViewHeader: UIView {
             vStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
         ])
+
+        colorButton.addGestureAction { _ in
+            EventBus.shared.emit(PresentColorPicker())
+        }
+        progressView.addGestureAction { _ in
+            EventBus.shared.emit(FetchRandomImage())
+        }
     }
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
@@ -126,6 +131,8 @@ final class NewTaskTableViewHeader: UIView {
             self.progressView.image = image
         }
     }
+
+    deinit { debugPrint(name, #function) }
 }
 
 extension NewTaskTableViewHeader: UITextFieldDelegate {
@@ -135,6 +142,6 @@ extension NewTaskTableViewHeader: UITextFieldDelegate {
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        titleDidEndEditing?(textField)
+        group?.name = textField.text ?? ""
     }
 }

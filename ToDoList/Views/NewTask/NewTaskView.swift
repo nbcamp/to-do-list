@@ -5,11 +5,9 @@ protocol NewTaskViewDelegate: AnyObject {
     func prepare(_ header: NewTaskTableViewHeader)
     func prepare(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
     func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath)
-    func didSelect(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
-    func willDelete(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
 }
 
-final class NewTaskView: UIView, RootView {    
+final class NewTaskView: UIView, RootView {
     var group: TaskGroup?
     weak var delegate: NewTaskViewDelegate?
 
@@ -36,6 +34,8 @@ final class NewTaskView: UIView, RootView {
     }()
 
     func initializeUI() {
+        debugPrint(name, #function)
+
         isUserInteractionEnabled = true
         backgroundColor = .systemBackground
 
@@ -48,6 +48,8 @@ final class NewTaskView: UIView, RootView {
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
         ])
     }
+
+    deinit { debugPrint(name, #function) }
 }
 
 extension NewTaskView: UITableViewDataSource {
@@ -64,18 +66,9 @@ extension NewTaskView: UITableViewDataSource {
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: NewTaskTableViewEditCell.identifier, for: indexPath) as! NewTaskTableViewEditCell
-        cell.deleteButtonTapped = { [unowned self] _ in self.delegate?.willDelete(cell, at: indexPath) }
         delegate?.prepare(cell, at: indexPath)
         return cell
     }
 }
 
-extension NewTaskView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? NewTaskTableViewEditCell {
-            delegate?.didSelect(cell, at: indexPath)
-        }
-
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
+extension NewTaskView: UITableViewDelegate {}

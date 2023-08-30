@@ -2,7 +2,7 @@ import UIKit
 
 final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier {
     var onMenuTapped: ((UIView) -> Void)? {
-        didSet { button.addGestureAction(onMenuTapped) }
+        didSet { if let onMenuTapped { settingButton.addGestureAction(onMenuTapped) } }
     }
 
     private lazy var titleLabel = {
@@ -13,7 +13,7 @@ final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier 
         return label
     }()
 
-    private lazy var button = {
+    private lazy var settingButton = {
         let button = UIImageView()
         let imageConfiguration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium, scale: .large)
         button.image = .init(systemName: "gearshape")?.withConfiguration(imageConfiguration)
@@ -22,23 +22,31 @@ final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier 
         return button
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         initializeUI()
     }
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     private func initializeUI() {
+        debugPrint(name, #function)
+
         addSubview(titleLabel)
-        addSubview(button)
+        addSubview(settingButton)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
+        settingButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor),
-            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: .one),
+            settingButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            settingButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            settingButton.widthAnchor.constraint(equalTo: settingButton.heightAnchor, multiplier: .one),
         ])
     }
+
+    deinit { debugPrint(name, #function) }
 }

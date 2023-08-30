@@ -13,7 +13,6 @@ final class Observable<Property> {
     private var value: Property
     private var observers: [Observer<AnyObject>] = []
     private let queue = DispatchQueue(label: "ObservableQueue")
-    private var timer: Timer?
 
     var wrappedValue: Property {
         get { value }
@@ -57,8 +56,8 @@ final class Observable<Property> {
     }
 
     func notify(_ newValue: Property) {
-        value = newValue
         clean()
+        value = newValue
         for observer in observers {
             guard let host = observer.weakRef.value else { continue }
             observer.handler((host, value))
@@ -68,7 +67,9 @@ final class Observable<Property> {
     private func clean() {
         queue.async { [weak self] in
             guard let self else { return }
+            let before = self.observers.count
             self.observers = self.observers.filter { $0.weakRef.value != nil }
+            print("[Observable.clean] Before: \(before), After: \(self.observers.count)")
         }
     }
 }

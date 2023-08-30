@@ -23,8 +23,6 @@ final class CircularProgressViewCell: UIView {
         }
     }
 
-    var imageTapped: ((UIView) -> Void)?
-
     lazy var progressView = {
         let progressView = CircularProgressView()
         progressView.delegate = self
@@ -40,7 +38,6 @@ final class CircularProgressViewCell: UIView {
         imageView.tintColor = color
         imageView.contentMode = .scaleAspectFill
         imageView.transform = .init(scaleX: 0.5, y: 0.5)
-        imageView.addGestureAction { [unowned self] view in self.imageTapped?(view) }
         return imageView
     }()
 

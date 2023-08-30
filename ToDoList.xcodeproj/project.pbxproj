@@ -39,6 +39,9 @@
 		332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812052A9ED814005EEAB7 /* WeakRef.swift */; };
 		332812082A9ED96E005EEAB7 /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812072A9ED96E005EEAB7 /* Observer.swift */; };
 		3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120B2A9EE7DE005EEAB7 /* RootView.swift */; };
+		3328120E2A9EF513005EEAB7 /* DebugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120D2A9EF513005EEAB7 /* DebugViewController.swift */; };
+		332812102A9F1997005EEAB7 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120F2A9F1997005EEAB7 /* EventBus.swift */; };
+		335A6A822A9F5BEF006B7EAC /* ViewControllerEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A6A812A9F5BEF006B7EAC /* ViewControllerEvents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +81,9 @@
 		332812052A9ED814005EEAB7 /* WeakRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRef.swift; sourceTree = "<group>"; };
 		332812072A9ED96E005EEAB7 /* Observer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
 		3328120B2A9EE7DE005EEAB7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		3328120D2A9EF513005EEAB7 /* DebugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugViewController.swift; sourceTree = "<group>"; };
+		3328120F2A9F1997005EEAB7 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
+		335A6A812A9F5BEF006B7EAC /* ViewControllerEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerEvents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,8 +144,10 @@
 			isa = PBXGroup;
 			children = (
 				332811F02A9C1FE0005EEAB7 /* TypedViewController.swift */,
+				335A6A812A9F5BEF006B7EAC /* ViewControllerEvents.swift */,
 				332811AB2A99E2A8005EEAB7 /* TaskGroupViewController.swift */,
 				332811D22A9A6B69005EEAB7 /* NewTaskViewController.swift */,
+				3328120D2A9EF513005EEAB7 /* DebugViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -217,6 +225,7 @@
 				332812052A9ED814005EEAB7 /* WeakRef.swift */,
 				332812072A9ED96E005EEAB7 /* Observer.swift */,
 				332811F72A9CA2AF005EEAB7 /* Observable.swift */,
+				3328120F2A9F1997005EEAB7 /* EventBus.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -296,6 +305,7 @@
 				332811EE2A9C0AAC005EEAB7 /* NewTaskView.swift in Sources */,
 				332812002A9D98A7005EEAB7 /* Animal.swift in Sources */,
 				332811E82A9B5646005EEAB7 /* TaskService.swift in Sources */,
+				3328120E2A9EF513005EEAB7 /* DebugViewController.swift in Sources */,
 				332811C92A99ECD7005EEAB7 /* TaskGroupCollectionViewHeader.swift in Sources */,
 				332811D12A9A6546005EEAB7 /* Extensions.swift in Sources */,
 				332811F12A9C1FE0005EEAB7 /* TypedViewController.swift in Sources */,
@@ -310,7 +320,9 @@
 				332812022A9DDC48005EEAB7 /* ToastView.swift in Sources */,
 				332811D92A9B02AE005EEAB7 /* NewTaskTableViewEditCell.swift in Sources */,
 				332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */,
+				335A6A822A9F5BEF006B7EAC /* ViewControllerEvents.swift in Sources */,
 				332811F32A9C4FF6005EEAB7 /* NewTaskTableViewAddCell.swift in Sources */,
+				332812102A9F1997005EEAB7 /* EventBus.swift in Sources */,
 				332811E52A9B552C005EEAB7 /* Subtask.swift in Sources */,
 				332812082A9ED96E005EEAB7 /* Observer.swift in Sources */,
 				332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */,

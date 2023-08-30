@@ -58,12 +58,18 @@ final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
         return label
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         initializeUI()
     }
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     private func initializeUI() {
+        debugPrint(name, #function)
+
         selectionStyle = .none
         contentView.addSubview(containerView)
 
@@ -75,5 +81,11 @@ final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+
+        addGestureAction { _ in
+            EventBus.shared.emit(CreateNewTask())
+        }
     }
+
+    deinit { debugPrint(name, #function) }
 }

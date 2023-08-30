@@ -2,13 +2,22 @@ import UIKit
 
 extension Array where Element: Equatable {
     @discardableResult
-    mutating func remove(element: Element) -> Int {
+    mutating func removeAll(element: Element) -> Int {
         var count = 0
         while let index = firstIndex(of: element) {
             self.remove(at: index)
             count += 1
         }
         return count
+    }
+    
+    @discardableResult
+    mutating func remove(element: Element) -> Int? {
+        if let index = firstIndex(of: element) {
+            self.remove(at: index)
+            return index
+        }
+        return nil
     }
 }
 
@@ -37,24 +46,36 @@ extension CGFloat {
 }
 
 extension UIView {
+    var name: String { String(describing: type(of: self)) }
+
     private enum AssociatedKeys {
-        static var gestureRecognizerKey = "GESTURE_RECOGNIZER_KEY"
+        static var uiGestureRecognizerKey = "UI_GESTURE_RECOGNIZER_KEY"
     }
 
-    func addGestureAction(_ action: ((UIView) -> Void)?, with recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self) {
-        guard let action else { return }
+    func addGestureAction(with recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self, stop: Bool = true, _ action: @escaping (UIView) -> Void) {
         isUserInteractionEnabled = true
-        objc_setAssociatedObject(self, &AssociatedKeys.gestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
+        objc_setAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         let gestureRecognizer = recognizer.init(target: self, action: #selector(self._executeAction))
+        gestureRecognizer.cancelsTouchesInView = stop
         addGestureRecognizer(gestureRecognizer)
     }
 
     @objc private func _executeAction() {
-        if let action = objc_getAssociatedObject(self, &AssociatedKeys.gestureRecognizerKey) as? (UIView) -> Void {
+        if let action = objc_getAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey) as? (UIView) -> Void {
             action(self)
         }
     }
+}
+
+extension UIView {
+    static func instantiateFromNib<T: UIView>() -> T? {
+        let nib = UINib(nibName: String(describing: self), bundle: nil)
+        return nib.instantiate(withOwner: nil, options: nil).first as? T
+    }
+}
+
+extension UIViewController {
+    var name: String { String(describing: type(of: self)) }
 }
 
 extension UIImageView {

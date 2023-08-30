@@ -13,14 +13,6 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
         )
     }
 
-    var deleteButtonTapped: ((UIView) -> Void)? {
-        didSet { iconView.addGestureAction(deleteButtonTapped) }
-    }
-
-    var taskNameTapped: ((UIView) -> Void)? {
-        didSet { titleLabel.addGestureAction(taskNameTapped) }
-    }
-
     private lazy var containerView = {
         let view = UIView()
         view.backgroundColor = _backgroundColor
@@ -38,13 +30,13 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
     }()
 
     private lazy var hStackView = {
-        let stackView = UIStackView(arrangedSubviews: [iconView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [deleteButton, titleLabel])
         stackView.axis = .horizontal
         stackView.spacing = 10.0
         return stackView
     }()
 
-    private lazy var iconView = {
+    private lazy var deleteButton = {
         let iconView = UIImageView(frame: .zero)
         iconView.image = .init(systemName: "multiply.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,17 +45,23 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
     }()
 
     private lazy var titleLabel = {
-        let label = UIExtendedLabel()
+        let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         initializeUI()
     }
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     private func initializeUI() {
+        debugPrint(name, #function)
+
         selectionStyle = .none
         contentView.addSubview(containerView)
 
@@ -75,6 +73,16 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+
+        titleLabel.addGestureAction { [unowned self] _ in
+            guard let task else { return }
+            EventBus.shared.emit(EditTaskName(payload: .init(task: task)))
+        }
+
+        deleteButton.addGestureAction { [unowned self] _ in
+            guard let task else { return }
+            EventBus.shared.emit(DeleteTask(payload: .init(task: task)))
+        }
     }
 
     private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
@@ -91,9 +99,11 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
 //            }
 //        }
         newTask.group.observer.on(\.$color, by: self) { (self, color) in
-            self.iconView.tintColor = color
+            self.deleteButton.tintColor = color
             self.titleLabel.textColor = color
             self.containerView.backgroundColor = self._backgroundColor
         }
     }
+
+    deinit { debugPrint(name, #function) }
 }

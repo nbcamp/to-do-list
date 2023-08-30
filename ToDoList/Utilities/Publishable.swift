@@ -2,67 +2,62 @@ import Foundation
 
 @propertyWrapper
 final class Publishable<Property> {
-    typealias EventHandler<Host: AnyObject> = ((host: Host, property: Property)) -> Void
+    typealias EventCallback<Publisher: AnyObject> = ((publisher: Publisher, property: Property)) -> Void
 
-    struct Handler<Host: AnyObject>: Identifiable {
+    struct Subscriber<Publisher: AnyObject>: Identifiable {
         let id: UUID
-        let handler: EventHandler<Host>
-        let weakRef: WeakRef<Host>
+        let callback: EventCallback<Publisher>
+        let publisher: WeakRef<Publisher>
     }
 
     private var value: Property
-    private var handlers: [Handler<AnyObject>] = []
+    private var subscribers: [Subscriber<AnyObject>] = []
 
     var wrappedValue: Property {
         get { value }
         set { publish(newValue) }
     }
 
-    var projectedValue: Publishable {
-        return self
-    }
+    var projectedValue: Publishable { self }
 
     init(wrappedValue: Property) {
         self.value = wrappedValue
     }
 
     @discardableResult
-    func subscribe<Host: AnyObject>(
-        by object: Host,
-        _ handler: @escaping EventHandler<Host>
+    func subscribe<Publisher: AnyObject>(
+        by publisher: Publisher,
+        _ callback: @escaping EventCallback<Publisher>
     ) -> ((_ id: UUID) -> Void, UUID) {
-        return subscribe(by: object, immediate: false, handler)
+        return subscribe(by: publisher, immediate: false, callback)
     }
 
     @discardableResult
-    func subscribe<Host: AnyObject>(
-        by host: Host,
+    func subscribe<Publisher: AnyObject>(
+        by publisher: Publisher,
         immediate: Bool,
-        _ handler: @escaping EventHandler<Host>
+        _ callback: @escaping EventCallback<Publisher>
     ) -> ((_ id: UUID) -> Void, UUID) {
         let id = UUID()
-        let anyHandler: EventHandler<AnyObject> = { args in
-            if let host = args.host as? Host {
-                handler((host, args.property))
-            }
+        let anyCallback: EventCallback<AnyObject> = { args in
+            guard let publisher = args.publisher as? Publisher else { return }
+            callback((publisher, args.property))
         }
-        handlers.append(Handler(id: id, handler: anyHandler, weakRef: WeakRef(host)))
-        if immediate { handler((host, value)) }
+        subscribers.append(.init(id: id, callback: anyCallback, publisher: .init(publisher)))
+        if immediate { callback((publisher, value)) }
         return (unsubscribe, id)
     }
 
     func unsubscribe(_ id: UUID) {
-        handlers.removeAll { $0.id == id }
+        subscribers.removeAll { $0.id == id }
     }
 
     func publish(_ newValue: Property) {
         value = newValue
-        var _subscribers = [Handler<AnyObject>]()
-        for subscriber in handlers {
-            guard let host = subscriber.weakRef.value else { continue }
-            subscriber.handler((host, value))
-            _subscribers.append(subscriber)
+        subscribers = subscribers.compactMap { subscriber in
+            guard let publisher = subscriber.publisher.value else { return nil }
+            subscriber.callback((publisher, value))
+            return subscriber
         }
-        handlers = _subscribers
     }
 }

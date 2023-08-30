@@ -15,31 +15,49 @@ final class EventBus {
     static let shared: EventBus = .init()
     private init() {}
 
-    typealias EventHandler<Host: AnyObject, Event: EventProtocol> = ((Host, Event.Payload)) -> Void
-    typealias AnyEventHandler = ((host: AnyObject, payload: Any)) -> Void
-    private var handlers: [String: [(host: WeakRef<AnyObject>, handler: AnyEventHandler)]] = [:]
+    typealias EventCallback<Emitter: AnyObject, Event: EventProtocol> = ((Emitter, Event.Payload)) -> Void
+    typealias AnyEventCallback = ((emitter: AnyObject, payload: Any)) -> Void
 
-    func on<Host: AnyObject, Event: EventProtocol>(_ event: Event.Type, by host: Host, _ handler: @escaping EventHandler<Host, Event>) {
-        let anyHandler: AnyEventHandler = { args in
-            if let host = args.host as? Host,
+    struct Listener<Emitter: AnyObject> {
+        var callback: AnyEventCallback
+        var emitter: WeakRef<Emitter>
+    }
+
+    private var listenerMap: [String: [Listener<AnyObject>]] = [:]
+
+    func on<Emitter: AnyObject, Event: EventProtocol>(
+        _ event: Event.Type,
+        by emitter: Emitter,
+        _ callback: @escaping EventCallback<Emitter, Event>
+    ) {
+        let anyCallback: AnyEventCallback = { args in
+            if let emitter = args.emitter as? Emitter,
                let payload = args.payload as? Event.Payload
-            { handler((host, payload)) }
+            { callback((emitter, payload)) }
         }
-        handlers[event.id, default: []].append((WeakRef(host), anyHandler))
+        listenerMap[event.id, default: []].append(.init(callback: anyCallback, emitter: .init(emitter)))
     }
 
-    func off<Host: AnyObject, Event: EventProtocol>(_ event: Event, of host: Host) {
-        handlers[event.id]?.removeAll { $0.host.value === host }
+    func off<Emitter: AnyObject, Event: EventProtocol>(
+        _ event: Event,
+        of emitter: Emitter
+    ) {
+        listenerMap[event.id]?.removeAll { $0.emitter.value === emitter }
     }
 
-    func reset<Host: AnyObject>(_ host: Host) {
-        handlers.keys.forEach { key in handlers[key]?.removeAll { $0.host.value === host } }
+    func reset<Emitter: AnyObject>(_ emitter: Emitter) {
+        listenerMap.keys.forEach { key in listenerMap[key]?.removeAll { $0.emitter.value === emitter } }
     }
 
     func emit<Event: EventProtocol>(_ event: Event) {
-        handlers[event.id]?.forEach { weakRef, handler in
-            guard let host = weakRef.value else { return }
-            handler((host, event.payload))
+        let key = event.id
+        listenerMap[key] = listenerMap[key]?.compactMap { listener in
+            guard let emitter = listener.emitter.value else { return nil }
+            listener.callback((emitter, event.payload))
+            return listener
+        }
+        if let listeners = listenerMap[key], listeners.isEmpty {
+            listenerMap.removeValue(forKey: key)
         }
     }
 }

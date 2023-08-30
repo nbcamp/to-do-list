@@ -1,21 +1,21 @@
 import Foundation
 
-final class Subscriber<Target> {
-    private let target: Target
-    private var unsubscribes: [((_ id: UUID) -> Void, UUID)] = []
+final class Subscriber<Source> {
+    private let source: Source
+    private var unsubscribes: [((UUID) -> Void, UUID)] = []
 
-    init(target: Target) {
-        self.target = target
+    init(source: Source) {
+        self.source = source
     }
 
-    func on<Host: AnyObject, Value>(
-        _ keyPath: KeyPath<Target, Publishable<Value>>,
-        by host: Host,
+    func on<Publisher: AnyObject, Property>(
+        _ keyPath: KeyPath<Source, Publishable<Property>>,
+        by publisher: Publisher,
         immediate: Bool = true,
-        handler: @escaping ((Host, Value)) -> Void
+        _ callback: @escaping ((Publisher, Property)) -> Void
     ) {
-        let publishable = target[keyPath: keyPath]
-        let unsubscribe = publishable.subscribe(by: host, immediate: immediate, handler)
+        let publishable = source[keyPath: keyPath]
+        let unsubscribe = publishable.subscribe(by: publisher, immediate: immediate, callback)
         unsubscribes.append(unsubscribe)
     }
 

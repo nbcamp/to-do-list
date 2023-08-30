@@ -1,7 +1,7 @@
 import UIKit
 
 final class TaskGroupView: UIView, RootView {
-    var groups: [TaskGroup]?
+    var groups: WeakArray<TaskGroup>?
 
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20

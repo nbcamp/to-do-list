@@ -1,7 +1,7 @@
 import UIKit
 
 final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
-    var task: Subtask? {
+    weak var task: Subtask? {
         didSet { listenTaskChanged(old: oldValue, new: task) }
     }
 

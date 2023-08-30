@@ -1,7 +1,7 @@
 import UIKit
 
 final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
-    var group: TaskGroup? {
+    weak var group: TaskGroup? {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 

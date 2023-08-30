@@ -9,7 +9,7 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
         .init(
             light: .black.withAlphaComponent(0.8),
             dark: .black.withAlphaComponent(0.1),
-            for: task?.group.color ?? .systemBackground
+            for: task?.group.uiColor ?? .systemBackground
         )
     }
 
@@ -98,10 +98,11 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
 //                weakSelf.titleLabel.strikethrough = completed
 //            }
 //        }
-        newTask.group.subscriber.on(\.$color, by: self) { host, color in
+        newTask.group.subscriber.on(\.$color, by: self) { [weak newTask] host, _ in
+            guard let color = newTask?.group.uiColor else { return }
             host.deleteButton.tintColor = color
             host.titleLabel.textColor = color
-            host.containerView.backgroundColor = self._backgroundColor
+            host.containerView.backgroundColor = host._backgroundColor
         }
     }
 

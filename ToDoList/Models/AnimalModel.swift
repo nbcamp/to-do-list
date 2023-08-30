@@ -1,6 +1,6 @@
 import Foundation
 
-struct Animal: DataModel, Codable {
+struct AnimalModel: Codable {
     var id: String
     var url: String
 }

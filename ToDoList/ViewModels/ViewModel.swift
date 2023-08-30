@@ -1,8 +1,8 @@
 import Foundation
 
-protocol DataModel: Identifiable, Equatable {}
+protocol ViewModel: Identifiable, Equatable {}
 
-extension DataModel {
+extension ViewModel {
     static func ==(lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }

@@ -1,8 +1,13 @@
 import UIKit
 
 final class NewTaskViewController: TypedViewController<NewTaskView> {
-    private let originImage: UIImage = .init(systemName: "hand.tap")!
-    private var group: TaskGroup = .init()
+    private var group: TaskGroup = {
+        let group = TaskGroup(image: UIImage(systemName: "hand.tap")!.base64)
+        group.uiColor = .random(in: .dark)
+        return group
+    }()
+
+    private var isImageUpdated = false
     private var isToastOpened = false
     private let eventBus = EventBus.shared
 
@@ -24,7 +29,7 @@ final class NewTaskViewController: TypedViewController<NewTaskView> {
     }
 
     @objc private func doneButtonTapped() {
-        guard group.image != originImage else { showToast(message: "Choose an image that represents your tasks."); return }
+        guard isImageUpdated else { showToast(message: "Choose an image that represents your tasks."); return }
         guard !group.name.isEmpty else { showToast(message: "Fill out the name of the tasks"); return }
         guard !group.tasks.isEmpty else { showToast(message: "Please create at least one task."); return }
 
@@ -36,7 +41,12 @@ final class NewTaskViewController: TypedViewController<NewTaskView> {
         if isToastOpened { return }
         isToastOpened = true
         let toast = ToastView()
-        toast.show(view: view, message: message, position: .init(x: view.center.x, y: view.safeAreaInsets.top), color: group.color) { [weak self] in
+        toast.show(
+            view: view,
+            message: message,
+            position: .init(x: view.center.x, y: view.safeAreaInsets.top),
+            color: group.uiColor ?? .black
+        ) { [weak self] in
             self?.isToastOpened = false
         }
     }
@@ -58,7 +68,8 @@ extension NewTaskViewController {
                           let image = UIImage(data: data)
                     else { return }
                     DispatchQueue.main.async {
-                        host?.group.image = image
+                        host?.isImageUpdated = true
+                        host?.group.uiImage = image
                     }
                 }
             }
@@ -76,7 +87,7 @@ extension NewTaskViewController {
 
     private func presentColorPicker() {
         let picker = UIColorPickerViewController()
-        picker.selectedColor = group.color
+        picker.selectedColor = group.uiColor ?? .clear
         picker.title = "Accent Color"
         picker.supportsAlpha = false
         picker.delegate = self
@@ -84,13 +95,13 @@ extension NewTaskViewController {
         present(picker, animated: true)
     }
 
-    private func withRandomAnimal(completion: @escaping (Animal?) -> Void) {
+    private func withRandomAnimal(completion: @escaping (AnimalModel?) -> Void) {
         APIService.config.baseUrl = [
             "https://api.thecatapi.com/v1",
             "https://api.thedogapi.com/v1",
         ][Int.random(in: 0 ... 1)]
         let apiKey = (Bundle.main.object(forInfoDictionaryKey: "Secrets") as? [String: String])?["THE_DOG_API_KEY"] ?? ""
-        APIService.shared.fetch(url: "/images/search", model: [Animal].self, queryItems: [.init(name: "api_key", value: apiKey)]) { result in
+        APIService.shared.fetch(url: "/images/search", model: [AnimalModel].self, queryItems: [.init(name: "api_key", value: apiKey)]) { result in
             switch result {
             case .success(let animals):
                 if let animal = animals.first {
@@ -175,7 +186,8 @@ extension NewTaskViewController: NewTaskViewDelegate {
     }
 
     func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath) {
-        group.$color.subscribe(by: cell, immediate: true) { cell, color in
+        group.$color.subscribe(by: cell, immediate: true) { [weak group] cell, _ in
+            guard let color = group?.uiColor else { return }
             cell.color = color
         }
     }
@@ -187,6 +199,6 @@ extension NewTaskViewController: NewTaskViewDelegate {
 
 extension NewTaskViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        group.color = viewController.selectedColor
+        group.uiColor = viewController.selectedColor
     }
 }

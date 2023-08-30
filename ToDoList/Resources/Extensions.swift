@@ -10,7 +10,7 @@ extension Array where Element: Equatable {
         }
         return count
     }
-    
+
     @discardableResult
     mutating func remove(element: Element) -> Int? {
         if let index = firstIndex(of: element) {
@@ -97,8 +97,33 @@ extension UIImageView {
     }
 }
 
+typealias Base64 = String
+
+extension UIImage {
+    var base64: Base64? { pngData()?.base64EncodedString() }
+
+    convenience init?(base64: Base64) {
+        guard let data = Data(base64Encoded: base64) else { return nil }
+        self.init(data: data)
+    }
+}
+
+struct RGBA: Codable {
+    var red: CGFloat
+    var green: CGFloat
+    var blue: CGFloat
+    var alpha: CGFloat
+}
+
 extension UIColor {
-    typealias RGBA = (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat)
+    var rgba: RGBA? {
+        var color: RGBA = .init(red: 0, green: 0, blue: 0, alpha: 0)
+        return getRed(&color.red, green: &color.green, blue: &color.blue, alpha: &color.alpha) ? color : nil
+    }
+
+    convenience init(rgba: RGBA) {
+        self.init(red: rgba.red, green: rgba.green, blue: rgba.blue, alpha: rgba.alpha)
+    }
 
     convenience init(light: UIColor, dark: UIColor) {
         guard #available(iOS 13.0, *) else { self.init(cgColor: light.cgColor); return }
@@ -142,9 +167,9 @@ extension UIColor {
     }
 
     var isLight: Bool {
-        var color: RGBA = (0, 0, 0, 0)
-        getRed(&color.r, green: &color.g, blue: &color.b, alpha: &color.a)
-        let brightness = (color.r * 299 + color.g * 587 + color.b * 114) / 1000
+        var color: RGBA = .init(red: 0, green: 0, blue: 0, alpha: 0)
+        getRed(&color.red, green: &color.green, blue: &color.blue, alpha: &color.alpha)
+        let brightness = (color.red * 299 + color.green * 587 + color.blue * 114) / 1000
         return brightness > 0.5
     }
 

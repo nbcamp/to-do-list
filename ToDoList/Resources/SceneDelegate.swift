@@ -8,6 +8,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = .init(windowScene: windowScene)
         window?.makeKeyAndVisible()
 
+        TaskService.shared.storage = UserDefaultsStorage.shared
+
         let navigationController = UINavigationController()
         navigationController.setViewControllers([TaskGroupViewController()], animated: true)
         window?.rootViewController = navigationController

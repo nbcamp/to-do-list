@@ -95,7 +95,7 @@ extension NewTaskViewController: NewTaskViewDelegate {
 
     func prepare(_ cell: NewTaskTableViewAddCell, at indexPath: IndexPath) {
         cell.addGestureAction(promptNewSubtask)
-        group.$color.observe(by: self, immediate: true) { color in
+        group.$color.observe(by: self, immediate: true) { (_, color) in
             cell.color = color
         }
     }

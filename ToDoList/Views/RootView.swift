@@ -1,0 +1,3 @@
+protocol RootView {
+    func initializeUI()
+}

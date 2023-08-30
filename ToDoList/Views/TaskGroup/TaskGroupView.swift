@@ -8,7 +8,7 @@ protocol TaskGroupViewDelegate: AnyObject {
     func editTasksMenuTapped()
 }
 
-final class TaskGroupView: UIView {
+final class TaskGroupView: UIView, RootView {
     weak var delegate: TaskGroupViewDelegate?
 
     private let spacing: CGFloat = 15
@@ -43,12 +43,7 @@ final class TaskGroupView: UIView {
         return emptyView
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        initializeUI()
-    }
-
-    private func initializeUI() {
+    func initializeUI() {
         backgroundColor = .systemBackground
         addSubview(collectionView)
         addSubview(placeholderView)

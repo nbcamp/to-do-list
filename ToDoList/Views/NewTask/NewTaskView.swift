@@ -9,7 +9,7 @@ protocol NewTaskViewDelegate: AnyObject {
     func willDelete(_ cell: NewTaskTableViewEditCell, at indexPath: IndexPath)
 }
 
-final class NewTaskView: UIView {
+final class NewTaskView: UIView, RootView {    
     var group: TaskGroup?
     weak var delegate: NewTaskViewDelegate?
 
@@ -35,12 +35,7 @@ final class NewTaskView: UIView {
         return tableView
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        initializeUI()
-    }
-
-    private func initializeUI() {
+    func initializeUI() {
         isUserInteractionEnabled = true
         backgroundColor = .systemBackground
 

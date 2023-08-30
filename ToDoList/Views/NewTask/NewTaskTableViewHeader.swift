@@ -49,7 +49,6 @@ final class NewTaskTableViewHeader: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 30).isActive = true
         button.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        button.addGestureAction { [unowned self] view in self.colorButtonTapped?(view) }
         return button
     }()
 

@@ -128,19 +128,19 @@ final class TaskTableViewHeader: UIView {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.subscriber.on(\.$name, by: self) { host, name in
+        newGroup.$name.subscribe(by: self) { host, name in
             host.titleTextField.text = name.new
         }
-        newGroup.subscriber.on(\.$tasks, by: self) { host, tasks in
+        newGroup.$tasks.subscribe(by: self) { host, tasks in
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
         }
-        newGroup.subscriber.on(\.$color, by: self) { [weak newGroup] host, _ in
+        newGroup.$color.subscribe(by: self) { [weak newGroup] host, _ in
             guard let color = newGroup?.uiColor else { return }
             host.progressView.color = color
             host.colorButton.backgroundColor = color
             host.colorButton.tintColor = .init(light: .black, dark: .white, for: color)
         }
-        newGroup.subscriber.on(\.$image, by: self) { [weak newGroup] host, _ in
+        newGroup.$image.subscribe(by: self) { [weak newGroup] host, _ in
             guard let image = newGroup?.uiImage else { return }
             host.progressView.image = image
         }

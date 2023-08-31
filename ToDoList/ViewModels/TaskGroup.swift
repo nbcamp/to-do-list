@@ -1,8 +1,6 @@
 import UIKit
 
 final class TaskGroup: ViewModel {
-    private(set) lazy var subscriber = Subscriber(source: self)
-
     let id: String
     @Publishable var name: String
     @Publishable var image: Base64?

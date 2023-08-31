@@ -34,7 +34,6 @@
 		332812002A9D98A7005EEAB7 /* AnimalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332811FF2A9D98A7005EEAB7 /* AnimalModel.swift */; };
 		332812022A9DDC48005EEAB7 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812012A9DDC48005EEAB7 /* ToastView.swift */; };
 		332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812052A9ED814005EEAB7 /* WeakRef.swift */; };
-		332812082A9ED96E005EEAB7 /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332812072A9ED96E005EEAB7 /* Subscriber.swift */; };
 		3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120B2A9EE7DE005EEAB7 /* RootView.swift */; };
 		3328120E2A9EF513005EEAB7 /* DebugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120D2A9EF513005EEAB7 /* DebugViewController.swift */; };
 		332812102A9F1997005EEAB7 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328120F2A9F1997005EEAB7 /* EventBus.swift */; };
@@ -83,7 +82,6 @@
 		332812032A9E64D9005EEAB7 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
 		332812042A9E65D9005EEAB7 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		332812052A9ED814005EEAB7 /* WeakRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRef.swift; sourceTree = "<group>"; };
-		332812072A9ED96E005EEAB7 /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
 		3328120B2A9EE7DE005EEAB7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3328120D2A9EF513005EEAB7 /* DebugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugViewController.swift; sourceTree = "<group>"; };
 		3328120F2A9F1997005EEAB7 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
@@ -230,7 +228,6 @@
 			isa = PBXGroup;
 			children = (
 				332812052A9ED814005EEAB7 /* WeakRef.swift */,
-				332812072A9ED96E005EEAB7 /* Subscriber.swift */,
 				332811F72A9CA2AF005EEAB7 /* Publishable.swift */,
 				3328120F2A9F1997005EEAB7 /* EventBus.swift */,
 				33F39C0D2A9F777200C102E8 /* Storage.swift */,
@@ -364,7 +361,6 @@
 				332811F32A9C4FF6005EEAB7 /* TaskTableViewAddCell.swift in Sources */,
 				332812102A9F1997005EEAB7 /* EventBus.swift in Sources */,
 				332811E52A9B552C005EEAB7 /* Subtask.swift in Sources */,
-				332812082A9ED96E005EEAB7 /* Subscriber.swift in Sources */,
 				332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */,
 				3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */,
 				33F39C222AA0372700C102E8 /* RootViewController.swift in Sources */,

@@ -56,10 +56,9 @@ final class DebugViewController: TypedViewController<DebugView> {
 
 extension DebugViewController: DebugViewDelegate {
     func initialize(group: TaskGroup) {
-        group.subscriber.on(\.$name, by: self, immediate: false) { host, name in
+        group.$name.subscribe(by: self, immediate: false) { host, name in
             host.typedView.updateTitleLabel(text: name.new)
         }
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.group?.name = "Name Changed"
         }

@@ -34,7 +34,7 @@ final class Publishable<Property> {
         by publisher: Publisher,
         _ callback: @escaping EventCallback<Publisher>
     ) -> ((_ id: UUID) -> Void, UUID) {
-        return subscribe(by: publisher, immediate: false, callback)
+        return subscribe(by: publisher, immediate: true, callback)
     }
 
     @discardableResult

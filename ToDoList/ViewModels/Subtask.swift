@@ -1,8 +1,6 @@
 import Foundation
 
 final class Subtask: ViewModel {
-    private(set) lazy var subscriber = Subscriber(source: self)
-
     let id: String
     @Publishable var name: String
     @Publishable var completed: Bool

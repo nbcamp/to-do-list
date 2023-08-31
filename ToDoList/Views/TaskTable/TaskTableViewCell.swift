@@ -96,10 +96,10 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
         guard oldTask !== newTask, let newTask else { return }
-        newTask.subscriber.on(\.$name, by: self) { host, name in
+        newTask.$name.subscribe(by: self) { host, name in
             host.titleLabel.text = name.new
         }
-        newTask.subscriber.on(\.$completed, by: self) { host, completed in
+        newTask.$completed.subscribe(by: self) { host, completed in
             UIView.animate(withDuration: 0.1) { [weak host] in
                 guard let host else { return }
                 host.hStackView.layer.opacity = completed.new ? 0.5 : 1.0
@@ -107,7 +107,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
                 host.titleLabel.strikethrough(completed.new)
             }
         }
-        newTask.group.subscriber.on(\.$color, by: self) { [weak newTask] host, _ in
+        newTask.group.$color.subscribe(by: self) { [weak newTask] host, _ in
             guard let color = newTask?.group.uiColor else { return }
             host.markerView.tintColor = color
             host.titleLabel.textColor = color

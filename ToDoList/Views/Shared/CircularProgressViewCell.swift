@@ -7,7 +7,7 @@ final class CircularProgressViewCell: UIView {
             progressView.draw()
         }
     }
-    
+
     var color: UIColor = .label {
         didSet {
             imageView.tintColor = color
@@ -22,9 +22,17 @@ final class CircularProgressViewCell: UIView {
             imageView.image = image
         }
     }
-    
+
     var progress: Double = 0.0 {
         didSet { progressView.progress = progress }
+    }
+
+    var loading: Bool = false {
+        didSet {
+            loading
+                ? loadingIndicatorView.startAnimating()
+                : loadingIndicatorView.stopAnimating()
+        }
     }
 
     private lazy var progressView = {
@@ -36,6 +44,17 @@ final class CircularProgressViewCell: UIView {
         return progressView
     }()
 
+    private lazy var loadingIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.transform = .init(scaleX: 1.5, y: 1.5)
+        indicator.hidesWhenStopped = true
+        indicator.backgroundColor = .black.withAlphaComponent(0.2)
+        indicator.color = .white.withAlphaComponent(0.8)
+        indicator.isUserInteractionEnabled = true
+        indicator.addGestureAction(stop: true) { _ in }
+        return indicator
+    }()
+
     private lazy var imageView = {
         let imageView = UIImageView()
         imageView.image = image
@@ -45,9 +64,14 @@ final class CircularProgressViewCell: UIView {
         return imageView
     }()
 
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         initializeUI()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func initializeUI() {
@@ -58,12 +82,19 @@ final class CircularProgressViewCell: UIView {
 extension CircularProgressViewCell: CircularProgressViewDelegate {
     func innerView(_ view: UIView) {
         view.addSubview(imageView)
+        view.addSubview(loadingIndicatorView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1.0),
             imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1.0),
+
+            loadingIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingIndicatorView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1.0),
+            loadingIndicatorView.heightAnchor.constraint(equalTo: loadingIndicatorView.widthAnchor),
         ])
     }
 }

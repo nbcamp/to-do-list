@@ -11,11 +11,9 @@ final class CircularProgressView: UIView {
 
     var color: UIColor = .clear
     var lineWidth: CGFloat = 0.15
-
-    private var _progress: CGFloat = .zero
-    var progress: CGFloat {
-        get { _progress }
-        set { animate(progress: newValue) }
+    
+    var progress: CGFloat = .zero {
+        didSet { progressLayer.strokeEnd = progress }
     }
 
     weak var delegate: CircularProgressViewDelegate?
@@ -62,22 +60,6 @@ final class CircularProgressView: UIView {
             delegate?.innerView?(innerView)
             addSubview(innerView)
         }
-    }
-
-    func animate(
-        progress: CGFloat,
-        duration: TimeInterval = 0.5,
-        timingFunction: CAMediaTimingFunction = .init(name: .easeInEaseOut)
-    ) {
-        progressLayer.strokeEnd = _progress
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.duration = duration
-        animation.toValue = progress
-        animation.fillMode = .forwards
-        animation.timingFunction = timingFunction
-        animation.isRemovedOnCompletion = false
-        progressLayer.add(animation, forKey: "progressAnimation")
-        _progress = progress
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

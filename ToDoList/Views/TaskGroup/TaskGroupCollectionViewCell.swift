@@ -2,10 +2,7 @@ import UIKit
 
 final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     weak var group: TaskGroup? {
-        didSet {
-            progressView.progress = group?.progress ?? .zero
-            listenTaskGroupChanged(old: oldValue, new: group)
-        }
+        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 
     private var margin: CGFloat { bounds.width * 0.1 }
@@ -85,6 +82,9 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
         }
         newGroup.$tasks.subscribe(by: self) { host, tasks in
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
+        }
+        newGroup.$progress.subscribe(by: self) { host, progress in
+            host.progressView.progress = progress.new
         }
     }
 }

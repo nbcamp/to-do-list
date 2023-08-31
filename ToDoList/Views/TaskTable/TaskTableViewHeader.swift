@@ -2,10 +2,7 @@ import UIKit
 
 final class TaskTableViewHeader: UIView {
     weak var group: TaskGroup? {
-        didSet {
-            progressView.progress = group?.progress ?? .zero
-            listenTaskGroupChanged(old: oldValue, new: group)
-        }
+        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 
     var editable: Bool = false {
@@ -92,8 +89,9 @@ final class TaskTableViewHeader: UIView {
         initializeUI()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -123,7 +121,10 @@ final class TaskTableViewHeader: UIView {
         }
         progressView.addGestureAction { [unowned self] _ in
             guard editable, let group else { return }
-            EventBus.shared.emit(FetchRandomImage(payload: .init(group: group)))
+            progressView.loading = true
+            EventBus.shared.emit(FetchRandomImage(payload: .init(group: group) { [weak self] in
+                self?.progressView.loading = false
+            }))
         }
     }
 

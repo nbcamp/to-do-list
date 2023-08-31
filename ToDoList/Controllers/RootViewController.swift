@@ -56,6 +56,7 @@ extension RootViewController {
                     else { return }
                     DispatchQueue.main.async {
                         payload.group.uiImage = image
+                        payload.completion()
                     }
                 }
             }

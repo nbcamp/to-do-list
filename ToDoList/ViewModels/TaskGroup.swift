@@ -11,8 +11,8 @@ final class TaskGroup: ViewModel {
     init(
         id: String = UUID().uuidString,
         name: String = "",
-        image: Base64? = "",
-        color: RGBA? = .init(red: 0, green: 0, blue: 0, alpha: 0),
+        image: Base64? = nil,
+        color: RGBA? = nil,
         tasks: [Subtask] = [],
         progress: Double? = nil
     ) {

@@ -27,6 +27,7 @@ struct PresentColorPicker: EventProtocol {
 struct FetchRandomImage: EventProtocol {
     struct Payload {
         let group: TaskGroup
+        let completion: () -> Void
     }
 
     let payload: Payload

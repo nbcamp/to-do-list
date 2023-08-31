@@ -2,7 +2,8 @@ import Foundation
 
 @propertyWrapper
 final class Publishable<Property> {
-    typealias EventCallback<Publisher: AnyObject> = ((publisher: Publisher, property: Property)) -> Void
+    typealias Changes = (old: Property, new: Property)
+    typealias EventCallback<Publisher: AnyObject> = ((publisher: Publisher, property: Changes)) -> Void
 
     struct Subscriber<Publisher: AnyObject>: Identifiable {
         let id: UUID
@@ -15,7 +16,11 @@ final class Publishable<Property> {
 
     var wrappedValue: Property {
         get { value }
-        set { publish(newValue) }
+        set {
+            let oldValue = value
+            value = newValue
+            publish((oldValue, newValue))
+        }
     }
 
     var projectedValue: Publishable { self }
@@ -44,7 +49,7 @@ final class Publishable<Property> {
             callback((publisher, args.property))
         }
         subscribers.append(.init(id: id, callback: anyCallback, publisher: .init(publisher)))
-        if immediate { callback((publisher, value)) }
+        if immediate { callback((publisher, (value, value))) }
         return (unsubscribe, id)
     }
 
@@ -52,11 +57,10 @@ final class Publishable<Property> {
         subscribers.removeAll { $0.id == id }
     }
 
-    func publish(_ newValue: Property) {
-        value = newValue
+    func publish(_ changes: Changes) {
         subscribers = subscribers.compactMap { subscriber in
             guard let publisher = subscriber.publisher.value else { return nil }
-            subscriber.callback((publisher, value))
+            subscriber.callback((publisher, changes))
             return subscriber
         }
     }

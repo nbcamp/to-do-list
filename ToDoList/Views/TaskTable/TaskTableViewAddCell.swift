@@ -1,25 +1,20 @@
 import UIKit
 
-final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
-    var color: UIColor = .label {
-        didSet {
-            containerView.backgroundColor = color
-            iconView.tintColor = _textColor
-            titleLabel.textColor = _textColor
-        }
+final class TaskTableViewAddCell: UITableViewCell, Identifier {
+    weak var group: TaskGroup? {
+        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
 
     private var _textColor: UIColor {
         .init(
             light: .black.withAlphaComponent(0.8),
             dark: .white.withAlphaComponent(0.8),
-            for: color
+            for: group?.uiColor ?? .systemBackground
         )
     }
 
     private lazy var containerView = {
         let view = UIView()
-        view.backgroundColor = color
         view.layer.cornerRadius = 10.0
         view.layer.masksToBounds = true
         view.addSubview(hStackView)
@@ -51,7 +46,7 @@ final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
     }()
 
     private lazy var titleLabel = {
-        let label = UIExtendedLabel()
+        let label = UILabel()
         label.text = "Add New Subtask"
         label.textColor = _textColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
@@ -82,8 +77,19 @@ final class NewTaskTableViewAddCell: UITableViewCell, Identifier {
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
 
-        addGestureAction { _ in
-            EventBus.shared.emit(CreateNewTask())
+        addGestureAction { [unowned self] _ in
+            guard let group else { return }
+            EventBus.shared.emit(CreateNewTask(payload: .init(group: group)))
+        }
+    }
+
+    private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
+        guard oldGroup !== newGroup, let newGroup else { return }
+        newGroup.subscriber.on(\.$color, by: self) { [weak newGroup] host, _ in
+            guard let color = newGroup?.uiColor else { return }
+            host.containerView.backgroundColor = color
+            host.iconView.tintColor = host._textColor
+            host.titleLabel.textColor = host._textColor
         }
     }
 

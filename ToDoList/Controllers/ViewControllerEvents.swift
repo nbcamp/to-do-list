@@ -4,16 +4,40 @@ struct PushToNewTaskScreen: EventProtocol {
     let payload: Void = ()
 }
 
-struct PresentColorPicker: EventProtocol {
+struct PushToEditTaskGroupScreen: EventProtocol {
     let payload: Void = ()
+}
+
+struct PushToDetailTaskScreen: EventProtocol {
+    struct Payload {
+        let group: TaskGroup
+    }
+
+    let payload: Payload
+}
+
+struct PresentColorPicker: EventProtocol {
+    struct Payload {
+        let group: TaskGroup
+    }
+
+    let payload: Payload
 }
 
 struct FetchRandomImage: EventProtocol {
-    let payload: Void = ()
+    struct Payload {
+        let group: TaskGroup
+    }
+
+    let payload: Payload
 }
 
 struct CreateNewTask: EventProtocol {
-    let payload: Void = ()
+    struct Payload {
+        let group: TaskGroup
+    }
+
+    let payload: Payload
 }
 
 struct EditTaskName: EventProtocol {

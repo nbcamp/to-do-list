@@ -1,11 +1,11 @@
 import Foundation
 
-
 protocol Storage {
     static var shared: Self { get }
 
     func save<T: Encodable>(_ object: T, forKey key: String)
     func load<T: Decodable>(forKey key: String) -> T?
+    func remove(forKey key: String)
 }
 
 final class UserDefaultsStorage: Storage {
@@ -23,5 +23,10 @@ final class UserDefaultsStorage: Storage {
     func load<T: Decodable>(forKey key: String) -> T? {
         guard let data = UserDefaults.standard.data(forKey: key) else { return nil }
         return try? decoder.decode(T.self, from: data)
+    }
+    
+    func remove(forKey key: String) {
+        print(#function, key)
+        UserDefaults.standard.removeObject(forKey: key)
     }
 }

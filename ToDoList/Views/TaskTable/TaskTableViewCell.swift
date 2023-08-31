@@ -1,8 +1,24 @@
 import UIKit
 
-final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
+final class TaskTableViewCell: UITableViewCell, Identifier {
     weak var task: Subtask? {
         didSet { listenTaskChanged(old: oldValue, new: task) }
+    }
+
+    enum MarkerState: String {
+        case complete = "checkmark.circle"
+        case incomplete = "circle"
+        case delete = "multiply.circle"
+
+        var image: UIImage { .init(systemName: rawValue)! }
+    }
+
+    private var state: MarkerState = .incomplete {
+        didSet { markerView.image = state.image }
+    }
+
+    var editable: Bool = false {
+        didSet { editable ? enterEditMode() : exitEditMode() }
     }
 
     private var _backgroundColor: UIColor {
@@ -30,15 +46,18 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
     }()
 
     private lazy var hStackView = {
-        let stackView = UIStackView(arrangedSubviews: [deleteButton, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [
+            markerView,
+            titleLabel,
+        ])
         stackView.axis = .horizontal
         stackView.spacing = 10.0
         return stackView
     }()
 
-    private lazy var deleteButton = {
+    private lazy var markerView = {
         let iconView = UIImageView(frame: .zero)
-        iconView.image = .init(systemName: "multiply.circle")
+        iconView.image = .init(systemName: "checkmark.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
         return iconView
@@ -73,36 +92,49 @@ final class NewTaskTableViewEditCell: UITableViewCell, Identifier {
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
-
-        titleLabel.addGestureAction { [unowned self] _ in
-            guard let task else { return }
-            EventBus.shared.emit(EditTaskName(payload: .init(task: task)))
-        }
-
-        deleteButton.addGestureAction { [unowned self] _ in
-            guard let task else { return }
-            EventBus.shared.emit(DeleteTask(payload: .init(task: task)))
-        }
     }
 
     private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
         guard oldTask !== newTask, let newTask else { return }
         newTask.subscriber.on(\.$name, by: self) { host, name in
-            host.titleLabel.text = name
+            host.titleLabel.text = name.new
         }
-//        newTask.subscriber.on(\.$completed, by: self) { (host, completed) in
-//            UIView.animate(withDuration: 0.1) { [weak host] in
-//                guard let weakSelf = host else { return }
-//                weakSelf.hStackView.layer.opacity = completed ? 0.5 : 1.0
-//                weakSelf.iconView.image = .init(systemName: completed ? "checkmark.circle" : "circle")
-//                weakSelf.titleLabel.strikethrough = completed
-//            }
-//        }
+        newTask.subscriber.on(\.$completed, by: self) { host, completed in
+            UIView.animate(withDuration: 0.1) { [weak host] in
+                guard let host else { return }
+                host.hStackView.layer.opacity = completed.new ? 0.5 : 1.0
+                host.markerView.image = .init(systemName: completed.new ? "checkmark.circle" : "circle")
+                host.titleLabel.strikethrough(completed.new)
+            }
+        }
         newTask.group.subscriber.on(\.$color, by: self) { [weak newTask] host, _ in
             guard let color = newTask?.group.uiColor else { return }
-            host.deleteButton.tintColor = color
+            host.markerView.tintColor = color
             host.titleLabel.textColor = color
             host.containerView.backgroundColor = host._backgroundColor
+        }
+    }
+
+    private func enterEditMode() {
+        state = .delete
+        containerView.removeGestureAction()
+        titleLabel.addGestureAction(stop: false) { [unowned self] _ in
+            guard let task else { return }
+            EventBus.shared.emit(EditTaskName(payload: .init(task: task)))
+        }
+        markerView.addGestureAction { [unowned self] _ in
+            guard let task else { return }
+            EventBus.shared.emit(DeleteTask(payload: .init(task: task)))
+        }
+    }
+
+    private func exitEditMode() {
+        guard let task else { return }
+        state = task.completed ? .complete : .incomplete
+        titleLabel.removeGestureAction()
+        markerView.removeGestureAction()
+        containerView.addGestureAction { _ in
+            TaskService.shared.complete(task: task)
         }
     }
 

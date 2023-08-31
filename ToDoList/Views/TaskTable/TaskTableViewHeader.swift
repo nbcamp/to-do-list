@@ -1,8 +1,16 @@
 import UIKit
 
-final class NewTaskTableViewHeader: UIView {
+final class TaskTableViewHeader: UIView {
     weak var group: TaskGroup? {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
+    }
+
+    var editable: Bool = false {
+        didSet {
+            titleTextField.isUserInteractionEnabled = editable
+            colorButton.isHidden = !editable
+            frame.size.height = editable ? 400 : 350
+        }
     }
 
     private var margin: CGFloat { bounds.width * 0.1 }
@@ -38,6 +46,7 @@ final class NewTaskTableViewHeader: UIView {
         button.setTitle("Choose Color", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 14)
         button.titleEdgeInsets = .zero
+        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 30).isActive = true
         button.widthAnchor.constraint(equalToConstant: 120).isActive = true
@@ -61,6 +70,7 @@ final class NewTaskTableViewHeader: UIView {
         textField.placeholder = "Enter Task Name"
         textField.returnKeyType = .done
         textField.delegate = self
+        textField.isUserInteractionEnabled = false
         textField.font = .systemFont(ofSize: 30, weight: .heavy)
         textField.textAlignment = .center
         return textField
@@ -95,7 +105,7 @@ final class NewTaskTableViewHeader: UIView {
     private func initializeUI() {
         debugPrint(name, #function)
 
-        frame.size.height = 400
+        frame.size.height = 350
         addSubview(vStackView)
 
         vStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,21 +116,23 @@ final class NewTaskTableViewHeader: UIView {
             vStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
         ])
 
-        colorButton.addGestureAction { _ in
-            EventBus.shared.emit(PresentColorPicker())
+        colorButton.addGestureAction { [unowned self] _ in
+            guard let group else { return }
+            EventBus.shared.emit(PresentColorPicker(payload: .init(group: group)))
         }
-        progressView.addGestureAction { _ in
-            EventBus.shared.emit(FetchRandomImage())
+        progressView.addGestureAction { [unowned self] _ in
+            guard editable, let group else { return }
+            EventBus.shared.emit(FetchRandomImage(payload: .init(group: group)))
         }
     }
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
         newGroup.subscriber.on(\.$name, by: self) { host, name in
-            host.titleTextField.text = name
+            host.titleTextField.text = name.new
         }
         newGroup.subscriber.on(\.$tasks, by: self) { host, tasks in
-            host.subtitleLabel.text = "\(tasks.count) Tasks"
+            host.subtitleLabel.text = "\(tasks.new.count) Tasks"
         }
         newGroup.subscriber.on(\.$color, by: self) { [weak newGroup] host, _ in
             guard let color = newGroup?.uiColor else { return }
@@ -128,7 +140,7 @@ final class NewTaskTableViewHeader: UIView {
             host.colorButton.backgroundColor = color
             host.colorButton.tintColor = .init(light: .black, dark: .white, for: color)
         }
-        newGroup.subscriber.on(\.$image, by: self, immediate: false) { [weak newGroup] host, _ in
+        newGroup.subscriber.on(\.$image, by: self) { [weak newGroup] host, _ in
             guard let image = newGroup?.uiImage else { return }
             host.progressView.image = image
         }
@@ -137,7 +149,7 @@ final class NewTaskTableViewHeader: UIView {
     deinit { debugPrint(name, #function) }
 }
 
-extension NewTaskTableViewHeader: UITextFieldDelegate {
+extension TaskTableViewHeader: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         dismissKeyboard()
         return false

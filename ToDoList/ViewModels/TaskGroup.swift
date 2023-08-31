@@ -28,6 +28,13 @@ final class TaskGroup: ViewModel {
 
 extension TaskGroup {
     func toModel() -> TaskGroupModel { .init(from: self) }
+    
+    func overwrite(_ other: TaskGroup) {
+        self.name = other.name
+        self.image = other.image
+        self.color = other.color
+        self.tasks = other.tasks
+    }
 }
 
 extension TaskGroup {

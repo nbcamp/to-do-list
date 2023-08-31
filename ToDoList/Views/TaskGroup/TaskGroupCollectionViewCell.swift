@@ -70,19 +70,20 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.subscriber.on(\.$color, by: self) { host, color in
-            host.progressView.color = .init(rgba: color!)
+        newGroup.subscriber.on(\.$color, by: self) { [weak newGroup] host, _ in
+            guard let color = newGroup?.uiColor else { return }
+            host.progressView.color = color
         }
         newGroup.subscriber.on(\.$name, by: self) { host, name in
-            host.titleLabel.text = name
+            host.titleLabel.text = name.new
         }
-        newGroup.subscriber.on(\.$image, by: self) { host, image in
-            guard let image, let image = UIImage(base64: image) else { return }
+        newGroup.subscriber.on(\.$image, by: self) { [weak newGroup] host, _ in
+            guard let image = newGroup?.uiImage else { return }
             host.progressView.image = image
             host.imageView.image = image
         }
         newGroup.subscriber.on(\.$tasks, by: self) { host, tasks in
-            host.subtitleLabel.text = "\(tasks.count) Tasks"
+            host.subtitleLabel.text = "\(tasks.new.count) Tasks"
             host.progressView.progressView.progress = host.group?.progress ?? 0.0
         }
     }

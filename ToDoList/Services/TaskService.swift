@@ -25,6 +25,11 @@ final class TaskService {
         defer { save() }
         return task.group.tasks.remove(element: task)
     }
+    
+    func complete(task: Subtask) {
+        defer { save() }
+        task.completed.toggle()
+    }
 
     private func save() {
         storage?.save(groups.map { $0.toModel() }, forKey: key)

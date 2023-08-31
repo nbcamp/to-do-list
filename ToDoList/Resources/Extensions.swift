@@ -50,14 +50,25 @@ extension UIView {
 
     private enum AssociatedKeys {
         static var uiGestureRecognizerKey = "UI_GESTURE_RECOGNIZER_KEY"
+        static var uiGestureInstanceKey = "UI_GESTURE_INSTANCE_KEY"
     }
 
     func addGestureAction(with recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self, stop: Bool = true, _ action: @escaping (UIView) -> Void) {
         isUserInteractionEnabled = true
         objc_setAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        
         let gestureRecognizer = recognizer.init(target: self, action: #selector(self._executeAction))
+        objc_setAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey, gestureRecognizer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
         gestureRecognizer.cancelsTouchesInView = stop
         addGestureRecognizer(gestureRecognizer)
+    }
+    
+    func removeGestureAction() {
+        guard let gestureRecognizer = objc_getAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey) as? UIGestureRecognizer else { return }
+        removeGestureRecognizer(gestureRecognizer)        
+        objc_setAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     @objc private func _executeAction() {
@@ -174,6 +185,19 @@ extension UIColor {
     }
 
     var isDark: Bool { !self.isLight }
+}
+
+extension UILabel {
+    func strikethrough(_ enabled: Bool) {
+        guard let text else { return }
+        let attributedText = NSMutableAttributedString(string: text)
+        attributedText.addAttribute(
+            NSAttributedString.Key.strikethroughStyle,
+            value: enabled ? NSUnderlineStyle.single.rawValue : [] as [Any],
+            range: NSMakeRange(0, attributedText.length)
+        )
+        self.attributedText = attributedText
+    }
 }
 
 extension UIScrollView {

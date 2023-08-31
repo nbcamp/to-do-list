@@ -94,7 +94,9 @@ extension TaskGroupView: UICollectionViewDataSource {
             .init(icon: "plus.circle", title: "New Task", handler: { _ in
                 EventBus.shared.emit(PushToNewTaskScreen())
             }),
-            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { _ in }),
+            .init(icon: "pencil.circle", title: "Edit Tasks", handler: { _ in
+                EventBus.shared.emit(PushToEditTaskGroupScreen())
+            }),
         ]
         dropdownMenuView = DropdownMenuView(menus, on: target, root: self, delegate: self)
         dropdownMenuView?.onSelected = { [unowned self] _ in
@@ -104,7 +106,12 @@ extension TaskGroupView: UICollectionViewDataSource {
     }
 }
 
-extension TaskGroupView: UICollectionViewDelegate {}
+extension TaskGroupView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let group = groups?[indexPath.item] else { return }
+        EventBus.shared.emit(PushToDetailTaskScreen(payload: .init(group: group)))
+    }
+}
 
 extension TaskGroupView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

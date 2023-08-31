@@ -6,7 +6,6 @@ final class TaskGroupViewController: TypedViewController<TaskGroupView> {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         typedView.groups = WeakArray(groups)
-        typedView.collectionView.reloadData()
         navigationController?.navigationBar.isHidden = true
     }
 

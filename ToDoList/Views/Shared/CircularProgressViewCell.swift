@@ -38,9 +38,6 @@ final class CircularProgressViewCell: UIView {
     private lazy var progressView = {
         let progressView = CircularProgressView()
         progressView.delegate = self
-        progressView.size = size
-        progressView.color = color
-        progressView.draw()
         return progressView
     }()
 

@@ -35,7 +35,7 @@ final class CircularProgressView: UIView {
         circularLayer.fillColor = UIColor.clear.cgColor
         circularLayer.lineCap = .round
         circularLayer.lineWidth = lineWidth
-        circularLayer.strokeEnd = 1.0
+        circularLayer.strokeEnd = .one
         circularLayer.strokeColor = color.withAlphaComponent(0.2).cgColor
         layer.addSublayer(circularLayer)
 
@@ -43,7 +43,7 @@ final class CircularProgressView: UIView {
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = lineWidth
-        progressLayer.strokeEnd = 0
+        progressLayer.strokeEnd = progress
         progressLayer.strokeColor = color.cgColor
         layer.addSublayer(progressLayer)
 
@@ -60,10 +60,5 @@ final class CircularProgressView: UIView {
             delegate?.innerView?(innerView)
             addSubview(innerView)
         }
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        draw()
     }
 }

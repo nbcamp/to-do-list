@@ -36,8 +36,6 @@ final class TaskGroupView: UIView, RootView {
     }()
 
     func initializeUI() {
-        debugPrint(name, #function)
-
         backgroundColor = .systemBackground
         addSubview(collectionView)
         addSubview(placeholderView)
@@ -55,8 +53,6 @@ final class TaskGroupView: UIView, RootView {
             placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
-
-    deinit { debugPrint(name, #function) }
 }
 
 extension TaskGroupView: UICollectionViewDataSource {

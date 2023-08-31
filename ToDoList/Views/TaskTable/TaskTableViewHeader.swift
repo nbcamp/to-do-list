@@ -2,7 +2,10 @@ import UIKit
 
 final class TaskTableViewHeader: UIView {
     weak var group: TaskGroup? {
-        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
+        didSet {
+            progressView.progress = group?.progress ?? .zero
+            listenTaskGroupChanged(old: oldValue, new: group)
+        }
     }
 
     var editable: Bool = false {
@@ -103,8 +106,6 @@ final class TaskTableViewHeader: UIView {
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         frame.size.height = 350
         addSubview(vStackView)
 
@@ -144,9 +145,10 @@ final class TaskTableViewHeader: UIView {
             guard let image = newGroup?.uiImage else { return }
             host.progressView.image = image
         }
+        newGroup.$progress.subscribe(by: self) { host, progress in
+            host.progressView.progress = progress.new
+        }
     }
-
-    deinit { debugPrint(name, #function) }
 }
 
 extension TaskTableViewHeader: UITextFieldDelegate {

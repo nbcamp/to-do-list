@@ -5,6 +5,10 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         didSet { listenTaskChanged(old: oldValue, new: task) }
     }
 
+    var editable: Bool = false {
+        didSet { editable ? enterEditMode() : exitEditMode() }
+    }
+
     enum MarkerState: String {
         case complete = "checkmark.circle"
         case incomplete = "circle"
@@ -15,10 +19,6 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
 
     private var state: MarkerState = .incomplete {
         didSet { markerView.image = state.image }
-    }
-
-    var editable: Bool = false {
-        didSet { editable ? enterEditMode() : exitEditMode() }
     }
 
     private var _backgroundColor: UIColor {
@@ -79,8 +79,6 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         selectionStyle = .none
         contentView.addSubview(containerView)
 
@@ -137,6 +135,4 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
             EventBus.shared.emit(CompleteTask(payload: .init(task: task)))
         }
     }
-
-    deinit { debugPrint(name, #function) }
 }

@@ -66,10 +66,10 @@ final class CircularProgressView: UIView {
 
     func animate(
         progress: CGFloat,
-        duration: TimeInterval = 1.0,
+        duration: TimeInterval = 0.5,
         timingFunction: CAMediaTimingFunction = .init(name: .easeInEaseOut)
     ) {
-        _progress = progress
+        progressLayer.strokeEnd = _progress
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.duration = duration
         animation.toValue = progress
@@ -77,6 +77,7 @@ final class CircularProgressView: UIView {
         animation.timingFunction = timingFunction
         animation.isRemovedOnCompletion = false
         progressLayer.add(animation, forKey: "progressAnimation")
+        _progress = progress
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

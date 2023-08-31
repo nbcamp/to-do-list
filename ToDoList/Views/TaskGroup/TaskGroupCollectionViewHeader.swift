@@ -32,8 +32,6 @@ final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier 
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         addSubview(titleLabel)
         addSubview(settingButton)
 
@@ -47,6 +45,4 @@ final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier 
             settingButton.widthAnchor.constraint(equalTo: settingButton.heightAnchor, multiplier: .one),
         ])
     }
-
-    deinit { debugPrint(name, #function) }
 }

@@ -63,8 +63,6 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         selectionStyle = .none
         contentView.addSubview(containerView)
 
@@ -92,6 +90,4 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
             host.titleLabel.textColor = host._textColor
         }
     }
-
-    deinit { debugPrint(name, #function) }
 }

@@ -43,8 +43,6 @@ final class TaskGroupPlaceholderView: UIView, Identifier {
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         addSubview(vStackView)
         vStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -62,6 +60,4 @@ final class TaskGroupPlaceholderView: UIView, Identifier {
             EventBus.shared.emit(PushToNewTaskScreen())
         }
     }
-
-    deinit { debugPrint(name, #function) }
 }

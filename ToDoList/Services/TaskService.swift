@@ -17,17 +17,17 @@ final class TaskService {
     }
 
     func add(task: Subtask) {
-        defer { save() }
+        defer { task.group.sync(); save() }
         task.group.tasks.append(task)
     }
 
     func remove(task: Subtask) -> Int? {
-        defer { save() }
+        defer { task.group.sync(); save() }
         return task.group.tasks.remove(element: task)
     }
-    
+
     func complete(task: Subtask) {
-        defer { save() }
+        defer { task.group.sync(); save() }
         task.completed.toggle()
     }
 

@@ -27,8 +27,6 @@ final class TaskTableView: UIView, RootView {
     }()
 
     func initializeUI() {
-        debugPrint(name, #function)
-
         isUserInteractionEnabled = true
         backgroundColor = .systemBackground
 
@@ -57,8 +55,6 @@ final class TaskTableView: UIView, RootView {
             }
         }
     }
-
-    deinit { debugPrint(name, #function) }
 }
 
 extension TaskTableView: UITableViewDataSource {
@@ -67,11 +63,11 @@ extension TaskTableView: UITableViewDataSource {
             header.group = group
             header.editable = editable
         }
-        return (group?.tasks.count ?? 0) + 1
+        return (group?.tasks.count ?? 0) + (editable ? 1 : 0)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
+        if editable, indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewAddCell.identifier, for: indexPath) as! TaskTableViewAddCell
             cell.group = group
             return cell

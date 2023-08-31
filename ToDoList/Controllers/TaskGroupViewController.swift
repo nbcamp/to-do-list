@@ -3,11 +3,6 @@ import UIKit
 final class TaskGroupViewController: TypedViewController<TaskGroupView> {
     private var groups: [TaskGroup] { TaskService.shared.groups }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        debugPrint(name, #function)
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         typedView.groups = WeakArray(groups)
@@ -19,6 +14,4 @@ final class TaskGroupViewController: TypedViewController<TaskGroupView> {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
     }
-
-    deinit { debugPrint(name, #function) }
 }

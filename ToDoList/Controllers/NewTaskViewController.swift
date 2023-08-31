@@ -16,16 +16,7 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
     ) {
         self.done = done
         self.animated = animated
-        self.group = {
-            if let group {
-                return TaskGroup(
-                    id: group.id,
-                    name: group.name,
-                    image: group.image,
-                    color: group.color,
-                    tasks: group.tasks
-                )
-            }
+        self.group = group ?? { // TODO: 참조 타입 불러오는 문제 수정
             let group = TaskGroup()
             group.uiColor = .random(in: .dark)
             return group
@@ -74,6 +65,4 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
             color: group.uiColor ?? .black
         ) { [weak self] in self?.isToastOpened = false }
     }
-
-    deinit { debugPrint(name, #function) }
 }

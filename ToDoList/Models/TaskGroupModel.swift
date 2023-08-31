@@ -6,6 +6,7 @@ struct TaskGroupModel: Codable {
     let image: Base64?
     let color: RGBA?
     let tasks: [SubtaskModel]
+    let progress: Double
 
     init(from group: TaskGroup) {
         id = group.id
@@ -13,6 +14,7 @@ struct TaskGroupModel: Codable {
         image = group.image
         color = group.color
         tasks = group.tasks.map(SubtaskModel.init)
+        progress = group.progress
     }
 }
 
@@ -22,7 +24,8 @@ extension TaskGroupModel {
             id: id,
             name: name,
             image: image,
-            color: color
+            color: color,
+            progress: progress
         )
         group.tasks = tasks.compactMap { $0.toViewModel(group: group) }
         return group

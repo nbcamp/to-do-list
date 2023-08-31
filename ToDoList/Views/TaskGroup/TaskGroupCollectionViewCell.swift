@@ -3,7 +3,7 @@ import UIKit
 final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     weak var group: TaskGroup? {
         didSet {
-            progressView.progressView.progress = group?.progress ?? .zero
+            progressView.progress = group?.progress ?? .zero
             listenTaskGroupChanged(old: oldValue, new: group)
         }
     }
@@ -55,7 +55,6 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        debugPrint(name, #function)
         initializeUI()
     }
 
@@ -88,6 +87,4 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
         }
     }
-
-    deinit { debugPrint(name, #function) }
 }

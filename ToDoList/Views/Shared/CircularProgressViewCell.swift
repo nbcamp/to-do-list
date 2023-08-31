@@ -22,8 +22,12 @@ final class CircularProgressViewCell: UIView {
             imageView.image = image
         }
     }
+    
+    var progress: Double = 0.0 {
+        didSet { progressView.progress = progress }
+    }
 
-    lazy var progressView = {
+    private lazy var progressView = {
         let progressView = CircularProgressView()
         progressView.delegate = self
         progressView.size = size

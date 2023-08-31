@@ -6,20 +6,26 @@ final class TaskGroup: ViewModel {
     @Publishable var image: Base64?
     @Publishable var color: RGBA?
     @Publishable var tasks: [Subtask]
-    var progress: Double { Double(tasks.filter { $0.completed }.count) / Double(tasks.count) }
+    @Publishable var progress: Double
 
     init(
         id: String = UUID().uuidString,
         name: String = "",
         image: Base64? = "",
         color: RGBA? = .init(red: 0, green: 0, blue: 0, alpha: 0),
-        tasks: [Subtask] = []
+        tasks: [Subtask] = [],
+        progress: Double? = nil
     ) {
         self.id = id
         self.name = name
         self.image = image
         self.color = color
         self.tasks = tasks
+        self.progress = progress ?? (tasks.count == 0 ? 0.0 : Double(tasks.filter { $0.completed }.count) / Double(tasks.count))
+    }
+
+    func sync() {
+        progress = tasks.count == 0 ? 0 : Double(tasks.filter { $0.completed }.count) / Double(tasks.count)
     }
 }
 

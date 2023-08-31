@@ -17,8 +17,6 @@ final class EditTaskGroupView: UIView, RootView {
     }()
 
     func initializeUI() {
-        debugPrint(name, #function)
-
         backgroundColor = .systemBackground
 
         addSubview(tableView)
@@ -31,8 +29,6 @@ final class EditTaskGroupView: UIView, RootView {
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
-
-    deinit { debugPrint(name, #function) }
 }
 
 extension EditTaskGroupView: UITableViewDataSource {

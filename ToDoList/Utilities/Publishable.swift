@@ -3,16 +3,16 @@ import Foundation
 @propertyWrapper
 final class Publishable<Property> {
     typealias Changes = (old: Property, new: Property)
-    typealias EventCallback<Publisher: AnyObject> = ((publisher: Publisher, property: Changes)) -> Void
+    typealias Event<Subscriber: AnyObject> = ((subscriber: Subscriber, property: Changes)) -> Void
 
-    struct Subscriber<Publisher: AnyObject>: Identifiable {
+    struct Publisher<Subscriber: AnyObject>: Identifiable {
         let id: UUID
-        let callback: EventCallback<Publisher>
-        let publisher: WeakRef<Publisher>
+        let event: Event<Subscriber>
+        let subscriber: WeakRef<Subscriber>
     }
 
     private var value: Property
-    private var subscribers: [Subscriber<AnyObject>] = []
+    private var publishers: [Publisher<AnyObject>] = []
 
     var wrappedValue: Property {
         get { value }
@@ -30,38 +30,38 @@ final class Publishable<Property> {
     }
 
     @discardableResult
-    func subscribe<Publisher: AnyObject>(
-        by publisher: Publisher,
-        _ callback: @escaping EventCallback<Publisher>
+    func subscribe<Subscriber: AnyObject>(
+        by subscriber: Subscriber,
+        _ event: @escaping Event<Subscriber>
     ) -> ((_ id: UUID) -> Void, UUID) {
-        return subscribe(by: publisher, immediate: true, callback)
+        return subscribe(by: subscriber, immediate: true, event)
     }
 
     @discardableResult
-    func subscribe<Publisher: AnyObject>(
-        by publisher: Publisher,
+    func subscribe<Subscriber: AnyObject>(
+        by subscriber: Subscriber,
         immediate: Bool,
-        _ callback: @escaping EventCallback<Publisher>
+        _ event: @escaping Event<Subscriber>
     ) -> ((_ id: UUID) -> Void, UUID) {
         let id = UUID()
-        let anyCallback: EventCallback<AnyObject> = { args in
-            guard let publisher = args.publisher as? Publisher else { return }
-            callback((publisher, args.property))
+        let anyEvent: Event<AnyObject> = { args in
+            guard let publisher = args.subscriber as? Subscriber else { return }
+            event((publisher, args.property))
         }
-        subscribers.append(.init(id: id, callback: anyCallback, publisher: .init(publisher)))
-        if immediate { callback((publisher, (value, value))) }
+        publishers.append(.init(id: id, event: anyEvent, subscriber: .init(subscriber)))
+        if immediate { event((subscriber, (value, value))) }
         return (unsubscribe, id)
     }
 
     func unsubscribe(_ id: UUID) {
-        subscribers.removeAll { $0.id == id }
+        publishers.removeAll { $0.id == id }
     }
 
     func publish(_ changes: Changes) {
-        subscribers = subscribers.compactMap { subscriber in
-            guard let publisher = subscriber.publisher.value else { return nil }
-            subscriber.callback((publisher, changes))
-            return subscriber
+        publishers = publishers.compactMap { publisher in
+            guard let subscriber = publisher.subscriber.value else { return nil }
+            publisher.event((subscriber, changes))
+            return publisher
         }
     }
 }

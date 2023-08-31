@@ -1,12 +1,16 @@
 import UIKit
 
 final class DetailTaskViewController: TypedViewController<TaskTableView> {
-    var group: TaskGroup?
+    weak var group: TaskGroup?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        typedView.group = group
         setupNavigation()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        typedView.group = group
     }
 
     private func setupNavigation() {
@@ -24,7 +28,9 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
 
     @objc private func editButtonTapped() {
         guard let group else { return }
-        let vc = NewTaskViewController(group: group)
+        let vc = NewTaskViewController(group: group) { [unowned self] group in
+            typedView.group = group
+        }
         navigationController?.pushViewController(vc, animated: false)
     }
 }

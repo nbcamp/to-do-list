@@ -57,10 +57,11 @@ final class Publishable<Property> {
         publishers.removeAll { $0.id == id }
     }
 
-    func publish(_ changes: Changes) {
+    func publish(_ changes: Changes? = nil) {
+        let (old, new) = changes ?? (value, value)
         publishers = publishers.compactMap { publisher in
             guard let subscriber = publisher.subscriber.value else { return nil }
-            publisher.event((subscriber, changes))
+            publisher.event((subscriber, (old, new)))
             return publisher
         }
     }

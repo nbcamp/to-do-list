@@ -42,7 +42,7 @@ final class DebugViewController: TypedViewController<DebugView> {
     var group: TaskGroup?
 
     override func viewDidLoad() {
-        print("[\(name)] \(#function)")
+        debugPrint("[\(name)] \(#function)")
         super.viewDidLoad()
         typedView.delegate = self
         typedView.initializeUI()
@@ -50,7 +50,7 @@ final class DebugViewController: TypedViewController<DebugView> {
     }
 
     deinit {
-        print("[\(name)] \(#function)")
+        debugPrint("[\(name)] \(#function)")
     }
 }
 

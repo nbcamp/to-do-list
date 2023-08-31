@@ -1,14 +1,31 @@
 import UIKit
 
 final class NewTaskViewController: TypedViewController<TaskTableView> {
-    private var newGroup: TaskGroup
-    private weak var group: TaskGroup?
+    var done: ((TaskGroup) -> Void)?
+    var animated = false
+    private var group = {
+        let group = TaskGroup()
+        group.uiColor = .random(in: .dark)
+        return group
+    }()
 
-    private var isToastOpened = false
-
-    init(group: TaskGroup? = nil) {
-        self.group = group
-        self.newGroup = group?.toModel().toViewModel() ?? {
+    init(
+        group: TaskGroup? = nil,
+        animated: Bool = false,
+        done: ((TaskGroup) -> Void)? = nil
+    ) {
+        self.done = done
+        self.animated = animated
+        self.group = {
+            if let group {
+                return TaskGroup(
+                    id: group.id,
+                    name: group.name,
+                    image: group.image,
+                    color: group.color,
+                    tasks: group.tasks
+                )
+            }
             let group = TaskGroup()
             group.uiColor = .random(in: .dark)
             return group
@@ -16,9 +33,11 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
         super.init()
     }
 
+    private var isToastOpened = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        typedView.group = newGroup
+        typedView.group = group
         typedView.editable = true
         setupNavigation()
     }
@@ -26,27 +45,22 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
     private func setupNavigation() {
         navigationItem.leftBarButtonItem = .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
-        newGroup.$color.subscribe(by: self, immediate: true) { host, _ in
-            host.navigationItem.leftBarButtonItem?.tintColor = host.newGroup.uiColor
-            host.navigationItem.rightBarButtonItem?.tintColor = host.newGroup.uiColor
+        group.$color.subscribe(by: self, immediate: true) { host, _ in
+            host.navigationItem.leftBarButtonItem?.tintColor = host.group.uiColor
+            host.navigationItem.rightBarButtonItem?.tintColor = host.group.uiColor
         }
     }
 
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: group == nil)
+        navigationController?.popViewController(animated: animated)
     }
 
     @objc private func doneButtonTapped() {
-        guard newGroup.image != nil else { showToast(message: "Choose an image that represents your tasks."); return }
-        guard !newGroup.name.isEmpty else { showToast(message: "Fill out the name of the tasks"); return }
-        guard !newGroup.tasks.isEmpty else { showToast(message: "Please create at least one task."); return }
-
-        if let group {
-            group.overwrite(newGroup)
-        } else {
-            TaskService.shared.add(group: newGroup)
-        }
-        navigationController?.popViewController(animated: group == nil)
+        guard group.image != nil else { showToast(message: "Choose an image that represents your tasks."); return }
+        guard !group.name.isEmpty else { showToast(message: "Fill out the name of the tasks"); return }
+        guard !group.tasks.isEmpty else { showToast(message: "Please create at least one task."); return }
+        navigationController?.popViewController(animated: animated)
+        done?(group)
     }
 
     private func showToast(message: String) {
@@ -57,7 +71,7 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
             view: view,
             message: message,
             position: .init(x: view.center.x, y: view.safeAreaInsets.top),
-            color: newGroup.uiColor ?? .black
+            color: group.uiColor ?? .black
         ) { [weak self] in self?.isToastOpened = false }
     }
 

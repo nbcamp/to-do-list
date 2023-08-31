@@ -6,7 +6,6 @@ final class TaskGroup: ViewModel {
     @Publishable var image: Base64?
     @Publishable var color: RGBA?
     @Publishable var tasks: [Subtask]
-
     var progress: Double { Double(tasks.filter { $0.completed }.count) / Double(tasks.count) }
 
     init(
@@ -26,13 +25,6 @@ final class TaskGroup: ViewModel {
 
 extension TaskGroup {
     func toModel() -> TaskGroupModel { .init(from: self) }
-    
-    func overwrite(_ other: TaskGroup) {
-        self.name = other.name
-        self.image = other.image
-        self.color = other.color
-        self.tasks = other.tasks
-    }
 }
 
 extension TaskGroup {

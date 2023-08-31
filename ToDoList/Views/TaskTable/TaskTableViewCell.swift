@@ -134,7 +134,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         titleLabel.removeGestureAction()
         markerView.removeGestureAction()
         containerView.addGestureAction { _ in
-            TaskService.shared.complete(task: task)
+            EventBus.shared.emit(CompleteTask(payload: .init(task: task)))
         }
     }
 

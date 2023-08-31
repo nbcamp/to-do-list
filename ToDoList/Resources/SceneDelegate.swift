@@ -8,7 +8,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = .init(windowScene: windowScene)
         window?.makeKeyAndVisible()
 
-        TaskService.shared.storage = UserDefaultsStorage.shared
+//        TaskService.shared.storage = UserDefaultsStorage.shared
         window?.rootViewController = RootViewController()
     }
 

@@ -8,30 +8,35 @@ final class RootViewController: UINavigationController {
         setupNavigation()
         initializeEvents()
     }
-    
+
     private func setupNavigation() {
         let rootVC = TaskGroupViewController()
         setViewControllers([rootVC], animated: true)
     }
-    
+
     deinit { eventBus.reset(self) }
 }
 
 extension RootViewController {
     private func initializeEvents() {
         eventBus.on(PushToNewTaskScreen.self, by: self) { host, _ in
-            let vc = NewTaskViewController()
+            let vc = NewTaskViewController(animated: true) { group in
+                TaskService.shared.add(group: group)
+            }
             host.pushViewController(vc, animated: true)
         }
+
         eventBus.on(PushToEditTaskGroupScreen.self, by: self) { host, _ in
             let vc = EditTaskGroupViewController()
             host.pushViewController(vc, animated: true)
         }
+
         eventBus.on(PushToDetailTaskScreen.self, by: self) { (host, payload) in
             let vc = DetailTaskViewController()
             vc.group = payload.group
             host.pushViewController(vc, animated: true)
         }
+
         eventBus.on(PresentColorPicker.self, by: self) { host, payload in
             let picker = ColorPickerViewController(initial: payload.group.uiColor, title: "Accent Color") { color in
                 guard let color else { return }
@@ -40,6 +45,7 @@ extension RootViewController {
             picker.modalPresentationStyle = .popover
             host.present(picker, animated: true)
         }
+
         eventBus.on(FetchRandomImage.self, by: self) { host, payload in
             host.withRandomAnimal { animal in
                 guard let animal else { return }
@@ -54,14 +60,64 @@ extension RootViewController {
                 }
             }
         }
+
         eventBus.on(CreateNewTask.self, by: self) { host, payload in
-            host.promptCreateNewTask(group: payload.group)
+            let alertController = UIAlertController(title: "Add New Task", message: "What task to you want to add?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+            let confirmAction = UIAlertAction(title: "Add", style: .default) { _ in
+                guard let text = alertController.textFields?.first?.text, !text.isEmpty else { return }
+                TaskService.shared.add(task: .init(name: text, of: payload.group))
+            }
+            confirmAction.isEnabled = false
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            alertController.addTextField()
+            NotificationCenter.default.addObserver(
+                forName: UITextField.textDidChangeNotification,
+                object: alertController.textFields?.first,
+                queue: .main
+            ) { _ in
+                guard let text = alertController.textFields?.first?.text else { return }
+                confirmAction.isEnabled = !text.isEmpty
+            }
+            host.present(alertController, animated: true)
         }
+
         eventBus.on(EditTaskName.self, by: self) { host, payload in
-            host.promptEditTaskName(task: payload.task)
+            let alertController = UIAlertController(title: "Edit Task Name", message: "Fill in the name of the task you want to edit.", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+            let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
+                guard let text = alertController.textFields?.first?.text, !text.isEmpty else { return }
+                payload.task.name = text
+            }
+            confirmAction.isEnabled = false
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            alertController.addTextField { $0.text = payload.task.name }
+            NotificationCenter.default.addObserver(
+                forName: UITextField.textDidChangeNotification,
+                object: alertController.textFields?.first,
+                queue: .main
+            ) { _ in
+                guard let text = alertController.textFields?.first?.text else { return }
+                confirmAction.isEnabled = !text.isEmpty
+            }
+            host.present(alertController, animated: true)
         }
+
         eventBus.on(DeleteTask.self, by: self) { host, payload in
-            host.promptDeleteTask(task: payload.task)
+            let alertController = UIAlertController(title: "Delete Subtask", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+            let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+                _ = TaskService.shared.remove(task: payload.task)
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            host.present(alertController, animated: true)
+        }
+
+        eventBus.on(CompleteTask.self, by: self) { host, payload in
+            TaskService.shared.complete(task: payload.task)
         }
     }
 
@@ -78,65 +134,10 @@ extension RootViewController {
                     completion(animal)
                 }
             case .failure(let error):
-                print(error)
+                debugPrint(error)
                 completion(nil)
             }
         }
-    }
-
-    private func promptCreateNewTask(group: TaskGroup) {
-        let alertController = UIAlertController(title: "Add New Task", message: "What task to you want to add?", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-        let confirmAction = UIAlertAction(title: "Add", style: .default) { _ in
-            guard let text = alertController.textFields?.first?.text, !text.isEmpty else { return }
-            TaskService.shared.add(task: .init(name: text, of: group))
-        }
-        confirmAction.isEnabled = false
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        alertController.addTextField()
-        NotificationCenter.default.addObserver(
-            forName: UITextField.textDidChangeNotification,
-            object: alertController.textFields?.first,
-            queue: .main
-        ) { _ in
-            guard let text = alertController.textFields?.first?.text else { return }
-            confirmAction.isEnabled = !text.isEmpty
-        }
-        present(alertController, animated: true)
-    }
-
-    private func promptEditTaskName(task: Subtask) {
-        let alertController = UIAlertController(title: "Edit Task Name", message: "Fill in the name of the task you want to edit.", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
-            guard let text = alertController.textFields?.first?.text, !text.isEmpty else { return }
-            task.name = text
-        }
-        confirmAction.isEnabled = false
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        alertController.addTextField { $0.text = task.name }
-        NotificationCenter.default.addObserver(
-            forName: UITextField.textDidChangeNotification,
-            object: alertController.textFields?.first,
-            queue: .main
-        ) { _ in
-            guard let text = alertController.textFields?.first?.text else { return }
-            confirmAction.isEnabled = !text.isEmpty
-        }
-        present(alertController, animated: true)
-    }
-
-    private func promptDeleteTask(task: Subtask) {
-        let alertController = UIAlertController(title: "Delete Subtask", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-        let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
-            _ = TaskService.shared.remove(task: task)
-        }
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        present(alertController, animated: true)
     }
 }
 

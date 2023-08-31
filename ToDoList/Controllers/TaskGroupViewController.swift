@@ -7,7 +7,7 @@ final class TaskGroupViewController: TypedViewController<TaskGroupView> {
         super.viewDidLoad()
         debugPrint(name, #function)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         typedView.groups = WeakArray(groups)

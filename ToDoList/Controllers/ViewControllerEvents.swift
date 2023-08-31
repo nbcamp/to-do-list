@@ -55,3 +55,11 @@ struct DeleteTask: EventProtocol {
 
     let payload: Payload
 }
+
+struct CompleteTask: EventProtocol {
+    struct Payload {
+        let task: Subtask
+    }
+    
+    let payload: Payload
+}

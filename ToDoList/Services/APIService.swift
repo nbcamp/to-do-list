@@ -65,17 +65,4 @@ final class APIService {
         request.timeoutInterval = 30
         return request
     }
-
-    #if DEBUG
-    private func __test(data: Data) {
-        print(#function + " Started")
-        do {
-            let object = try JSONSerialization.jsonObject(with: data)
-            print(object)
-        } catch {
-            print(error)
-        }
-        print(#function + " Ended")
-    }
-    #endif
 }

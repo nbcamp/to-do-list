@@ -2,7 +2,10 @@ import UIKit
 
 final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     weak var group: TaskGroup? {
-        didSet { listenTaskGroupChanged(old: oldValue, new: group) }
+        didSet {
+            progressView.progressView.progress = group?.progress ?? .zero
+            listenTaskGroupChanged(old: oldValue, new: group)
+        }
     }
 
     private var margin: CGFloat { bounds.width * 0.1 }
@@ -52,6 +55,7 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        debugPrint(name, #function)
         initializeUI()
     }
 
@@ -60,8 +64,6 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     }
 
     private func initializeUI() {
-        debugPrint(name, #function)
-
         layer.cornerRadius = 20
         layer.masksToBounds = true
 
@@ -84,7 +86,6 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
         }
         newGroup.$tasks.subscribe(by: self) { host, tasks in
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
-            host.progressView.progressView.progress = host.group?.progress ?? 0.0
         }
     }
 

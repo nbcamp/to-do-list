@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 
 enum HttpMethod: String {
     case get = "GET"
@@ -36,9 +37,10 @@ final class APIService {
             Task {
                 do {
                     let url = try createUrl(string: "\(Self.config.baseUrl)\(url)", queryItems: queryItems)
-                    let (data, _) = try await URLSession.shared.data(for: createRequest(url: url))
-                    let model = try decoder.decode(T.self, from: data)
-                    completion(.success(model))
+//                    let (data, _) = try await URLSession.shared.data(for: createRequest(url: url))
+//                    let model = try decoder.decode(T.self, from: data)
+                    let dataTask = AF.request(url.absoluteString).serializingDecodable(T.self)
+                    completion(.success(try await dataTask.value))
                 } catch {
                     completion(.failure(.unknownError(cause: error)))
                 }

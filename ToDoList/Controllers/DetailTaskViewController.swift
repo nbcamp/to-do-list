@@ -8,7 +8,7 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
         setupNavigation()
 
         EventBus.shared.on(UpdateTaskGroup.self, by: self) { host, payload in
-            host.typedView.group = payload.group
+            host.group = payload.group
             host.typedView.tableView.reloadData()
         }
     }

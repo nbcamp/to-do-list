@@ -21,7 +21,6 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         didSet { markerView.image = state.image }
     }
 
-    
     private var _backgroundColor: UIColor {
         guard let color = task?.group.uiColor else { return .clear }
         return color.theme == .light ? .black.brightness(by: 0.2) : .lightGray.brightness(by: 0.23)
@@ -66,7 +65,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
-    
+
     private lazy var reorderBackground = {
         let backgroundView = UIImageView()
         backgroundView.layer.cornerRadius = 5
@@ -91,6 +90,14 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         contentView.frame = bounds
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        task?.$name.unsubscribe(by: self)
+        task?.$completed.unsubscribe(by: self)
+        task?.group.$color.unsubscribe(by: self)
+        task = nil
+    }
+
     private func initializeUI() {
         selectionStyle = .none
         backgroundColor = .clear
@@ -105,7 +112,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
             containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -spacing),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
+
             reorderBackground.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0.5),
             reorderBackground.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             reorderBackground.widthAnchor.constraint(equalToConstant: 35),

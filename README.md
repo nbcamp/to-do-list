@@ -1,6 +1,8 @@
 # To Do List App <!-- omit from toc -->
 
-You can add, update, delete and mark as done your tasks.
+Minimalistic to do list app for iOS. You can add, update, delete and mark as done your tasks.
+
+>This design was inspired by [Dribbble - To Do List (ucaly)](https://dribbble.com/shots/14686509-Daily-UI-042-To-Do-List).
 
 <div style="display: grid; grid-auto-flow: column; gap: 10px; width: fit-content; margin: 1rem; 0">
   <img style="border-radius: 1rem; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" alt="Empty Home Screen" src="Assets/empty_home.png" width="200px">
@@ -75,42 +77,25 @@ ToDoList/
 - [Controller](#controller): View와 Model을 연결하고, 각종 이벤트를 관리합니다.
 - [Model](#model): 데이터 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
 
-#### View
+#### [View](/ToDoList/Views)
 
 - View는 사용자에게 보여지는 UI를 구성합니다.
 - [`RootView`](ToDoList/Views/RootView.swift)
   - Controller와 1:1 관계로 연결되는 View입니다. [`TypedViewController`](ToDoList/Controllers/TypedViewController.swift)에게 전달됩니다.
   - 프로토콜로서 `initializeUI()`를 필수로 구현해야 합니다.
 - 그 외 View는 `RootView`에서 사용하는 하위 View입니다.
+- Model의 변경사항을 구독하고 있으며, 구독 중인 속성이 변경되면 UI를 변경합니다. ([`Publishable`](#publishable))
+- 특정 이벤트가 발생하면 Controller에게 이를 알립니다. ([`EventBus`](#eventbus))
 
+#### [Controller](/ToDoList/Controllers)
 
-Model의 변경사항을 구독하고 있으며 구독 중인 특정 속성에 변경이 발생하면 UI를 변경합니다. ([`Publishable`](#publishable))
+- Controller는 View 연결합니다. 연결된 View는 `typedView` 속성을 통해 접근할 수 있습니다.
+- [`EventBus`](#eventbus)에 View에서 발생하는 모든 이벤트를 등록합니다. ([`ViewControllerEvents`](/ToDoList/Controllers/ViewControllerEvents.swift), [`RootViewController`](/ToDoList/Controllers/RootViewController.swift))
+- 등록된 이벤트가 발생했을 때 Model에게 데이터 변경을 요청할 수 있습니다.
 
-#### Controller
+#### [Model](/ToDoList/Models)
 
-- Controller는 View와 Model을 연결합니다. 연결된 View는 `typedView` 속성을 통해 접근할 수 있습니다.
-- [`EventBus`](#eventbus)를 활용하여 View에서 발생하는 모든 이벤트를 관리합니다. ([`RootViewController`](/ToDoList/Controllers/RootViewController.swift))
-- 특정 이벤트가 발생했을 때 Model에게 데이터 변경을 요청합니다.
-
-#### Model
-
-- 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service를 통칭합니다.
-
-```plaintext
-.
-├── Models/
-│  ├── AnimalModel.swift
-│  ├── SubtaskModel.swift
-│  └── TaskGroupModel.swift
-├── ViewModels/
-│  ├── Subtask.swift
-│  ├── TaskGroup.swift
-│  └── ViewModel.swift
-└── Services/
-   ├── APIService.swift
-   └── TaskService.swift
-```
-
+- 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
 - Models: `Codable` 프로토콜을 채택한 자료구조를 가집니다. Storage에서 데이터를 불러오고 내보내기 위해 사용합니다.
 - ViewModels: Model의 데이터를 가공하여 View에게 전달합니다.
   - [`Publishable`](#publishable)을 적용하여 구독자에게 변경사항을 알립니다.
@@ -175,7 +160,7 @@ participant EventBus
 Note over Model: Publishable
 
 View->>Model: Subscribe Changes
-Controller->>EventBus: Subscribe Events
+Controller->>EventBus: Register Events
 User->>View: Specify Action
 View-->>Controller: Notify Action using EventBus
 Controller->>Model: Request Create/Update/Delete Data
@@ -229,9 +214,8 @@ func publish(Changes?)
 **Example**
 
 ```swift
-final class TaskGroup {
+final class MyModel {
     @Publishable var name: String
-    // ...
 
     init(name: String) {
         self.name = name
@@ -241,24 +225,23 @@ final class TaskGroup {
 final class Main {
     static let shared = Main()
     private init() {}
-    
+
     func run() {
-        let taskGroup = TaskGroup(name: "Important Tasks")
+        let model = MyModel(name: "Old Model")
 
-        _ = taskGroup.$name.subscribe(by: self, immediate: true) { (subscriber, changes) in
-            // 강한 순환 참조를 피하기 위해 self 대신 subscriber를 사용합니다.
-            print("Old Value: \(changes.old), New Value: \(changes.new)")
+        _ = model.$name.subscribe(by: self, immediate: true) { (subscriber, changes) in
+            print("Old Name: \(changes.old), New Name: \(changes.new)")
         }
-
-        taskGroup.name = "Very Important Tasks"  // 구독자에게 알림이 갑니다.
+        
+        model.name = "New Model"  // 구독자에게 변경을 알립니다.
     }
 }
 
 Main.shared.run()
 
 // 출력 결과
-// Old Value: Important Tasks, New Value: Important Tasks
-// Old Value: Important Tasks, New Value: Very Important Tasks
+// Old Name: Old Model, New Name: Old Model
+// Old Name: Old Model, New Name: New Model
 ```
 
 ### [EventBus](/ToDoList/Utilities/EventBus.swift)

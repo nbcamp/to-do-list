@@ -20,9 +20,7 @@ final class RootViewController: UINavigationController {
 extension RootViewController {
     private func initializeEvents() {
         eventBus.on(PushToNewTaskScreen.self, by: self) { host, _ in
-            let vc = NewTaskViewController(animated: true) { group in
-                TaskService.shared.add(group: group)
-            }
+            let vc = NewTaskViewController(animated: true)
             host.pushViewController(vc, animated: true)
         }
 

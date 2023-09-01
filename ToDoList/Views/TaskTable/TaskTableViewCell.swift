@@ -126,8 +126,8 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
                 host.titleLabel.strikethrough(completed.new)
             }
         }
-        newTask.group.$color.subscribe(by: self) { [weak newTask] host, _ in
-            guard let color = newTask?.group.uiColor else { return }
+        newTask.group.$color.subscribe(by: self) { host, _ in
+            guard let color = host.task?.group.uiColor else { return }
             host.markerView.tintColor = color
             host.titleLabel.textColor = color
             host.containerView.backgroundColor = host._backgroundColor

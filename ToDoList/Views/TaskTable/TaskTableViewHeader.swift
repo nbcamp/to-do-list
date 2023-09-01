@@ -136,14 +136,14 @@ final class TaskTableViewHeader: UIView {
         newGroup.$tasks.subscribe(by: self) { host, tasks in
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
         }
-        newGroup.$color.subscribe(by: self) { [weak newGroup] host, _ in
-            guard let color = newGroup?.uiColor else { return }
+        newGroup.$color.subscribe(by: self) { host, _ in
+            guard let color = host.group?.uiColor else { return }
             host.progressView.color = color
             host.colorButton.backgroundColor = color
             host.colorButton.tintColor = .init(light: .black, dark: .white, for: color)
         }
-        newGroup.$image.subscribe(by: self) { [weak newGroup] host, _ in
-            guard let image = newGroup?.uiImage else { return }
+        newGroup.$image.subscribe(by: self) { host, _ in
+            guard let image = host.group?.uiImage else { return }
             host.progressView.image = image
         }
         newGroup.$progress.subscribe(by: self) { host, progress in

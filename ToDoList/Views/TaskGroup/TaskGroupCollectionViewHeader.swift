@@ -2,7 +2,12 @@ import UIKit
 
 final class TaskGroupCollectionViewHeader: UICollectionReusableView, Identifier {
     var onMenuTapped: ((UIView) -> Void)? {
-        didSet { if let onMenuTapped { settingButton.addGestureAction(onMenuTapped) } }
+        didSet {
+            if let onMenuTapped {
+                settingButton.removeGestureAction()
+                settingButton.addGestureAction(onMenuTapped)
+            }
+        }
     }
 
     private lazy var titleLabel = {

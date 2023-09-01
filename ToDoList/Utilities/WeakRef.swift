@@ -7,15 +7,12 @@ struct WeakRef<T: AnyObject> {
 
 struct WeakArray<T: AnyObject> {
     private var elements: [WeakRef<T>]
-    
-    var count: Int { allObjects().count }
+
+    var allObjects: [T] { elements.compactMap { $0.value } }
+    var count: Int { allObjects.count }
 
     init(_ elements: [T]) {
         self.elements = elements.map(WeakRef.init)
-    }
-
-    func allObjects() -> [T] {
-        elements.compactMap { $0.value }
     }
 
     mutating func append(_ element: T) {
@@ -26,8 +23,5 @@ struct WeakArray<T: AnyObject> {
         elements.remove(at: index)
     }
 
-    subscript(_ index: Int) -> T? {
-        get { elements[index].value }
-        set { elements[index].value = newValue }
-    }
+    subscript(_ index: Int) -> T? { allObjects[index] }
 }

@@ -1,7 +1,7 @@
 import UIKit
 
 final class TaskGroupView: UIView, RootView {
-    var groups: WeakArray<TaskGroup>?
+    private var groups: [TaskGroup] { TaskService.shared.groups }
 
     private let spacing: CGFloat = 15
     private let padding: CGFloat = 20
@@ -52,19 +52,22 @@ final class TaskGroupView: UIView, RootView {
             placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
             placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+        
+//        EventBus.shared.on(CreateNewTask.self, by: self) { (host, payload) in
+//            print(payload.group)
+//        }
     }
 }
 
 extension TaskGroupView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = groups?.count ?? 0
-        placeholderView.isHidden = count > 0
-        return count
+        placeholderView.isHidden = groups.count > 0
+        return groups.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskGroupCollectionViewCell.identifier, for: indexPath) as! TaskGroupCollectionViewCell
-        cell.group = groups?[indexPath.item]
+        cell.group = groups[indexPath.item]
         return cell
     }
 
@@ -104,8 +107,7 @@ extension TaskGroupView: UICollectionViewDataSource {
 
 extension TaskGroupView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let group = groups?[indexPath.item] else { return }
-        EventBus.shared.emit(PushToDetailTaskScreen(payload: .init(group: group)))
+        EventBus.shared.emit(PushToDetailTaskScreen(payload: .init(group: groups[indexPath.item])))
     }
 }
 

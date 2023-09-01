@@ -15,6 +15,11 @@ final class TaskService {
         defer { save() }
         groups.append(group)
     }
+    
+    func remove(group: TaskGroup) {
+        defer { save() }
+        groups.remove(element: group)
+    }
 
     func add(task: Subtask) {
         defer { task.group.sync(); save() }

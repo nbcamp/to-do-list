@@ -1,7 +1,7 @@
 import UIKit
 
 final class EditTaskGroupView: UIView, RootView {
-    var groups: WeakArray<TaskGroup>?
+    private var groups: [TaskGroup] { TaskService.shared.groups }
 
     private lazy var tableView = {
         let tableView = UITableView()
@@ -9,9 +9,10 @@ final class EditTaskGroupView: UIView, RootView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.sectionHeaderHeight = 60
         tableView.register(
-            UITableViewCell.self,
-            forCellReuseIdentifier: "cell"
+            EditTaskGroupViewCell.self,
+            forCellReuseIdentifier: EditTaskGroupViewCell.identifier
         )
         return tableView
     }()
@@ -32,28 +33,35 @@ final class EditTaskGroupView: UIView, RootView {
 }
 
 extension EditTaskGroupView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        groups?[section]?.name
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = EditTaskGroupViewSectionHeader()
+        headerView.group = groups[section]
+        headerView.onDeleted = { group in
+            TaskService.shared.remove(group: group)
+            let indexSet = IndexSet(integer: section)
+            tableView.deleteSections(indexSet, with: .automatic)
+        }
+        return headerView
     }
 
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        guard let tasks = groups?[section]?.tasks else { return nil }
-        let progress = Double(tasks.filter { $0.completed }.count) / Double(tasks.count)
-        return "\(Int(progress * 100.0))% Completed"
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView = EditTaskGroupViewSectionFooter()
+        footerView.group = groups[section]
+        return footerView
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        groups?.count ?? 0
+        return groups.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        groups?[section]?.tasks.count ?? 0
+        return groups[section].tasks.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let task = groups?[indexPath.section]?.tasks[indexPath.row]
-        cell.textLabel?.text = task?.name
+        let cell = tableView.dequeueReusableCell(withIdentifier: EditTaskGroupViewCell.identifier, for: indexPath) as! EditTaskGroupViewCell
+        cell.task = groups[indexPath.section].tasks[indexPath.row]
+        cell.selectionStyle = .none
         return cell
     }
 }

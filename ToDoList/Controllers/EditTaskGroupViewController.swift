@@ -8,11 +8,6 @@ final class EditTaskGroupViewController: TypedViewController<EditTaskGroupView> 
         setupNavigation()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        typedView.groups = WeakArray(groups)
-    }
-
     private func setupNavigation() {
         navigationItem.leftBarButtonItem = .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
     }

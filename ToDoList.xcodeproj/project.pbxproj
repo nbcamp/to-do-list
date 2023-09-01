@@ -48,6 +48,9 @@
 		33F39C222AA0372700C102E8 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C212AA0372700C102E8 /* RootViewController.swift */; };
 		33F39C242AA03F6B00C102E8 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C232AA03F6B00C102E8 /* ColorPickerViewController.swift */; };
 		33F39C272AA04C6B00C102E8 /* TaskTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C262AA04C6B00C102E8 /* TaskTableView.swift */; };
+		33F39C292AA1730F00C102E8 /* EditTaskGroupViewSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C282AA1730F00C102E8 /* EditTaskGroupViewSectionHeader.swift */; };
+		33F39C2B2AA17CF000C102E8 /* EditTaskGroupViewSectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C2A2AA17CF000C102E8 /* EditTaskGroupViewSectionFooter.swift */; };
+		33F39C2D2AA17E9D00C102E8 /* EditTaskGroupViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F39C2C2AA17E9D00C102E8 /* EditTaskGroupViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +99,9 @@
 		33F39C212AA0372700C102E8 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		33F39C232AA03F6B00C102E8 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
 		33F39C262AA04C6B00C102E8 /* TaskTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableView.swift; sourceTree = "<group>"; };
+		33F39C282AA1730F00C102E8 /* EditTaskGroupViewSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskGroupViewSectionHeader.swift; sourceTree = "<group>"; };
+		33F39C2A2AA17CF000C102E8 /* EditTaskGroupViewSectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskGroupViewSectionFooter.swift; sourceTree = "<group>"; };
+		33F39C2C2AA17E9D00C102E8 /* EditTaskGroupViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskGroupViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +255,9 @@
 			isa = PBXGroup;
 			children = (
 				33F39C162A9FA55100C102E8 /* EditTaskGroupView.swift */,
+				33F39C282AA1730F00C102E8 /* EditTaskGroupViewSectionHeader.swift */,
+				33F39C2A2AA17CF000C102E8 /* EditTaskGroupViewSectionFooter.swift */,
+				33F39C2C2AA17E9D00C102E8 /* EditTaskGroupViewCell.swift */,
 			);
 			path = EditTaskGroup;
 			sourceTree = "<group>";
@@ -348,6 +357,7 @@
 				332811AC2A99E2A8005EEAB7 /* TaskGroupViewController.swift in Sources */,
 				332811C62A99EC4E005EEAB7 /* Identifier.swift in Sources */,
 				332811CD2A9A02DF005EEAB7 /* CircularProgressView.swift in Sources */,
+				33F39C2B2AA17CF000C102E8 /* EditTaskGroupViewSectionFooter.swift in Sources */,
 				332811CF2A9A47A8005EEAB7 /* DropdownMenuView.swift in Sources */,
 				332811F82A9CA2AF005EEAB7 /* Publishable.swift in Sources */,
 				33F39C242AA03F6B00C102E8 /* ColorPickerViewController.swift in Sources */,
@@ -356,6 +366,7 @@
 				33F39C172A9FA55100C102E8 /* EditTaskGroupView.swift in Sources */,
 				33F39C142A9FA50300C102E8 /* EditTaskGroupViewController.swift in Sources */,
 				332812022A9DDC48005EEAB7 /* ToastView.swift in Sources */,
+				33F39C2D2AA17E9D00C102E8 /* EditTaskGroupViewCell.swift in Sources */,
 				332811D32A9A6B69005EEAB7 /* NewTaskViewController.swift in Sources */,
 				335A6A822A9F5BEF006B7EAC /* ViewControllerEvents.swift in Sources */,
 				332811F32A9C4FF6005EEAB7 /* TaskTableViewAddCell.swift in Sources */,
@@ -364,6 +375,7 @@
 				332812062A9ED814005EEAB7 /* WeakRef.swift in Sources */,
 				3328120C2A9EE7DE005EEAB7 /* RootView.swift in Sources */,
 				33F39C222AA0372700C102E8 /* RootViewController.swift in Sources */,
+				33F39C292AA1730F00C102E8 /* EditTaskGroupViewSectionHeader.swift in Sources */,
 				332811A82A99E2A8005EEAB7 /* AppDelegate.swift in Sources */,
 				33F39C102A9F787D00C102E8 /* SubtaskModel.swift in Sources */,
 				332811CB2A9A00DD005EEAB7 /* TaskGroupCollectionViewCell.swift in Sources */,

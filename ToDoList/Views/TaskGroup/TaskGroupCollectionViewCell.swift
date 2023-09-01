@@ -68,15 +68,15 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$color.subscribe(by: self) { [weak newGroup] host, _ in
-            guard let color = newGroup?.uiColor else { return }
+        newGroup.$color.subscribe(by: self) { host, _ in
+            guard let color = host.group?.uiColor else { return }
             host.progressView.color = color
         }
         newGroup.$name.subscribe(by: self) { host, name in
             host.titleLabel.text = name.new
         }
-        newGroup.$image.subscribe(by: self) { [weak newGroup] host, _ in
-            guard let image = newGroup?.uiImage else { return }
+        newGroup.$image.subscribe(by: self) { host, _ in
+            guard let image = host.group?.uiImage else { return }
             host.progressView.image = image
             host.imageView.image = image
         }

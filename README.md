@@ -38,9 +38,9 @@ Clone this repository and open `ToDoList.xcodeproj` with [Xcode](https://develop
   - [Directory Structure](#directory-structure)
   - [Features](#features)
   - [MVC Architecture](#mvc-architecture)
+    - [Model](#model)
     - [View](#view)
     - [Controller](#controller)
-    - [Model](#model)
     - [Scenarios](#scenarios)
 - [API References](#api-references)
   - [Publishable](#publishable)
@@ -87,9 +87,15 @@ ToDoList/
 
 해당 프로젝트는 Model - View - Controller 패턴을 적용하여 구현했습니다.
 
-- [View](#view): 사용자에게 보여지는 모든 UI를 구성합니다.
-- [Controller](#controller): View와 Model을 연결하고, 각종 이벤트를 관리합니다.
-- [Model](#model): 데이터 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
+#### [Model](/ToDoList/Models)
+
+- 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
+- Models: `Codable` 프로토콜을 채택한 자료구조를 가집니다. Storage에서 데이터를 불러오고 내보내기 위해 사용합니다.
+- ViewModels: Model의 데이터를 가공하여 View에게 전달합니다.
+  - [`Publishable`](#publishable)을 적용하여 구독자에게 변경사항을 알립니다.
+- Services: 비즈니스 로직을 담당합니다.
+  - APIService: 네트워크 관련 로직을 담당합니다.
+  - TaskService:   `ViewModels` 데이터를 관리합니다.
 
 #### [View](/ToDoList/Views)
 
@@ -106,16 +112,6 @@ ToDoList/
 - Controller는 View를 생성하고 연결합니다. 연결된 View는 `typedView` 속성을 통해 접근할 수 있습니다.
 - [`EventBus`](#eventbus)에 View에서 발생하는 모든 이벤트를 등록합니다. ([`ViewControllerEvents`](/ToDoList/Controllers/ViewControllerEvents.swift), [`RootViewController`](/ToDoList/Controllers/RootViewController.swift))
 - 등록된 이벤트가 발생했을 때 Model에게 데이터 변경을 요청할 수 있습니다.
-
-#### [Model](/ToDoList/Models)
-
-- 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
-- Models: `Codable` 프로토콜을 채택한 자료구조를 가집니다. Storage에서 데이터를 불러오고 내보내기 위해 사용합니다.
-- ViewModels: Model의 데이터를 가공하여 View에게 전달합니다.
-  - [`Publishable`](#publishable)을 적용하여 구독자에게 변경사항을 알립니다.
-- Services: 비즈니스 로직을 담당합니다.
-  - APIService: 네트워크 관련 로직을 담당합니다.
-  - TaskService:   `ViewModels` 데이터를 관리합니다.
 
 #### Scenarios
 
@@ -219,10 +215,10 @@ Controller->>User: Display
 ```swift
 /// 구독자를 추가합니다. (immediate을 true로 설정하면 구독 즉시 이벤트를 발행합니다)
 /// 이미 구독 중인 경우, 기존 구독을 취소하고 새로운 구독을 추가합니다.
-func subscribe<Subscriber: AnyObject>(by: Subscriber, immediate: Bool = false, EventCallback<Subscriber>)
+func subscribe<Subscriber>(by: Subscriber, immediate: Bool, EventCallback<Subscriber>)
 
 /// 주어진 구독자의 구독을 취소합니다.
-func unsubscribe<Subscriber: AnyObject>(by: Subscriber)
+func unsubscribe<Subscriber>(by: Subscriber)
 
 /// 구독자에게 변경 사항을 발행합니다. nil을 전달하면 현재 값으로 발행합니다.
 func publish(Changes?)
@@ -247,6 +243,7 @@ final class Main {
         let model = MyModel(name: "Old Model")
 
         model.$name.subscribe(by: self, immediate: true) { (subscriber, changes) in
+            // 강한 순환 참조를 피하기 위해 self 대신 subscriber를 사용합니다.
             print("Old Name: \(changes.old), New Name: \(changes.new)")
         }
         
@@ -276,16 +273,16 @@ Main.shared.run()
 
 ```swift
 /// 주어진 이벤트를 구독합니다.
-func on<Listener: AnyObject, Event: EventProtocol>(_ event: Event.Type, by listener: Listener, _ callback: @escaping EventCallback<Listener, Event>) 
+func on<Listener, Event: EventProtocol>(Event.Type, by: Listener, EventCallback<Listener, Event>) 
 
 /// 주어진 구독자의 이벤트 구독을 취소합니다.
-func off<Listener: AnyObject, Event: EventProtocol>(_ event: Event, by listener: Listener) 
+func off<Listener, Event: EventProtocol>(Event, by: Listener) 
 
 /// 주어진 구독자의 모든 구독을 취소합니다.
-func reset<Listener: AnyObject>(_ listener: Listener)
+func reset<Listener>(Listener)
 
 /// 주어진 이벤트를 발행합니다.
-func emit<Event: EventProtocol>(_ event: Event) 
+func emit<Event: EventProtocol>(Event) 
 ```
 
 **Example**

@@ -206,19 +206,14 @@ Controller->>User: Display UI
 - `Changes`: 값의 변화를 나타냅니다. 변경이전 값 `old`와 변경된 값 `new`를 가집니다.
 
 ```swift
-/// 구독자를 추가합니다. (immediate: true)
-func subscribe<Subscriber: AnyObject>(by subscriber: Subscriber, _ event: @escaping Event<Subscriber>) -> ((UUID) -> Void, UUID)
-
 /// 구독자를 추가합니다. (immediate을 true로 설정하면 구독 즉시 이벤트를 발행합니다)
-func subscribe<Subscriber: AnyObject>(by subscriber: Subscriber, immediate: Bool, _ event: @escaping Event<Subscriber>) -> ((UUID) -> Void, UUID)
+/// 이미 구독 중인 경우, 기존 구독을 취소하고 새로운 구독을 추가합니다.
+func subscribe<Subscriber: AnyObject>(by: Subscriber, immediate: Bool = false, EventCallback<Subscriber>)
 
-/// 특정 ID를 가진 구독자의 구독을 취소합니다.
-func unsubscribe(UUID)
+/// 주어진 구독자의 구독을 취소합니다.
+func unsubscribe<Subscriber: AnyObject>(by: Subscriber)
 
-/// 특정 구독자의 구독을 취소합니다.
-func unsubscribe<Subscriber: AnyObject>(by subscriber: Subscriber)
-
-/// 구독자에게 변경 사항을 발행합니다.
+/// 구독자에게 변경 사항을 발행합니다. nil을 전달하면 현재 값으로 발행합니다.
 func publish(Changes?)
 ```
 

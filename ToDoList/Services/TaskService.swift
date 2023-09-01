@@ -36,6 +36,15 @@ final class TaskService {
         task.completed.toggle()
     }
 
+    func swap(_ aIndex: Int, _ bIndex: Int, from group: TaskGroup) {
+        defer { save() }
+        var newTask = group.tasks
+        let task = newTask[aIndex]
+        newTask.remove(at: aIndex)
+        newTask.insert(task, at: bIndex)
+        group.tasks = newTask
+    }
+
     private func save() {
         storage?.save(groups.map { $0.toModel() }, forKey: key)
     }

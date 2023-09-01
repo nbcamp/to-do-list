@@ -91,3 +91,13 @@ struct CompleteTask: EventProtocol {
     
     let payload: Payload
 }
+
+struct SwapTwoTasks: EventProtocol {
+    struct Payload {
+        let aTaskIndex: Int
+        let bTaskIndex: Int
+        let group: TaskGroup
+    }
+
+    let payload: Payload
+}

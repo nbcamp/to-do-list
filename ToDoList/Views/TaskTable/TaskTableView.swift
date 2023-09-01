@@ -86,7 +86,14 @@ extension TaskTableView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        group?.tasks.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+        guard let group else { return }
+        EventBus.shared.emit(SwapTwoTasks(
+            payload: .init(
+                aTaskIndex: sourceIndexPath.row,
+                bTaskIndex: destinationIndexPath.row,
+                group: group
+            )
+        ))
     }
 
     func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {

@@ -139,6 +139,10 @@ extension RootViewController {
         eventBus.on(CompleteTask.self, by: self) { _, payload in
             TaskService.shared.complete(task: payload.task)
         }
+
+        eventBus.on(SwapTwoTasks.self, by: self) { _, payload in
+            TaskService.shared.swap(payload.aTaskIndex, payload.bTaskIndex, from: payload.group)
+        }
     }
 
     private func withRandomAnimal(completion: @escaping (AnimalModel?) -> Void) {

@@ -9,6 +9,8 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
         return group
     }()
 
+    private var isReferenced = false
+
     init(
         group: TaskGroup? = nil,
         animated: Bool = false,
@@ -21,6 +23,7 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
             group.uiColor = .random(in: .dark)
             return group
         }()
+        isReferenced = group != nil
         super.init()
     }
 
@@ -34,12 +37,11 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
     }
 
     private func setupNavigation() {
-        navigationItem.leftBarButtonItem = .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
+        navigationItem.hidesBackButton = isReferenced
+        navigationItem.leftBarButtonItem = isReferenced ? .none : .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
-        group.$color.subscribe(by: self, immediate: true) { host, _ in
-            host.navigationItem.leftBarButtonItem?.tintColor = host.group.uiColor
-            host.navigationItem.rightBarButtonItem?.tintColor = host.group.uiColor
-        }
+        navigationItem.leftBarButtonItem?.tintColor = .label
+        navigationItem.rightBarButtonItem?.tintColor = .label
     }
 
     @objc private func backButtonTapped() {

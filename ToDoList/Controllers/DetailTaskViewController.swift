@@ -16,10 +16,8 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
     private func setupNavigation() {
         navigationItem.leftBarButtonItem = .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.rightBarButtonItem = .init(title: "Edit", style: .done, target: self, action: #selector(editButtonTapped))
-        group?.$color.subscribe(by: self, immediate: true) { host, _ in
-            host.navigationItem.leftBarButtonItem?.tintColor = host.group?.uiColor
-            host.navigationItem.rightBarButtonItem?.tintColor = host.group?.uiColor
-        }
+        navigationItem.leftBarButtonItem?.tintColor = .label
+        navigationItem.rightBarButtonItem?.tintColor = .label
     }
 
     @objc private func backButtonTapped() {
@@ -30,6 +28,7 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
         guard let group else { return }
         let vc = NewTaskViewController(group: group) { [unowned self] group in
             typedView.group = group
+            typedView.tableView.reloadData()
         }
         navigationController?.pushViewController(vc, animated: false)
     }

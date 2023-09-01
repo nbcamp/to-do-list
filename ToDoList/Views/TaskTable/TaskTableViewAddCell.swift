@@ -6,11 +6,8 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
     }
 
     private var _textColor: UIColor {
-        .init(
-            light: .black.withAlphaComponent(0.8),
-            dark: .white.withAlphaComponent(0.8),
-            for: group?.uiColor ?? .systemBackground
-        )
+        guard let color = group?.uiColor else { return .clear }
+        return (color.isLight ? UIColor.black : UIColor.white).withAlphaComponent(0.8)
     }
 
     private lazy var containerView = {
@@ -38,7 +35,6 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
 
     private lazy var iconView = {
         let iconView = UIImageView(frame: .zero)
-        iconView.tintColor = _textColor
         iconView.image = .init(systemName: "plus.circle")
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalTo: iconView.heightAnchor).isActive = true
@@ -48,7 +44,6 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
     private lazy var titleLabel = {
         let label = UILabel()
         label.text = "Add New Subtask"
-        label.textColor = _textColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
@@ -60,6 +55,11 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = bounds
     }
 
     private func initializeUI() {

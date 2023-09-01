@@ -21,17 +21,14 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         didSet { markerView.image = state.image }
     }
 
+    
     private var _backgroundColor: UIColor {
-        .init(
-            light: .black.withAlphaComponent(0.8),
-            dark: .black.withAlphaComponent(0.1),
-            for: task?.group.uiColor ?? .systemBackground
-        )
+        guard let color = task?.group.uiColor else { return .clear }
+        return color.theme == .light ? .black.brightness(by: 0.2) : .lightGray.brightness(by: 0.23)
     }
 
     private lazy var containerView = {
         let view = UIView()
-        view.backgroundColor = _backgroundColor
         view.layer.cornerRadius = 10.0
         view.layer.masksToBounds = true
         view.addSubview(hStackView)
@@ -50,6 +47,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
             markerView,
             titleLabel,
         ])
+        stackView.backgroundColor = .clear
         stackView.axis = .horizontal
         stackView.spacing = 10.0
         return stackView
@@ -68,6 +66,16 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
+    
+    private lazy var reorderBackground = {
+        let backgroundView = UIImageView()
+        backgroundView.layer.cornerRadius = 5
+        backgroundView.layer.masksToBounds = true
+        backgroundView.isHidden = true
+        backgroundView.image = .init(systemName: "line.horizontal.3.circle.fill")
+        backgroundView.tintColor = .systemBackground
+        return backgroundView
+    }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -78,17 +86,30 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
         super.init(coder: coder)
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = bounds
+    }
+
     private func initializeUI() {
         selectionStyle = .none
+        backgroundColor = .clear
         contentView.addSubview(containerView)
+        contentView.addSubview(reorderBackground)
 
         let spacing: CGFloat = 10
         containerView.translatesAutoresizingMaskIntoConstraints = false
+        reorderBackground.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: spacing),
             containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -spacing),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            reorderBackground.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0.5),
+            reorderBackground.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            reorderBackground.widthAnchor.constraint(equalToConstant: 35),
+            reorderBackground.heightAnchor.constraint(equalToConstant: 35),
         ])
     }
 
@@ -116,6 +137,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
     private func enterEditMode() {
         state = .delete
         containerView.removeGestureAction()
+        reorderBackground.isHidden = false
         titleLabel.addGestureAction(stop: false) { [unowned self] _ in
             guard let task else { return }
             EventBus.shared.emit(EditTaskName(payload: .init(task: task)))
@@ -129,6 +151,7 @@ final class TaskTableViewCell: UITableViewCell, Identifier {
     private func exitEditMode() {
         guard let task else { return }
         state = task.completed ? .complete : .incomplete
+        reorderBackground.isHidden = true
         titleLabel.removeGestureAction()
         markerView.removeGestureAction()
         containerView.addGestureAction { _ in

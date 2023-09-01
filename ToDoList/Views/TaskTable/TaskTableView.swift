@@ -1,7 +1,10 @@
 import UIKit
 
 final class TaskTableView: UIView, RootView {
-    var editable = false
+    var editable = false {
+        didSet { tableView.setEditing(editable, animated: true) }
+    }
+
     weak var group: TaskGroup? {
         didSet { listenTaskGroupChanged(old: oldValue, new: group) }
     }
@@ -77,6 +80,22 @@ extension TaskTableView: UITableViewDataSource {
         cell.editable = editable
         return cell
     }
+
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return editable && indexPath.row != group?.tasks.count
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        group?.tasks.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+    }
+
+    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        return proposedDestinationIndexPath.row == group?.tasks.count ? sourceIndexPath : proposedDestinationIndexPath
+    }
 }
 
-extension TaskTableView: UITableViewDelegate {}
+extension TaskTableView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+}

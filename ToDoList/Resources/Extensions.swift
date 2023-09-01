@@ -56,17 +56,17 @@ extension UIView {
     func addGestureAction(with recognizer: UIGestureRecognizer.Type = UITapGestureRecognizer.self, stop: Bool = true, _ action: @escaping (UIView) -> Void) {
         isUserInteractionEnabled = true
         objc_setAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
+
         let gestureRecognizer = recognizer.init(target: self, action: #selector(self._executeAction))
         objc_setAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey, gestureRecognizer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
         gestureRecognizer.cancelsTouchesInView = stop
         addGestureRecognizer(gestureRecognizer)
     }
-    
+
     func removeGestureAction() {
         guard let gestureRecognizer = objc_getAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey) as? UIGestureRecognizer else { return }
-        removeGestureRecognizer(gestureRecognizer)        
+        removeGestureRecognizer(gestureRecognizer)
         objc_setAssociatedObject(self, &AssociatedKeys.uiGestureInstanceKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         objc_setAssociatedObject(self, &AssociatedKeys.uiGestureRecognizerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
@@ -126,6 +126,13 @@ struct RGBA: Codable {
     var alpha: CGFloat
 }
 
+struct HSBA: Codable {
+    var hue: CGFloat
+    var saturation: CGFloat
+    var brightness: CGFloat
+    var alpha: CGFloat
+}
+
 extension UIColor {
     var rgba: RGBA? {
         var color: RGBA = .init(red: 0, green: 0, blue: 0, alpha: 0)
@@ -134,6 +141,27 @@ extension UIColor {
 
     convenience init(rgba: RGBA) {
         self.init(red: rgba.red, green: rgba.green, blue: rgba.blue, alpha: rgba.alpha)
+    }
+
+    var hsba: HSBA? {
+        var color: HSBA = .init(hue: 0, saturation: 0, brightness: 0, alpha: 0)
+        return getHue(&color.hue, saturation: &color.saturation, brightness: &color.brightness, alpha: &color.alpha) ? color : nil
+    }
+
+    convenience init(hsba: HSBA) {
+        self.init(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness, alpha: hsba.alpha)
+    }
+
+    func saturation(by amount: CGFloat) -> UIColor {
+        guard let color = hsba else { return self }
+        let saturation = max(0, color.saturation + amount)
+        return .init(hue: color.hue, saturation: saturation, brightness: color.brightness, alpha: color.alpha)
+    }
+
+    func brightness(by amount: CGFloat) -> UIColor {
+        guard let color = hsba else { return self }
+        let brightness = max(0, color.brightness + amount)
+        return .init(hue: color.hue, saturation: color.saturation, brightness: brightness, alpha: color.alpha)
     }
 
     convenience init(light: UIColor, dark: UIColor) {
@@ -155,7 +183,7 @@ extension UIColor {
         )
     }
 
-    enum ColorStyle {
+    enum ColorTheme {
         case light
         case dark
 
@@ -169,12 +197,17 @@ extension UIColor {
         }
     }
 
-    static func random(in style: ColorStyle, alpha: CGFloat = .one) -> UIColor {
+    static func random(in style: ColorTheme, alpha: CGFloat = .one) -> UIColor {
         var color: UIColor
         repeat {
             color = UIColor.random(alpha: alpha)
         } while !style.validate(color)
         return color
+    }
+
+    var theme: ColorTheme {
+        if self.isLight { return .light }
+        return .dark
     }
 
     var isLight: Bool {

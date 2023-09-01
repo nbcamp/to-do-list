@@ -45,7 +45,7 @@ final class TaskTableView: UIView, RootView {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$tasks.subscribe(by: self) { host, tasks in
+        newGroup.$tasks.subscribe(by: self, immediate: true) { host, tasks in
             if tasks.old.count < tasks.new.count {
                 let indexPath = IndexPath(row: tasks.new.count - 1, section: 0)
                 host.tableView.insertRows(at: [indexPath], with: .automatic)

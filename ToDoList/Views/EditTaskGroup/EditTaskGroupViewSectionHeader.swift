@@ -89,18 +89,18 @@ final class EditTaskGroupViewSectionHeader: UIView {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$image.subscribe(by: self) { host, _ in
+        newGroup.$image.subscribe(by: self, immediate: true) { host, _ in
             guard let image = host.group?.uiImage else { return }
             host.imageView.image = image
         }
-        newGroup.$color.subscribe(by: self) { host, _ in
+        newGroup.$color.subscribe(by: self, immediate: true) { host, _ in
             guard let color = host.group?.uiColor else { return }
             host.containerView.backgroundColor = color
             host.deleteIcon.tintColor = host._textColor
             host.headerLabel.textColor = host._textColor
             host.imageView.layer.borderColor = host._textColor.cgColor
         }
-        newGroup.$name.subscribe(by: self) { host, name in
+        newGroup.$name.subscribe(by: self, immediate: true) { host, name in
             host.headerLabel.text = name.new
         }
     }

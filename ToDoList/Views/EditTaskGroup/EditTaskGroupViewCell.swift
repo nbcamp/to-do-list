@@ -34,6 +34,13 @@ final class EditTaskGroupViewCell: UITableViewCell, Identifier {
         initializeUI()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        task?.$name.unsubscribe(by: self)
+        task?.group.$color.unsubscribe(by: self)
+        task = nil
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
@@ -51,10 +58,10 @@ final class EditTaskGroupViewCell: UITableViewCell, Identifier {
 
     private func listenTaskChanged(old oldTask: Subtask?, new newTask: Subtask?) {
         guard oldTask !== newTask, let newTask else { return }
-        newTask.$name.subscribe(by: self) { host, name in
+        newTask.$name.subscribe(by: self, immediate: true) { host, name in
             host.titleLabel.text = name.new
         }
-        newTask.group.$color.subscribe(by: self) { host, color in
+        newTask.group.$color.subscribe(by: self, immediate: true) { host, color in
             guard let color = host.task?.group.uiColor else { return }
             host.titleLabel.textColor = color
             host.containerView.backgroundColor = host._backgroundColor

@@ -3,11 +3,10 @@ import Foundation
 @propertyWrapper
 final class Publishable<Property> {
     typealias Changes = (old: Property, new: Property)
-    typealias Event<Subscriber: AnyObject> = ((subscriber: Subscriber, property: Changes)) -> Void
+    typealias EventCallback<Subscriber: AnyObject> = ((subscriber: Subscriber, property: Changes)) -> Void
 
-    struct Publisher<Subscriber: AnyObject>: Identifiable {
-        let id: UUID
-        let event: Event<Subscriber>
+    struct Publisher<Subscriber: AnyObject> {
+        let callback: EventCallback<Subscriber>
         let subscriber: WeakRef<Subscriber>
     }
 
@@ -29,43 +28,32 @@ final class Publishable<Property> {
         self.value = wrappedValue
     }
 
-    @discardableResult
     func subscribe<Subscriber: AnyObject>(
         by subscriber: Subscriber,
-        _ event: @escaping Event<Subscriber>
-    ) -> ((_ id: UUID) -> Void, UUID) {
-        return subscribe(by: subscriber, immediate: true, event)
-    }
-
-    @discardableResult
-    func subscribe<Subscriber: AnyObject>(
-        by subscriber: Subscriber,
-        immediate: Bool,
-        _ event: @escaping Event<Subscriber>
-    ) -> ((_ id: UUID) -> Void, UUID) {
-        let id = UUID()
-        let anyEvent: Event<AnyObject> = { args in
+        immediate: Bool = false,
+        _ callback: @escaping EventCallback<Subscriber>
+    ) {
+        unsubscribe(by: self)
+        let anyCallback: EventCallback<AnyObject> = { args in
             guard let subscriber = args.subscriber as? Subscriber else { return }
-            event((subscriber, args.property))
+            callback((subscriber, args.property))
         }
-        publishers.append(.init(id: id, event: anyEvent, subscriber: .init(subscriber)))
-        if immediate { event((subscriber, (value, value))) }
-        return (unsubscribe, id)
-    }
-
-    func unsubscribe(_ id: UUID) {
-        publishers.removeAll { $0.id == id }
+        publishers.append(.init(callback: anyCallback, subscriber: .init(subscriber)))
+        if immediate { callback((subscriber, (value, value))) }
     }
 
     func unsubscribe<Subscriber: AnyObject>(by subscriber: Subscriber) {
-        publishers.removeAll { $0.subscriber.value === subscriber }
+        publishers.removeAll { publisher in
+            guard let sub = publisher.subscriber.value else { return true }
+            return sub === subscriber
+        }
     }
 
     func publish(_ changes: Changes? = nil) {
         let (old, new) = changes ?? (value, value)
         publishers = publishers.compactMap { publisher in
             guard let subscriber = publisher.subscriber.value else { return nil }
-            publisher.event((subscriber, (old, new)))
+            publisher.callback((subscriber, (old, new)))
             return publisher
         }
     }

@@ -58,10 +58,9 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         group?.$color.unsubscribe(by: self)
         group?.$name.unsubscribe(by: self)
         group?.$image.unsubscribe(by: self)
@@ -79,22 +78,22 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$color.subscribe(by: self) { host, _ in
+        newGroup.$color.subscribe(by: self, immediate: true) { host, _ in
             guard let color = host.group?.uiColor else { return }
             host.progressView.color = color
         }
-        newGroup.$name.subscribe(by: self) { host, name in
+        newGroup.$name.subscribe(by: self, immediate: true) { host, name in
             host.titleLabel.text = name.new
         }
-        newGroup.$image.subscribe(by: self) { host, _ in
+        newGroup.$image.subscribe(by: self, immediate: true) { host, _ in
             guard let image = host.group?.uiImage else { return }
             host.progressView.image = image
             host.imageView.image = image
         }
-        newGroup.$tasks.subscribe(by: self) { host, tasks in
+        newGroup.$tasks.subscribe(by: self, immediate: true) { host, tasks in
             host.subtitleLabel.text = "\(tasks.new.count) Tasks"
         }
-        newGroup.$progress.subscribe(by: self) { host, progress in
+        newGroup.$progress.subscribe(by: self, immediate: true) { host, progress in
             host.progressView.progress = progress.new
         }
     }

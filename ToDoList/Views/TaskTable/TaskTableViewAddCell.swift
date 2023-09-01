@@ -83,7 +83,7 @@ final class TaskTableViewAddCell: UITableViewCell, Identifier {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$color.subscribe(by: self) { host, _ in
+        newGroup.$color.subscribe(by: self, immediate: true) { host, _ in
             guard let color = host.group?.uiColor else { return }
             host.containerView.backgroundColor = color
             host.iconView.tintColor = host._textColor

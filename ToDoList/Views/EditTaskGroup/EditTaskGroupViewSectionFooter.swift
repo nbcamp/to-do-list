@@ -48,7 +48,7 @@ final class EditTaskGroupViewSectionFooter: UIView {
 
     private func listenTaskGroupChanged(old oldGroup: TaskGroup?, new newGroup: TaskGroup?) {
         guard oldGroup !== newGroup, let newGroup else { return }
-        newGroup.$progress.subscribe(by: self) { host, progress in
+        newGroup.$progress.subscribe(by: self, immediate: true) { host, progress in
             host.footerLabel.text = "\(Int(progress.new * 100.0))% Completed"
         }
     }

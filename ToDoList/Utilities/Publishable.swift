@@ -45,8 +45,8 @@ final class Publishable<Property> {
     ) -> ((_ id: UUID) -> Void, UUID) {
         let id = UUID()
         let anyEvent: Event<AnyObject> = { args in
-            guard let publisher = args.subscriber as? Subscriber else { return }
-            event((publisher, args.property))
+            guard let subscriber = args.subscriber as? Subscriber else { return }
+            event((subscriber, args.property))
         }
         publishers.append(.init(id: id, event: anyEvent, subscriber: .init(subscriber)))
         if immediate { event((subscriber, (value, value))) }
@@ -55,6 +55,10 @@ final class Publishable<Property> {
 
     func unsubscribe(_ id: UUID) {
         publishers.removeAll { $0.id == id }
+    }
+
+    func unsubscribe<Subscriber: AnyObject>(by subscriber: Subscriber) {
+        publishers.removeAll { $0.subscriber.value === subscriber }
     }
 
     func publish(_ changes: Changes? = nil) {

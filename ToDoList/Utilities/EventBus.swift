@@ -15,49 +15,49 @@ final class EventBus {
     static let shared: EventBus = .init()
     private init() {}
 
-    typealias EventCallback<Emitter: AnyObject, Event: EventProtocol> = ((Emitter, Event.Payload)) -> Void
-    typealias AnyEventCallback = ((emitter: AnyObject, payload: Any)) -> Void
+    typealias EventCallback<Listener: AnyObject, Event: EventProtocol> = ((Listener, Event.Payload)) -> Void
+    typealias AnyEventCallback = ((listener: AnyObject, payload: Any)) -> Void
 
-    struct Listener<Emitter: AnyObject> {
+    struct Emitter<Listener: AnyObject> {
         var callback: AnyEventCallback
-        var emitter: WeakRef<Emitter>
+        var listener: WeakRef<Listener>
     }
 
-    private var listenerMap: [String: [Listener<AnyObject>]] = [:]
+    private var emitterMap: [String: [Emitter<AnyObject>]] = [:]
 
-    func on<Emitter: AnyObject, Event: EventProtocol>(
+    func on<Listener: AnyObject, Event: EventProtocol>(
         _ event: Event.Type,
-        by emitter: Emitter,
-        _ callback: @escaping EventCallback<Emitter, Event>
+        by listener: Listener,
+        _ callback: @escaping EventCallback<Listener, Event>
     ) {
         let anyCallback: AnyEventCallback = { args in
-            if let emitter = args.emitter as? Emitter,
+            if let listener = args.listener as? Listener,
                let payload = args.payload as? Event.Payload
-            { callback((emitter, payload)) }
+            { callback((listener, payload)) }
         }
-        listenerMap[event.id, default: []].append(.init(callback: anyCallback, emitter: .init(emitter)))
+        emitterMap[event.id, default: []].append(.init(callback: anyCallback, listener: .init(listener)))
     }
 
-    func off<Emitter: AnyObject, Event: EventProtocol>(
+    func off<Listener: AnyObject, Event: EventProtocol>(
         _ event: Event,
-        of emitter: Emitter
+        by listener: Listener
     ) {
-        listenerMap[event.id]?.removeAll { $0.emitter.value === emitter }
+        emitterMap[event.id]?.removeAll { $0.listener.value === listener }
     }
 
-    func reset<Emitter: AnyObject>(_ emitter: Emitter) {
-        listenerMap.keys.forEach { key in listenerMap[key]?.removeAll { $0.emitter.value === emitter } }
+    func reset<Listener: AnyObject>(_ listener: Listener) {
+        emitterMap.keys.forEach { key in emitterMap[key]?.removeAll { $0.listener.value === listener } }
     }
 
     func emit<Event: EventProtocol>(_ event: Event) {
         let key = event.id
-        listenerMap[key] = listenerMap[key]?.compactMap { listener in
-            guard let emitter = listener.emitter.value else { return nil }
-            listener.callback((emitter, event.payload))
-            return listener
+        emitterMap[key] = emitterMap[key]?.compactMap { emitter in
+            guard let listener = emitter.listener.value else { return nil }
+            emitter.callback((listener, event.payload))
+            return emitter
         }
-        if let listeners = listenerMap[key], listeners.isEmpty {
-            listenerMap.removeValue(forKey: key)
+        if let emitters = emitterMap[key], emitters.isEmpty {
+            emitterMap.removeValue(forKey: key)
         }
     }
 }

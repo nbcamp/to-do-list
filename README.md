@@ -17,11 +17,11 @@ You can add, update, delete and mark as done your tasks.
 
 ---
 
-**Table of Cotents**
+**Table of Contents**
 
 - [Development](#development)
-  - [Environment Variables](#environment-variables)
-- [Explanation](#explanation)
+  - [Setting API Keys](#setting-api-keys)
+- [Project Description](#project-description)
   - [Directory Structure](#directory-structure)
   - [MVC Architecture](#mvc-architecture)
     - [View](#view)
@@ -37,14 +37,14 @@ You can add, update, delete and mark as done your tasks.
 
 Clone this repository and open `ToDoList.xcodeproj` with [Xcode](https://developer.apple.com/xcode/).
 
-### Environment Variables
+### Setting API Keys
 
 1. Make a file named `Secrets.xcconfig` in `Resources` directory below the `Secrets.example.xcconfig`.
 2. Copy all contents of `Secrets.example.xcconfig` to `Secrets.xcconfig`.
 2. Erase placeholder of the `THE_DOG_API_KEY`.
 3. (Optional) Fill the `THE_DOG_API_KEY` with your API key. or leave it blank (`THE_DOG_API_KEY` is the API key for [The Dog API](https://thedogapi.com/))
 
-## Explanation
+## Project Description
 
 ### Directory Structure
 
@@ -68,11 +68,15 @@ ToDoList/
 
 ### MVC Architecture
 
-해당 프로젝트는 Model - View - Controller 패턴을 활용하여 구현하였습니다.
+해당 프로젝트는 Model - View - Controller 패턴을 적용하여 구현했습니다.
 
-- [View](#view): 사용자에게 보여지는 UI를 구성합니다.
+- [View](#view): 사용자에게 보여지는 모든 UI를 구성합니다.
 - [Controller](#controller): View와 Model을 연결하고, 각종 이벤트를 관리합니다.
-- [Model](#model): 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service를 통칭합니다.
+- [Model](#model): 데이터 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service입니다.
+
+**사용자가 앱을 접속했을 때**
+
+[View on Mermaid Online Editor](https://mermaid.live/edit#pako:eNplUstu2zAQ_BWChyIBLNuk_FB4CBA4PRSoUSBGcih0YaSVRIQiWZJq4xr-9y4Fw4ZdnciZ5ezMrg60sjVQQbMsK01UUYMg27cNefJVpyJUcfBAdvBrAFMBeVay9bIvzVgeTvAZLY2TPqpKOWkieQ3gr5GNNdFbrW_xNwV_rpEtutLX0C5aL1tIXZJy9vh4kRPkhwNDnpwjX8hLshWw_7fSXEqwPrURhGw8yAhYiKTBhOSOCYavtIzKmtApd3_zcHQjzsLPMsrSnPxkF_67lfVIkjvVEPhUIQaUGtlz-xfAkZqTRoJugmzlB_xvPSUWOP7gtNwjTSe0B99LVePuDqUhpKSxgx5KKvBYQyMHHUtamiOWyiHa3d5UVEQ_wIQOrsYJnNZGRSN1OKNfa4XBzqDGTIDXA417l36UFlOhZGVNo9qED14j3MXogpjNEj1tVeyG92ll-1lQdYdL7H4_rGYrviokz2G1zuUyz-vqnT0UDV-wpl7PGZf0eJxQ3PVPay-u8J66fFKRL9i0YHnB5pyzfLngE7qngrPpEr-C54ucz9dLjhp_RwF2_AdM0fpj)
 
 ```mermaid
 ---
@@ -87,22 +91,57 @@ participant Model
 participant Storage
 
 User->>Controller: Open App & Request UI
-View->>Controller:  Connected by TypedView
+Controller->>View:  Create & Connect (1:1 Relationship)
+Controller->>Model: Request Data
 Storage-->>Model: Load Data (if exists)
-Controller->>Model: Read Data
-Model-->>View: Notify Changes
-View-->>Controller: Make Changes
+Model->>View: Return Data
+View->>Controller: Make UI
 Controller->>User: Display UI
-Model-->>Storage: Save Data
 ```
 
-1. User가 앱을 실행하면, Controller는 View를 생성하고, View는 Controller와 연결됩니다. (`typedView` 속성으로 제공)
-2. Storage가 존재한다면, Model(Codable) 형식으로 변환합니다.
-3. Controller가 Model에게 데이터를 요청하고 Model은 View에게 데이터를 전달합니다.
-4. Controller와 연결되어 있는 View는, Controller를 통해 User에게 UI를 보여줍니다.
-5. User가 UI를 조작하여 이벤트가 발생하면 Controller에서 이를 적절히 처리합니다.
-6. 그 과정에서 Model를 변경하면, Model은 View에게 변경사항을 알립니다.
-7. 변경사항을 적용하여 UI를 다시 그린 뒤 User에게 보여줍니다.
+1. User가 앱을 실행하고 UI를 요청하면, Controller는 View를 생성하고 연결합니다.
+2. Controller는 UI를 그리기 위해 필요한 데이터를 Model에 요청합니다.
+3. Storage로부터 데이터를 불러와서 Model(Codable) 형식으로 변환합니다.
+4. 불러온 변경사항을 View에게 알립니다. View는 이를 토대로 UI를 구축합니다.
+5. View와 연결된 Controller를 통해서 사용자에게 UI를 보여줍니다.
+
+**사용자가 UI를 조작했을 때**
+
+[View on Mermaid Online Editor](https://mermaid.live/edit#pako:eNptUstu2zAQ_BWCpxbwS5Jf4cFAaufQg4uihnMIdKGolUSUJlU-nLiB_71LR34F5UXk7Gh2ZrHvVJgSKKP9fj_XXnoFjKyfl-TRikZ6ED5YIBv4E0ALICvJa8t3uT7RXQdf0Fy33HopZMu1J1sH9h5ZGu2tUeoz_izh9R5Zoyt1D228sbyGe_BpD9p_Cy72_mE8ELMH-_E3Iz9DoaRreKEg1mOXfn-x6KqbUDhhZQFk2XBdA2pc_UXeWfuWesKQGbMhJUpiuQUhqwN5FF6ac6PF4qrGCHq7MkhwUtc33m_6Xuz9isN1ODML3MNw25bxswIFmHLFPc_1iRmddqNBJ3z_USRfZEXgTTrvvp6JZ7vdWM6xyav0Taf4H-dr_hvI9vsnkzE_w3VwreIHLNMe3YHdcVniLr3nmpCc-gZ2kFOG1xIqHpTPaa6PSOXBm81BC8q8DdCj4RSuWyPKKq7cBX0qJaa7gMrwEvD5Tv2hjYtbY0aUFEZXso54sArhxvvWseEwlgc1JgzFQJjd0Mmywf1p9g_T4TSdznmawXSW8UmWlaJIHuZVOk6qcjZKUk6Pxx7FNXsx5uoK37HLG2XZOBnMk2yejNI0ySbjtEcPlKXJYIJnnmbjLB3NJilq_D0JJMd_HQMx1g)
+
+```mermaid
+---
+title: MVC Architecture Sequence Diagram
+---
+sequenceDiagram
+
+participant User
+participant Controller
+participant View
+participant Model
+participant Storage
+participant EventBus
+
+Note over Model: Publishable
+
+View-->>Model: Subscribe Changes
+Controller-->>EventBus: Subscribe Events
+User->>View: Specify Action
+View->>Controller: Notify Action using EventBus
+Controller->>Model: Request Create/Update/Delete Data
+Model-->>Storage: Save Data (if exists)
+Model->>View: Publish Changes with Data
+View->>Controller: Make UI
+Controller->>User: Display UI
+```
+
+1. View가 Model의 변경사항을 구독합니다. ([Publishable](#publishable))
+2. Controller는 특정 이벤트에 대한 동작을 정의합니다. ([EventBus](#eventbus))
+3. User가 View로부터 데이터를 변경하는 특정 행동을 수행하면 Controller에 이를 알립니다.
+4. Controller는 데이터를 생성/수정/삭제하는 동작을 Model에게 요청합니다.
+5. Model은 데이터를 변경한 다음, 변환하여 Storage에 저장합니다.
+6. 불러온 변경사항을 구독 중인 View에게 알립니다. View는 이를 토대로 UI를 구축합니다.
+7. View와 연결된 Controller를 통해서 사용자에게 UI를 보여줍니다.
 
 ---
 
@@ -110,7 +149,7 @@ Model-->>Storage: Save Data
 
 View는 사용자에게 보여지는 UI를 구성합니다. View의 경우 다음의 역할로 구분합니다.
 
-- [`RootView`](ToDoList/Views/RootView.swift): Controller와 직접 연결된 View를 나타내는 프로토콜입니다. `initializeUI()`를 필수로 구현해야 하며 [`TypedViewController`](ToDoList/Controllers/TypedViewController.swift)에게 전달됩니다.
+- [`RootView`](ToDoList/Views/RootView.swift): Controller와 1:1 관계로 연결되는 View를 나타내는 프로토콜입니다. `initializeUI()`를 필수로 구현해야 하며 [`TypedViewController`](ToDoList/Controllers/TypedViewController.swift)에게 전달됩니다.
 - 그 외 하위 View는 `RootView`에서 사용합니다.
 
 #### Controller
@@ -141,7 +180,7 @@ Controller는 View와 Model을 연결하고, 각종 이벤트를 관리합니다
 ```
 
 - `Models`: Codable 프로토콜을 채택한 자료구조를 가집니다. Storage에서 데이터를 불러오고 내보내기 위해 사용합니다.
-- `ViewModels`: `Models`의 데이터를 가공하여 View에게 전달합니다. 또한, [`Publishable`](#publishable)을 적용하여 변경이 발생했을 때 UI를 업데이트합니다.
+- `ViewModels`: `Model`의 데이터를 가공하여 View에게 전달합니다. 또한, [`Publishable`](#publishable)을 적용하여 변경이 발생했을 때 UI를 업데이트합니다.
 - `Services`: 비즈니스 로직을 담당합니다. `Storage`로부터 데이터를 불러오기/내보내기를 수행하고  `ViewModels` 데이터를 관리합니다.
 
 ## API References

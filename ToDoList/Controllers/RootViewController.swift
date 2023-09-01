@@ -46,7 +46,7 @@ extension RootViewController {
 
         eventBus.on(FetchRandomImage.self, by: self) { host, payload in
             host.withRandomAnimal { animal in
-                guard let animal else { return }
+                guard let animal else { return payload.completion() }
                 DispatchQueue.global().async {
                     guard let url = URL(string: animal.url),
                           let data = try? Data(contentsOf: url),
@@ -147,7 +147,11 @@ extension RootViewController {
             "https://api.thedogapi.com/v1",
         ][Int.random(in: 0 ... 1)]
         let apiKey = (Bundle.main.object(forInfoDictionaryKey: "Secrets") as? [String: String])?["THE_DOG_API_KEY"] ?? ""
-        APIService.shared.fetch(url: "/images/search", model: [AnimalModel].self, queryItems: [.init(name: "api_key", value: apiKey)]) { result in
+        APIService.shared.fetch(
+            url: "/images/search",
+            model: [AnimalModel].self,
+            queryItems: [.init(name: "api_key", value: apiKey)]
+        ) { result in
             switch result {
             case .success(let animals):
                 if let animal = animals.first {

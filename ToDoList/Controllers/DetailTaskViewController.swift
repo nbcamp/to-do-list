@@ -6,8 +6,13 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigation()
+
+        EventBus.shared.on(UpdateTaskGroup.self, by: self) { host, payload in
+            host.typedView.group = payload.group
+            host.typedView.tableView.reloadData()
+        }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         typedView.group = group
@@ -26,10 +31,9 @@ final class DetailTaskViewController: TypedViewController<TaskTableView> {
 
     @objc private func editButtonTapped() {
         guard let group else { return }
-        let vc = NewTaskViewController(group: group) { [unowned self] group in
-            typedView.group = group
-            typedView.tableView.reloadData()
-        }
+        let vc = NewTaskViewController(group: group)
         navigationController?.pushViewController(vc, animated: false)
     }
+
+    deinit { EventBus.shared.reset(self) }
 }

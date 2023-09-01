@@ -29,7 +29,7 @@ extension RootViewController {
             host.pushViewController(vc, animated: true)
         }
 
-        eventBus.on(PushToDetailTaskScreen.self, by: self) { (host, payload) in
+        eventBus.on(PushToDetailTaskScreen.self, by: self) { host, payload in
             let vc = DetailTaskViewController()
             vc.group = payload.group
             host.pushViewController(vc, animated: true)
@@ -58,6 +58,27 @@ extension RootViewController {
                     }
                 }
             }
+        }
+
+        eventBus.on(CreateNewTaskGroup.self, by: self) { _, payload in
+            TaskService.shared.add(group: payload.group)
+            payload.completion()
+        }
+
+        eventBus.on(UpdateTaskGroup.self, by: self) { _, payload in
+            payload.completion()
+        }
+
+        eventBus.on(DeleteTaskGroup.self, by: self) { host, payload in
+            let alertController = UIAlertController(title: "Delete Task Group", message: "Are you sure you want to delete this task group?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+            let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+                let index = TaskService.shared.remove(group: payload.group)
+                payload.completion(index)
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            host.present(alertController, animated: true)
         }
 
         eventBus.on(CreateNewTask.self, by: self) { host, payload in
@@ -115,7 +136,7 @@ extension RootViewController {
             host.present(alertController, animated: true)
         }
 
-        eventBus.on(CompleteTask.self, by: self) { host, payload in
+        eventBus.on(CompleteTask.self, by: self) { _, payload in
             TaskService.shared.complete(task: payload.task)
         }
     }
@@ -139,4 +160,3 @@ extension RootViewController {
         }
     }
 }
-

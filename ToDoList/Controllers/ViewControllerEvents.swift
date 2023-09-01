@@ -34,7 +34,30 @@ struct FetchRandomImage: EventProtocol {
 }
 
 struct CreateNewTaskGroup: EventProtocol {
-    let payload: Void = ()
+    struct Payload {
+        let group: TaskGroup
+        let completion: () -> Void
+    }
+
+    let payload: Payload
+}
+
+struct UpdateTaskGroup: EventProtocol {
+    struct Payload {
+        let group: TaskGroup
+        let completion: () -> Void
+    }
+
+    let payload: Payload
+}
+
+struct DeleteTaskGroup: EventProtocol {
+    struct Payload {
+        let group: TaskGroup
+        let completion: (Int?) -> Void
+    }
+
+    let payload: Payload
 }
 
 struct CreateNewTask: EventProtocol {

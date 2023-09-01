@@ -15,10 +15,10 @@ final class TaskService {
         defer { save() }
         groups.append(group)
     }
-    
-    func remove(group: TaskGroup) {
+
+    func remove(group: TaskGroup) -> Int? {
         defer { save() }
-        groups.remove(element: group)
+        return groups.remove(element: group)
     }
 
     func add(task: Subtask) {

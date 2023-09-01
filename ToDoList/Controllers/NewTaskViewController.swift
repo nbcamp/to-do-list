@@ -1,7 +1,6 @@
 import UIKit
 
 final class NewTaskViewController: TypedViewController<TaskTableView> {
-    var done: ((TaskGroup) -> Void)?
     var animated = false
     private var group = {
         let group = TaskGroup()
@@ -9,21 +8,16 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
         return group
     }()
 
-    private var isReferenced = false
+    private var isUpdateMode = false
 
-    init(
-        group: TaskGroup? = nil,
-        animated: Bool = false,
-        done: ((TaskGroup) -> Void)? = nil
-    ) {
-        self.done = done
+    init(group: TaskGroup? = nil, animated: Bool = false) {
         self.animated = animated
-        self.group = group ?? { // TODO: 참조 타입 불러오는 문제 수정
+        self.group = group ?? {
             let group = TaskGroup()
             group.uiColor = .random(in: .dark)
             return group
         }()
-        isReferenced = group != nil
+        isUpdateMode = group != nil
         super.init()
     }
 
@@ -37,8 +31,8 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
     }
 
     private func setupNavigation() {
-        navigationItem.hidesBackButton = isReferenced
-        navigationItem.leftBarButtonItem = isReferenced ? .none : .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
+        navigationItem.hidesBackButton = isUpdateMode
+        navigationItem.leftBarButtonItem = isUpdateMode ? .none : .init(image: .init(systemName: "arrow.left"), style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
         navigationItem.leftBarButtonItem?.tintColor = .label
         navigationItem.rightBarButtonItem?.tintColor = .label
@@ -52,8 +46,17 @@ final class NewTaskViewController: TypedViewController<TaskTableView> {
         guard group.image != nil else { showToast(message: "Choose an image that represents your tasks."); return }
         guard !group.name.isEmpty else { showToast(message: "Fill out the name of the tasks"); return }
         guard !group.tasks.isEmpty else { showToast(message: "Please create at least one task."); return }
-        navigationController?.popViewController(animated: animated)
-        done?(group)
+        if isUpdateMode {
+            EventBus.shared.emit(UpdateTaskGroup(payload: .init(group: group, completion: { [weak self] in
+                guard let self else { return }
+                self.navigationController?.popViewController(animated: self.animated)
+            })))
+        } else {
+            EventBus.shared.emit(CreateNewTaskGroup(payload: .init(group: group, completion: { [weak self] in
+                guard let self else { return }
+                self.navigationController?.popViewController(animated: self.animated)
+            })))
+        }
     }
 
     private func showToast(message: String) {

@@ -52,11 +52,18 @@ final class TaskGroupView: UIView, RootView {
             placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
             placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+
+        EventBus.shared.on(CreateNewTaskGroup.self, by: self) { host, _ in
+            let indexPath = IndexPath(row: host.groups.count - 1, section: 0)
+            host.collectionView.insertItems(at: [indexPath])
+        }
         
-//        EventBus.shared.on(CreateNewTask.self, by: self) { (host, payload) in
-//            print(payload.group)
-//        }
+        EventBus.shared.on(DeleteTaskGroup.self, by: self) { host, _ in
+            host.collectionView.reloadData()
+        }
     }
+    
+    deinit { EventBus.shared.reset(self) }
 }
 
 extension TaskGroupView: UICollectionViewDataSource {

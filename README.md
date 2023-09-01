@@ -25,6 +25,7 @@ Minimalistic to do list app for iOS. You can add, update, delete and mark as don
   - [Setting API Keys](#setting-api-keys)
 - [Project Description](#project-description)
   - [Directory Structure](#directory-structure)
+  - [Features](#features)
   - [MVC Architecture](#mvc-architecture)
     - [View](#view)
     - [Controller](#controller)
@@ -68,6 +69,14 @@ ToDoList/
 ├── Utilities/
 └── Info.plist
 ```
+
+### Features
+
+- 할일 그룹 생성/수정/삭제
+- 할일 추가/수정/삭제/순서변경
+- 그룹 별 랜덤 이미지 추가 (The Dog/Cat API)
+- 그룹 별 색상 설정 가능
+- Collection View / Table View 지원
 
 ### MVC Architecture
 

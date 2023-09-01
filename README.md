@@ -246,7 +246,7 @@ final class Main {
     func run() {
         let model = MyModel(name: "Old Model")
 
-        _ = model.$name.subscribe(by: self, immediate: true) { (subscriber, changes) in
+        model.$name.subscribe(by: self, immediate: true) { (subscriber, changes) in
             print("Old Name: \(changes.old), New Name: \(changes.new)")
         }
         
@@ -263,7 +263,7 @@ Main.shared.run()
 
 ### [EventBus](/ToDoList/Utilities/EventBus.swift)
 
-이벤트를 관리하며, 구독 및 발행 기능을 제공합니다. 이벤트 기반의 프로그래밍 패턴을 적용합니다.
+이벤트를 관리하며, 구독 및 발행 기능을 제공합니다. 이벤트 기반의 프로그래밍 패턴을 제공합니다.
 
 >내부적으로 `self`에 대한 참조를 [`WeakRef`](#weakref)로 관리하고 있으므로, 메모리 해제 시 자동으로 구독을 해제합니다.
 

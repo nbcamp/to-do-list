@@ -39,9 +39,9 @@ ToDoList/
 
 해당 프로젝트는 Model - View - Controller 패턴을 활용하여 구현하였습니다.
 
-- View: 사용자에게 보여지는 UI를 구성합니다.
-- Model: 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service를 통칭합니다.
-- Controller: View와 Model을 연결하고, 각종 이벤트를 관리합니다.
+- [View](#view): 사용자에게 보여지는 UI를 구성합니다.
+- [Controller](#controller): View와 Model을 연결하고, 각종 이벤트를 관리합니다.
+- [Model](#model): 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service를 통칭합니다.
 
 ```mermaid
 ---
@@ -73,6 +73,23 @@ Model-->>Storage: Save Data
 6. 그 과정에서 Model를 변경하면, Model은 View에게 변경사항을 알립니다.
 7. 변경사항을 적용하여 UI를 다시 그린 뒤 User에게 보여줍니다.
 
+---
+
+#### View
+
+View는 사용자에게 보여지는 UI를 구성합니다. View의 경우 다음의 역할로 구분합니다.
+
+- [`RootView`](ToDoList/Views/RootView.swift): Controller와 직접 연결된 View를 나타내는 프로토콜입니다. `initializeUI()`를 필수로 구현해야 하며 [`TypedViewController`](ToDoList/Controllers/TypedViewController.swift)에게 전달됩니다.
+- 그 외 하위 View는 `RootView`에서 사용합니다.
+
+#### Controller
+
+Controller는 View와 Model을 연결하고, 각종 이벤트를 관리합니다. [`TypedViewController`](ToDoList/Controllers/TypedViewController.swift)를 통해 `RootView`와 연결합니다.
+연결된 View는 `typedView` 속성을 통해 접근 가능합니다.
+
+[`EventBus`](#eventbus)를 활용한 모든 이벤트는 [`RootViewController`](/ToDoList/Controllers/RootViewController.swift)에서 관리합니다. Controller에서 모든 이벤트를 구독하고 있으며, View에서 특정 이벤트가 발생하면 `EventBus`를 통해 `RootViewController`에게 이벤트를 전달합니다. 특정 이벤트와 매핑된 콜백 함수에서 이벤트를 처리합니다.
+
+
 #### Model
 
 자료구조 및 클래스를 가지고 있는 Model과 ViewModel, 그리고 비즈니스 로직을 가진 Service를 통칭합니다.
@@ -92,25 +109,23 @@ Model-->>Storage: Save Data
    └── TaskService.swift
 ```
 
-- `Models`: Codable 프로토콜을 채택한 자료구조를 가집니다. JSON 형식의 데이터를 저장하고, 불러오는 역할을 합니다.
-- `ViewModels`: `Models`의 데이터를 가공하여 View에게 전달합니다. 또한, `Publishable`을 적용해 변경 사항을 구독할 수 있습니다.
+- `Models`: Codable 프로토콜을 채택한 자료구조를 가집니다. Storage에서 데이터를 불러오고 내보내기 위해 사용합니다.
+- `ViewModels`: `Models`의 데이터를 가공하여 View에게 전달합니다. 또한, [`Publishable`](#publishable)을 적용하여 변경이 발생했을 때 UI를 업데이트합니다.
 - `Services`: 비즈니스 로직을 담당합니다. `Storage`로부터 데이터를 불러오기/내보내기를 수행하고  `ViewModels` 데이터를 관리합니다.
-
-Model의 변경사항이 발생했을 때 다양한 View에게 변경사항을 알릴 수 있도록 [`Publishable`](/ToDoList/Utilities/Publishable.swift) Attributes를 작성했습니다.
-
-
----
 
 ## API References
 
-### Publishable
+### [Publishable](/ToDoList/Utilities/Publishable.swift)
 
 값의 변화를 구독자에게 자동으로 알려주는 Property Wrapper 클래스입니다.
 
-- `Publisher`: 발행자를 나타냅니다. `Publishable`을 적용한 속성의 타입입니다.
-- `Subscriber`: 구독자를 나타냅니다. `Publishable`을 구독하는 타입입니다.
+내부적으로 `self`에 대한 참조를 [`WeakRef`](#weakref)로 관리하고 있으므로, 메모리 해제 시 자동으로 구독을 해제합니다.
 
 **API**
+
+- `Publishable`: 값의 변화를 구독자에게 알려주는 Property Wrapper 클래스입니다.
+- `Publisher`: 발행자를 나타냅니다. `Publishable`을 적용한 속성의 타입입니다.
+- `Subscriber`: 구독자를 나타냅니다. `Publishable`을 구독하는 타입입니다.
 
 ```swift
 /// 구독자를 추가합니다. (immediate: true)
@@ -162,20 +177,18 @@ Main.shared.run()
 // Old Value: Important Tasks, New Value: Very Important Tasks
 ```
 
-**메모리 관련**
-
-내부적으로 `self`에 대한 참조를 [`WeakRef`](#weakref)로 관리하고 있습니다. 굳이 구독을 취소하지 않더라도 메모리에서 해제되면 자동으로 구독을 해제합니다.
-
-
-
-### EventBus
+### [EventBus](/ToDoList/Utilities/EventBus.swift)
 
 이벤트를 관리하며, 구독 및 발행 기능을 제공합니다. 이벤트 기반의 프로그래밍 패턴을 적용합니다.
+
+내부적으로 `self`에 대한 참조를 [`WeakRef`](#weakref)로 관리하고 있으므로, 메모리 해제 시 자동으로 구독을 해제합니다.
 
 **API**
 
 - `EventBus`: 이벤트를 구독 및 발행할 수 있는 싱글턴 클래스입니다.
 - `EventProtocol`: 이벤트를 나타내는 프로토콜입니다. `Payload` 연관 타입을 가집니다.
+- `Emitter`: 이벤트를 발행할 수 있는 타입입니다.
+- `Listener`: 이벤트를 구독할 수 있는 타입입니다.
 
 ```swift
 /// 주어진 이벤트를 구독합니다.
@@ -210,14 +223,10 @@ EventBus.shared.on(CreateNewTaskGroup.self, by: self) { host, payload in
 }
 
 // 이벤트 발행
-EventBus.shared.emit(
-  CreateNewTaskGroup(payload: .init(group: group, completion: { /* ... */ }))
-)
+EventBus.shared.emit(CreateNewTaskGroup(payload: .init(group: group, completion: { /* ... */ })))
 ```
 
-내부적으로 `self`에 대한 참조를 [`WeakRef`](#weakref)로 관리하고 있습니다. 굳이 구독을 취소하지 않더라도 메모리에서 해제되면 자동으로 구독을 해제합니다.
-
-### WeakRef
+### [WeakRef](/ToDoList/Utilities/WeakRef.swift)
 
 `weak` 참조를 감싸는 구조체입니다.
 
@@ -227,5 +236,21 @@ struct WeakRef<T: AnyObject> {
     init(_ value: T?) {
         self.value = value
     }
+}
+```
+
+### [Storage](/ToDoList/Utilities/Storage.swift)
+
+데이터를 영속적으로 저장하고, 불러오는 기능을 제공하는 타입이 채택하는 프로토콜입니다.
+
+현재 프로젝트에서는 `UserDefaultsStorage`를 사용할 수 있습니다.
+
+```swift
+protocol Storage {
+    static var shared: Self { get }
+
+    func save<T: Encodable>(_ object: T, forKey key: String)
+    func load<T: Decodable>(forKey key: String) -> T?
+    func remove(forKey key: String)
 }
 ```

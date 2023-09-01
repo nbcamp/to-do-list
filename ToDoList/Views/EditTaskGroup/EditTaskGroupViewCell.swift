@@ -61,6 +61,10 @@ final class EditTaskGroupViewCell: UITableViewCell, Identifier {
         newTask.$name.subscribe(by: self, immediate: true) { host, name in
             host.titleLabel.text = name.new
         }
+        newTask.$completed.subscribe(by: self, immediate: true) { host, completed in
+            host.titleLabel.strikethrough(completed.new)
+            host.titleLabel.layer.opacity = completed.new ? 0.6 : 1.0
+        }
         newTask.group.$color.subscribe(by: self, immediate: true) { host, color in
             guard let color = host.task?.group.uiColor else { return }
             host.titleLabel.textColor = color

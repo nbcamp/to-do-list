@@ -1,6 +1,25 @@
-# To Do List App
+# To Do List App <!-- omit from toc -->
 
-You can add, delete and mark as done your tasks.
+You can add, update, delete and mark as done your tasks.
+
+---
+
+**Table of Cotents**
+
+- [Development](#development)
+  - [Environment Variables](#environment-variables)
+- [Explanation](#explanation)
+  - [Directory Structure](#directory-structure)
+  - [MVC Architecture](#mvc-architecture)
+    - [View](#view)
+    - [Controller](#controller)
+    - [Model](#model)
+- [API References](#api-references)
+  - [Publishable](#publishable)
+  - [EventBus](#eventbus)
+  - [WeakRef](#weakref)
+  - [Storage](#storage)
+
 
 ## Development
 
@@ -35,7 +54,7 @@ ToDoList/
 └── Info.plist
 ```
 
-### MVC Pattern
+### MVC Architecture
 
 해당 프로젝트는 Model - View - Controller 패턴을 활용하여 구현하였습니다.
 

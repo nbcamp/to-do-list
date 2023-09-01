@@ -72,11 +72,13 @@ ToDoList/
 
 ### Features
 
-- 할일 그룹 생성/수정/삭제
-- 할일 추가/수정/삭제/순서변경
+- 할 일 그룹 생성/수정/삭제
+- 할 일 추가/수정/삭제/순서변경
+- 진행률 원형 진행바로 표시 (애니메이션 적용)
 - 그룹 별 랜덤 이미지 추가 (The Dog/Cat API)
 - 그룹 별 색상 설정 가능
 - Collection View / Table View 지원
+- Color Theme 대응 (Light/Dark)
 
 ### MVC Architecture
 

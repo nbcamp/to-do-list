@@ -58,6 +58,17 @@ final class TaskGroupCollectionViewCell: UICollectionViewCell, Identifier {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        group?.$color.unsubscribe(by: self)
+        group?.$name.unsubscribe(by: self)
+        group?.$image.unsubscribe(by: self)
+        group?.$tasks.unsubscribe(by: self)
+        group?.$progress.unsubscribe(by: self)
+        group = nil
+    }
 
     private func initializeUI() {
         layer.cornerRadius = 20

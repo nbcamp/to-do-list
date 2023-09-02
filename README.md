@@ -41,7 +41,7 @@ Clone this repository and open `ToDoList.xcodeproj` with [Xcode](https://develop
     - [Model](#model)
     - [View](#view)
     - [Controller](#controller)
-    - [Scenarios](#scenarios)
+  - [Scenarios](#scenarios)
 - [API References](#api-references)
   - [Publishable](#publishable)
   - [EventBus](#eventbus)
@@ -113,7 +113,7 @@ ToDoList/
 - [`EventBus`](#eventbus)에 View에서 발생하는 모든 이벤트를 등록합니다. ([`ViewControllerEvents`](/ToDoList/Controllers/ViewControllerEvents.swift), [`RootViewController`](/ToDoList/Controllers/RootViewController.swift))
 - 등록된 이벤트가 발생했을 때 Model에게 데이터 변경을 요청할 수 있습니다.
 
-#### Scenarios
+### Scenarios
 
 **사용자가 앱을 접속했을 때**
 

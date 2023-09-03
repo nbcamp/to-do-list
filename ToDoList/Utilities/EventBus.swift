@@ -42,7 +42,7 @@ final class EventBus {
         _ event: Event,
         by listener: Listener
     ) {
-        emitterMap[event.id]?.removeAll { $0.listener.value === listener }
+        emitterMap[event.id]?.removeAll { $0.listener.value == nil || $0.listener.value === listener }
     }
 
     func reset<Listener: AnyObject>(_ listener: Listener) {

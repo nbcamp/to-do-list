@@ -43,10 +43,7 @@ final class Publishable<Property> {
     }
 
     func unsubscribe<Subscriber: AnyObject>(by subscriber: Subscriber) {
-        publishers.removeAll { publisher in
-            guard let sub = publisher.subscriber.value else { return true }
-            return sub === subscriber
-        }
+        publishers.removeAll { $0.subscriber.value == nil || $0.subscriber.value === subscriber }
     }
 
     func publish(_ changes: Changes? = nil) {

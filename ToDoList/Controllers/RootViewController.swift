@@ -1,8 +1,6 @@
 import UIKit
 
 final class RootViewController: UINavigationController {
-    private let eventBus = EventBus.shared
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigation()
@@ -14,28 +12,28 @@ final class RootViewController: UINavigationController {
         setViewControllers([rootVC], animated: true)
     }
 
-    deinit { eventBus.reset(self) }
+    deinit { EventBus.shared.reset(self) }
 }
 
 extension RootViewController {
     private func initializeEvents() {
-        eventBus.on(PushToNewTaskScreen.self, by: self) { host, _ in
+        EventBus.shared.on(PushToNewTaskScreen.self, by: self) { host, _ in
             let vc = NewTaskViewController(animated: true)
             host.pushViewController(vc, animated: true)
         }
 
-        eventBus.on(PushToEditTaskGroupScreen.self, by: self) { host, _ in
+        EventBus.shared.on(PushToEditTaskGroupScreen.self, by: self) { host, _ in
             let vc = EditTaskGroupViewController()
             host.pushViewController(vc, animated: true)
         }
 
-        eventBus.on(PushToDetailTaskScreen.self, by: self) { host, payload in
+        EventBus.shared.on(PushToDetailTaskScreen.self, by: self) { host, payload in
             let vc = DetailTaskViewController()
             vc.group = payload.group
             host.pushViewController(vc, animated: true)
         }
 
-        eventBus.on(PresentColorPicker.self, by: self) { host, payload in
+        EventBus.shared.on(PresentColorPicker.self, by: self) { host, payload in
             let picker = ColorPickerViewController(initial: payload.group.uiColor, title: "Accent Color") { color in
                 guard let color else { return }
                 payload.group.uiColor = color
@@ -44,7 +42,7 @@ extension RootViewController {
             host.present(picker, animated: true)
         }
 
-        eventBus.on(FetchRandomImage.self, by: self) { host, payload in
+        EventBus.shared.on(FetchRandomImage.self, by: self) { host, payload in
             host.withRandomAnimal { animal in
                 guard let animal else { return payload.completion() }
                 DispatchQueue.global().async {
@@ -60,16 +58,16 @@ extension RootViewController {
             }
         }
 
-        eventBus.on(CreateNewTaskGroup.self, by: self) { _, payload in
+        EventBus.shared.on(CreateNewTaskGroup.self, by: self) { _, payload in
             TaskService.shared.add(group: payload.group)
             payload.completion()
         }
 
-        eventBus.on(UpdateTaskGroup.self, by: self) { _, payload in
+        EventBus.shared.on(UpdateTaskGroup.self, by: self) { _, payload in
             payload.completion()
         }
 
-        eventBus.on(DeleteTaskGroup.self, by: self) { host, payload in
+        EventBus.shared.on(DeleteTaskGroup.self, by: self) { host, payload in
             let alertController = UIAlertController(title: "Delete Task Group", message: "Are you sure you want to delete this task group?", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .default)
             let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
@@ -81,7 +79,7 @@ extension RootViewController {
             host.present(alertController, animated: true)
         }
 
-        eventBus.on(CreateNewTask.self, by: self) { host, payload in
+        EventBus.shared.on(CreateNewTask.self, by: self) { host, payload in
             let alertController = UIAlertController(title: "Add New Task", message: "What task to you want to add?", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .default)
             let confirmAction = UIAlertAction(title: "Add", style: .default) { _ in
@@ -103,7 +101,7 @@ extension RootViewController {
             host.present(alertController, animated: true)
         }
 
-        eventBus.on(EditTaskName.self, by: self) { host, payload in
+        EventBus.shared.on(EditTaskName.self, by: self) { host, payload in
             let alertController = UIAlertController(title: "Edit Task Name", message: "Fill in the name of the task you want to edit.", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .default)
             let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
@@ -125,7 +123,7 @@ extension RootViewController {
             host.present(alertController, animated: true)
         }
 
-        eventBus.on(DeleteTask.self, by: self) { host, payload in
+        EventBus.shared.on(DeleteTask.self, by: self) { host, payload in
             let alertController = UIAlertController(title: "Delete Subtask", message: "Are you sure you want to delete this task?", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .default)
             let confirmAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
@@ -136,11 +134,11 @@ extension RootViewController {
             host.present(alertController, animated: true)
         }
 
-        eventBus.on(CompleteTask.self, by: self) { _, payload in
+        EventBus.shared.on(CompleteTask.self, by: self) { _, payload in
             TaskService.shared.complete(task: payload.task)
         }
 
-        eventBus.on(SwapTwoTasks.self, by: self) { _, payload in
+        EventBus.shared.on(SwapTwoTasks.self, by: self) { _, payload in
             TaskService.shared.swap(payload.aTaskIndex, payload.bTaskIndex, from: payload.group)
         }
     }

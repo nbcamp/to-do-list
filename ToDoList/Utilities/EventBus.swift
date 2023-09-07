@@ -15,7 +15,7 @@ final class EventBus {
     static let shared: EventBus = .init()
     private init() {}
 
-    typealias EventCallback<Listener: AnyObject, Event: EventProtocol> = ((Listener, Event.Payload)) -> Void
+    typealias EventCallback<Listener: AnyObject, Event: EventProtocol> = ((listener: Listener, payload: Event.Payload)) -> Void
     typealias AnyEventCallback = ((listener: AnyObject, payload: Any)) -> Void
 
     struct Emitter<Listener: AnyObject> {

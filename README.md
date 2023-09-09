@@ -117,12 +117,11 @@ ToDoList/
 
 **사용자가 앱을 접속했을 때**
 
-[View on Mermaid Online Editor](https://mermaid.live/edit#pako:eNpdUstu2zAQ_BWCh8BG_ZLkV3gI0Lo9FGiaoEZzKHihqLVEgCZVPtK4hv-9S1u26_BEDoc7w9ndU2kroIwOh0NuggoaGHl8WZGPTjYqgAzRAVnD7whGAvmsRO3Elpsj3XfwBeWmFS4oqVphAvnpwd0iK2uCs1q_x18U_LlFHtGVvoXWwTpRQ1L5bgMQ-wruxGPkOZZa-UaU-ngvYrAmbsukw03yMXx4uIoz8tSCIaJtyR35kT7h0e1XbjqJIbK7wt-sqEglgiA9tSHwpnzwfW6S4StpHUsvnSrhxJSNMDV4bq6KyE1PGFk5EOj9LkVhMF3Sy1iGHrQIyhrfqLb_7t2HTuTsM0lwcwSvDp6dleC9MjXpBUukiB7OPvpnNtKHJxddXF2t7jP_5_MpKl0dI7nxkpJkOAS-1WJHB3QLbitUheOz54YQTkMDW-CU4baCjYg6cMrNAampJeudkZQFF2FAY4vi58mhbCO0v6BfKoWNuIAaewB43NOwa9Os1tgFLCmt2ag64dFphJsQWs_G43Q9qlVoYjmSdjv2qmpwjprX-_l4ns-XIi9gvijErCgqWWb3y00-zTbVYpLlgh4OA4rj9svaqys8J5U3yoppNlpmxTKb5HlWzKb5gO4oy7PRDNcyL6ZFPlnMcqzx91ggO_wDAFYrDA)
-
 ```mermaid
 ---
 title: MVC Architecture Sequence Diagram
 ---
+
 sequenceDiagram
 
 participant User
@@ -136,9 +135,9 @@ Note over Model: Publishable
 autonumber
 
 User->>Controller: Open app & Request UI
-Storage-->>Model: Load data (if exists)
-View->>Model: Subscribe data changes
 Controller->>View: Create & Connect (1:1 Relationship)
+View->>Model: Subscribe data changes
+Storage-->>Model: Load data (if exists)
 Controller->>+Model: Request data
 Model->>Model: Processing (to cause changes)
 Model-->>-View: Publish data
@@ -147,54 +146,49 @@ Controller->>User: Display
 ```
 
 1. User가 앱을 실행하고 UI를 요청하면, 
-   1. Storage로부터 데이터를 불러와 Model을 준비합니다.
-   2. Controller가 View를 생성하고 자신에게 연결합니다.
-   3. View를 생성하는 단계에서 Model의 변경사항을 구독합니다. ([Publishable](#publishable))
+   1. Controller가 View를 생성하고 자신에게 연결합니다. ([TypedViewController](/ToDoList/Controllers/TypedViewController.swift))
+   2. View를 생성하는 단계에서 Model의 변경사항을 구독합니다. ([Publishable](#publishable))
+   3. Storage로부터 데이터를 불러와 Model을 준비합니다.
 2. Controller는 UI를 그리기 위해 필요한 데이터를 Model에 요청합니다.
-3. 필요한 데이터를 정리하여 View에게 발행합니다. View는 이를 토대로 UI를 구축합니다.
+3. Model은 필요한 데이터를 정리하여 View에게 발행합니다. View는 이를 토대로 UI를 구축합니다.
 4. View와 연결된 Controller를 통해서 사용자에게 UI를 보여줍니다.
 
 **사용자가 UI를 조작했을 때**
-
-[View on Mermaid Online Editor](https://mermaid.live/edit#pako:eNpdU01v2zAM_SuCTh2aj9pO0tSHAlubww4digbtYfBFlmlbmC15EpU2C_LfSyVOvNQX24_k4-OjtOPSFMBTPh6PM40KG0jZ09sD-25lrRAkegtsDX89aAnsUYnKijbTh3TXw2c0052wqKTqhEb26sBeIg9GozVN8xV_U_B-iTyRquYSWqOxooJLcLUBjT-8C71_GQRmNmCP1Sl79nmjXC3yBkJceDTat3nonunQc3x_36eufe6kVTmwQqBgsha6AmIdFFPuqVnKXqBSDqmTFE2TC_mHlcYyCHEqCoNTeuiQskfDXAdSlUoyIVEZ7c7NrwfGVauwJ2DSWAuuM7pQumJoGNbQ12b6VDKm-vEgjzR5zWyvC4pLZYHgQP5lout-_JewSYdMWhAIU98V4UUhwKMjmT5kDoY9WyPBuSDwihRK4R2cbPs2ZPdLI4PFpvf2SpUMPkjmkBdGObrVr-zExN4V1r2A3rP_R3496GSvP7-MFRZAzivXNWLLR7wF2wpV0DHfZZqxjJMfLWQ8pc8CSuEbzHim95QaDsl6qyVP0XoY8aMV_QnnaSkad0ZXhaLxzmBjRAH0u-O47cKdCrsgSml0qaqAe9sQXCN2Lp1OQ3hS0YA-n0jTTp0qajra9eZuMV3Ei6WIE1jcJmKeJIXMo7tlGc-isri9iWLB9_sRpxvw25hBFf2HLh88TWbRZBkly-gmjqNkPotHfMvTOJrM6VnGySyJb27nMXH8OxBE-08hvWwD)
 
 ```mermaid
 ---
 title: MVC Architecture Sequence Diagram
 ---
+
 sequenceDiagram
 
 participant User
-participant Controller
 participant View
+participant EventBus
+participant Controller
 participant Model
 participant Storage
-participant EventBus
 
 Note over Model: Publishable
 
 autonumber
 
-View->>Model: Subscribe data changes
 Controller->>EventBus: Register callback for events
 User->>View: Do specific actions
-View->>+EventBus: Emit events corresponding to the action
-EventBus-->>-Controller: Run registered callback for the event
-Controller->>+Model: Request create/update/delete data
+View->>+EventBus: Emit events (with data)
+EventBus-->>-Controller: Run callback for the event
+Controller->>+Model: Request CRUD
 Model->>Model: Processing (to cause changes)
-Model->>Storage: Save data (if exists)
+Model-->>Storage: Save data (if exists)
 Model-->>-View: Publish changes with data
-View->>Controller: Update UI
-Controller->>User: Display
+View->>User: Update UI & Display
 ```
 
-1. 앱을 실행했을 때,
-   1. View가 Model의 변경사항을 구독합니다. ([Publishable](#publishable))
-   2. Controller는 특정 이벤트에 실행할 동작을 정의합니다. ([EventBus](#eventbus))
-2. User가 View로부터 특정 행동을 수행하면 EventBus를 통해 Controller에게 이벤트가 발생했음을 알립니다.
-3. 이벤트를 받은 Controller는 데이터 생성/변경/삭제를 Model에게 요청합니다.
+1. Controller가 생성되는 과정에서 특정 이벤트에 실행할 동작을 정의합니다. ([EventBus](#eventbus))
+2. User가 View를 통해 특정 행동을 수행하면 EventBus에 등록된 이벤트를 발행합니다.
+3. 해당 이벤트를 구독 중인 Controller는 이벤트를 받아 데이터 생성/변경/삭제를 Model에게 요청합니다.
 4. Model은 요청에 맞게 데이터를 적절히 처리한 후, 변환하여 Storage에 저장합니다.
-5. 변경사항을 데이터와 함께 구독 중인 View에게 알립니다. View는 이를 토대로 UI를 변경합니다.
+5. Model은 변경사항을 데이터와 함께 구독 중인 View에게 알립니다. View는 이를 토대로 UI를 변경합니다.
 6. View와 연결된 Controller를 통해서 사용자에게 UI를 보여줍니다.
 
 ## API References
